@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
@@ -13,3 +14,16 @@ spring:
 mybatis-plus:
   # 实体类所在的包
     typeAliasesPackage: com.guico.moviemanagesystembackend.entity
+sa-token:
+  # token名称
+  token-name: satoken
+  # token有效时间（单位：秒）
+  activity-timeout: 1800000
+  # 是否允许多人同时登录
+  is-concurrent: false
+  # token风格
+  token-style: uuid
+  # 是否输出token日志
+  is-log: true
+server:
+  port: 8901
