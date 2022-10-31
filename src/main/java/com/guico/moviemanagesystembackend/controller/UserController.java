@@ -29,4 +29,9 @@ public class UserController {
     public Result register(String nickname, String email, String password, String code) {
         return userService.register(nickname, email, password, code);
     }
+
+    @PostMapping("/logout")
+    public Result logout(String SAToken) {
+        return userService.logout(SAToken);
+    }
 }

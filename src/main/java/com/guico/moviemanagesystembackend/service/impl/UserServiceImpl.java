@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Log4j2
@@ -46,8 +47,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //验证登录
         StpUtil.login("user:login:"+user.getEmail());
         String token = StpUtil.getTokenValue();
-        //将token存入redis
-        stringRedisTemplate.opsForValue().set("user:token:"+user.getEmail(), token);
+        //将用户信息存入redis
+        stringRedisTemplate.opsForValue().set("user:info:"+token, user.toString(),1, TimeUnit.MINUTES);
         return Result.ok(token);
     }
 
@@ -66,17 +67,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result resetPassword(String email, String password, String code) {
-        return null;
+        User user = query().eq("email", email).one();
+        if (user == null) {
+            return Result.fail("用户不存在");
+        } else if (!stringRedisTemplate.opsForValue().get("user:code:"+email).equals(code)) {
+            return Result.fail("验证码错误");
+        }
+        user.setPassword(password);
+        updateById(user);
+        return Result.ok();
     }
 
-    @Override
-    public Result updatePassword(String email, String newPassword) {
-        return null;
-    }
 
     @Override
     public Result logout(String SAToken) {
-        return null;
+        String id = StpUtil.getLoginId(SAToken);
+        StpUtil.logout(id);
+        return Result.ok();
     }
 
     @Override
