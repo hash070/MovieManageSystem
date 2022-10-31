@@ -7,6 +7,7 @@ import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
 import com.guico.moviemanagesystembackend.service.IUserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,21 +15,23 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Log4j2
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Result sendCode(String email) {
-//        先从redis中查看是否存在验证码，有的话直接返回错误
-        String code = stringRedisTemplate.opsForValue().get(email);
+        //先从redis中获取验证码
+        String code = stringRedisTemplate.opsForValue().get("user:code:"+email);
         if (code != null) {
-            return Result.fail("验证码已发送");
+            return Result.fail("验证码已发送，请勿重复发送");
         }
-//        生成并发送验证码
+        //生成并发送验证码
         code = MailSend.doSend(email);
-//        将验证码存入redis中
-        stringRedisTemplate.opsForValue().set(email, code,1, TimeUnit.MINUTES);
+        //将验证码存入redis
+        stringRedisTemplate.opsForValue().set("user:code:"+email, code);
+        log.info("验证码为："+code);
         return Result.ok();
     }
 
