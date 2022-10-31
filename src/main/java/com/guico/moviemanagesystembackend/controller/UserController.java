@@ -1,4 +1,20 @@
 package com.guico.moviemanagesystembackend.controller;
 
+import com.guico.moviemanagesystembackend.service.IUserService;
+import com.guico.moviemanagesystembackend.utils.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController("/api/user")
 public class UserController {
+
+    @Autowired
+    IUserService userService;
+
+    @PostMapping("/login")
+    public Result login(String email, String password) {
+        return userService.login(email, password);
+    }
 }
