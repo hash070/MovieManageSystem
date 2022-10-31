@@ -1,5 +1,6 @@
 package com.guico.moviemanagesystembackend.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.utils.MailSend;
 import com.guico.moviemanagesystembackend.utils.Result;
@@ -10,6 +11,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Log4j2
