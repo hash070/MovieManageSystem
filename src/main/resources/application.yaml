@@ -9,3 +9,7 @@ spring:
     host: 101.33.210.228
     port: 6379
     password: 411326
+# mybatis-plus的配置
+mybatis-plus:
+  # 实体类所在的包
+    typeAliasesPackage: com.guico.moviemanagesystembackend.entity
