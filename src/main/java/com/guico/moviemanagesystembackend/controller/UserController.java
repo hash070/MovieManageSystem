@@ -13,6 +13,12 @@ public class UserController {
     @Autowired
     IUserService userService;
 
+    @PostMapping("/code")
+    public Result code(String email) {
+        return userService.sendCode(email);
+    }
+
+
     @PostMapping("/login")
     public Result login(String email, String password) {
         return userService.login(email, password);
