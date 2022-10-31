@@ -51,8 +51,8 @@ public class MailSend {
             //设置收件人,to为收件人,cc为抄送,bcc为密送
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toMail, false));
             //设置邮件消息
-            msg.setSubject("CalculatorVerifyCode");
-            msg.setText("Your verify code is:" + code);
+            msg.setSubject("电影管理系统");
+            msg.setText("您的验证码为:" + code + ",1分钟内有效");
             //设置发送的日期
 //            msg.setSentDate(new Date());
 
