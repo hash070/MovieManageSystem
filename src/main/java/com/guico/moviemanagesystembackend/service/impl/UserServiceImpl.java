@@ -2,7 +2,6 @@ package com.guico.moviemanagesystembackend.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.guico.moviemanagesystembackend.utils.MailSend;
 import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
@@ -13,7 +12,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Log4j2
@@ -55,7 +53,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result register(String nickname, String email, String password, String code) {
-        return null;
+        User user = query().eq("email", email).one();
+        if (user != null) {
+            return Result.fail("邮箱已被注册");
+        } else if (!stringRedisTemplate.opsForValue().get("user:code:"+email).equals(code)) {
+            return Result.fail("验证码错误");
+        }
+        User newUser = new User(nickname, email, password,User.USER_LEVEL_USER);
+        save(newUser);
+        return Result.ok();
     }
 
     @Override
