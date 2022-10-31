@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -28,7 +29,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("验证码已发送，请勿重复发送");
         }
         //生成并发送验证码
-        code = MailSend.doSend(email);
+//        code = MailSend.doSend(email);
+        code =String.valueOf(new Random().nextInt(899999) +100000) ;
         //将验证码存入redis
         stringRedisTemplate.opsForValue().set("user:code:"+email, code);
         log.info("验证码为："+code);
@@ -37,7 +39,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result login(String email, String password) {
-        return null;
+        User user = query().eq("email", email).one();
+        if (user == null) {
+            return Result.fail("用户不存在");
+        } else if (!user.getPassword().equals(password)) {
+            return Result.fail("密码错误");
+        }
+        //验证登录
+        StpUtil.login("user:login:"+user.getEmail());
+        String token = StpUtil.getTokenValue();
+        //将token存入redis
+        stringRedisTemplate.opsForValue().set("user:token:"+user.getEmail(), token);
+        return Result.ok(token);
     }
 
     @Override
