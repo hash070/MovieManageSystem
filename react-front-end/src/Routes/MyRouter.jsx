@@ -4,6 +4,8 @@ import HelloWorld1 from "../Componments/HelloWorld1.jsx";
 import HelloWorld2 from "../Componments/HelloWorld2.jsx";
 import AdminTest from "../Componments/AdminTest.jsx";
 import Login from "../Componments/Login.jsx";
+import Register from "../Componments/Register";
+import ResetPWD from "../Componments/ResetPWD";
 
 
 class MyRouter extends Component {
@@ -18,6 +20,8 @@ class MyRouter extends Component {
                         <Route index element={<HelloWorld1/>}/>
                         <Route path='hello2' element={<HelloWorld2/>}/>
                         <Route path='login' element={<Login/>}/>
+                        <Route path='register' element={<Register/>}/>
+                        <Route path='reset' element={<ResetPWD/>}/>
                         <Route path='adminTest' element={<AdminTest/>}/>
                     </Route>
                 </Routes>
