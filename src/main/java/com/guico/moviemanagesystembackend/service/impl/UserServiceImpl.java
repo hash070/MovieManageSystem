@@ -6,11 +6,13 @@ import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
 import com.guico.moviemanagesystembackend.service.IUserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@Log4j2
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
@@ -26,6 +28,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         code = MailSend.doSend(email);
         //将验证码存入redis
         stringRedisTemplate.opsForValue().set("user:code:"+email, code);
+        log.info("验证码为："+code);
         return Result.ok();
     }
 
