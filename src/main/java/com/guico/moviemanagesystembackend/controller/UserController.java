@@ -19,7 +19,7 @@ public class UserController {
     public Result sendCode(String email){
         return userService.sendCode(email);
     }
-
+    
     @PostMapping("/login")
     public Result login(String email, String password) {
         return userService.login(email, password);
