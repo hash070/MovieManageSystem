@@ -1,6 +1,7 @@
 package com.guico.moviemanagesystembackend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.guico.moviemanagesystembackend.utils.MailSend;
 import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
@@ -16,7 +17,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result sendCode(String email) {
-        return null;
+        //先从redis中获取验证码
+        String code = stringRedisTemplate.opsForValue().get("user:code:"+email);
+        if (code != null) {
+            return Result.fail("验证码已发送，请勿重复发送");
+        }
+        //生成并发送验证码
+        code = MailSend.doSend(email);
+        //将验证码存入redis
+        stringRedisTemplate.opsForValue().set("user:code:"+email, code);
+        return Result.ok();
     }
 
     @Override
