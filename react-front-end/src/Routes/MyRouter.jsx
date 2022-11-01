@@ -3,9 +3,9 @@ import {BrowserRouter, HashRouter, Route, Routes} from "react-router-dom";
 import HelloWorld1 from "../Componments/HelloWorld1.jsx";
 import HelloWorld2 from "../Componments/HelloWorld2.jsx";
 import AdminTest from "../Componments/AdminTest.jsx";
-import Login from "../Componments/Login.jsx";
-import Register from "../Componments/Register";
-import ResetPWD from "../Componments/ResetPWD";
+import Login from "../Componments/Admin/Login.jsx";
+import Register from "../Componments/Admin/Register.jsx";
+import ResetPWD from "../Componments/Admin/ResetPWD.jsx";
 
 
 class MyRouter extends Component {
