@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @TableName("type")
@@ -19,5 +22,13 @@ public class Type {
 
     public Type (String name) {
         this.name = name;
+    }
+
+    public static List<String> getTypeList(List<Type> types) {
+        List<String> typeList = new ArrayList<>();
+        for (Type type : types) {
+            typeList.add(type.getName());
+        }
+        return typeList;
     }
 }
