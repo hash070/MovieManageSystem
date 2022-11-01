@@ -84,16 +84,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         stringRedisTemplate.delete("user:code:" + email);
         user.setPassword(password);
-        updateById(user);
+        updateById(user)
         return Result.ok();
     }
 
 
     @Override
     public Result logout(String token) {
-        String email = stringRedisTemplate.opsForValue().get("user:login:" + token);
+        String email = stringRedisTemplate.opsForValue().get("satoken:login:token:" + token);
+        if(StrUtil.isBlank(email))
+            return Result.fail("用户未登录");
+        email = email.substring(11);
+        //删除redis中的用户信息
+        stringRedisTemplate.delete("user:info:" + email);
         String id = StpUtil.getLoginId(token);
-        stringRedisTemplate.delete("user:info:" + id);
         StpUtil.logout(id);
         return Result.ok();
     }
@@ -116,7 +120,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result checkToken(String token) {
 //        根據SAToken获取用户信息
-        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + token);
+        String email = stringRedisTemplate.opsForValue().get("satoken:login:token:" + token);
+        if (email == null) {
+            return Result.fail("登录失效");
+        }
+        email = email.substring(11);
+        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
 //        将用户信息转换为User对象
         if(userInfo == null||StrUtil.isEmptyIfStr(userInfo)){
             return Result.fail("登录失效");

@@ -30,10 +30,14 @@ sa-token:
   # token有效时间（单位：秒）
   activity-timeout: 1800000
   # 是否允许多人同时登录
-  is-concurrent: false
+  is-concurrent: true
   # token风格
   token-style: uuid
   # 是否输出token日志
   is-log: true
+  # sso配置
+  sso:
+    auth-url: http://localhost:8080/sa-token-auth
+    slo-url: http://localhost:8080/sa-token-logout
 server:
   port: 8901
