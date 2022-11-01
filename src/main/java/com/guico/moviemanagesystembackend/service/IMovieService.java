@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface IMovieService extends IService<Movie> {
 
+    Result uploadMovie();
+
     Result addMovie(Movie movie);
 
     Result getAllMovie();

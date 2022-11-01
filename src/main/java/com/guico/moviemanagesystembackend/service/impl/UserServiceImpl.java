@@ -53,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         StpUtil.login("user:login:" + user.getEmail());
         String token = StpUtil.getTokenValue();
         //将用户信息存入redis
-        stringRedisTemplate.opsForValue().set("user:info:" + token, user.toString(), 1, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set("user:info:" + token, user.toString());
         return Result.ok(token);
     }
 
