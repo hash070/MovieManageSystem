@@ -76,12 +76,16 @@ const RegisterForm = () => {
 
         axios.post('/api/user/register', req_body)
             .then(res => {
-                console.log("登录成功");
-                console.log(res.data);
+                console.log('服务端返回数据',res.data);
 
-                //TODO: 跳转到登录页面
+                if (res.data.success){//如果注册成功
+                    successMSG('注册成功，请登录')
+                    //TODO: 跳转到登录页面
+                    navigate('/admin/login');
+                }else {
+                    errorMSG('注册失败：'+res.data.errorMsg)
+                }
 
-                navigate('/admin/login');
             })
             .catch(err => {
                 console.log('出现错误', err)
