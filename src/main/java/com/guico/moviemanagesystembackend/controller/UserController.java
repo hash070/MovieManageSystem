@@ -4,12 +4,14 @@ import com.guico.moviemanagesystembackend.service.IUserService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin
 public class UserController {
 
     @Autowired
@@ -43,5 +45,10 @@ public class UserController {
     @PostMapping("/addByRoot")
     public Result addByARoot(String nickname, String email, String password, String SAToken) {
         return userService.addByRoot(nickname, email, password, SAToken);
+    }
+
+    @PostMapping("/checkToken")
+    public Result checkToken(String SAToken) {
+        return userService.checkToken(SAToken);
     }
 }
