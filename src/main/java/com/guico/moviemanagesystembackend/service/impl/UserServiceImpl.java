@@ -25,12 +25,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result sendCode(String email) {
-        //对邮箱进行校验
-        if (email == null || StrUtil.isEmptyIfStr(email)) {
-            return Result.fail("邮箱不能为空");
-        } else if (StrUtil.containsAny(email, "@", ".")) {
-            return Result.fail("邮箱格式不正确");
-        }
+
+
         //先从redis中获取验证码
         String code = stringRedisTemplate.opsForValue().get("user:code:" + email);
         if (code != null) {
@@ -69,10 +65,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("验证码已过期");
         if (user != null) {
             return Result.fail("邮箱已被注册");
-        } else if (Objects.equals(redisCode, code)) {
+        } else if (!Objects.equals(redisCode, code)) {
             return Result.fail("验证码错误");
         }
-        User newUser = new User(nickname, email, password, User.USER_LEVEL_USER);
+        User newUser = new User(nickname, password ,email, User.USER_LEVEL_USER);
 //        删除验证码
         stringRedisTemplate.delete("user:code:" + email);
         save(newUser);
@@ -88,6 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         } else if (!stringRedisTemplate.opsForValue().get("user:code:" + email).equals(code)) {
             return Result.fail("验证码错误");
         }
+        stringRedisTemplate.delete("user:code:" + email);
         user.setPassword(password);
         updateById(user);
         return Result.ok();
