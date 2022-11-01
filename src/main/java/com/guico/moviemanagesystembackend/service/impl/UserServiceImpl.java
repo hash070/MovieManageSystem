@@ -90,16 +90,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
 
     @Override
-    public Result logout(String SAToken) {
-        String email = stringRedisTemplate.opsForValue().get("user:login:" + SAToken);
-        String id = StpUtil.getLoginId(SAToken);
+    public Result logout(String token) {
+        String email = stringRedisTemplate.opsForValue().get("user:login:" + token);
+        String id = StpUtil.getLoginId(token);
         stringRedisTemplate.delete("user:info:" + id);
         StpUtil.logout(id);
         return Result.ok();
     }
 
     @Override
-    public Result addByRoot(String nickname, String email, String password, String SAToken) {
+    public Result addByRoot(String nickname, String email, String password, String token) {
 //        根據SAToken获取用户信息
         String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
 //        将用户信息转换为User对象
