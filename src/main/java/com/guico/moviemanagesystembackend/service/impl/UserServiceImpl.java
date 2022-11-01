@@ -9,12 +9,10 @@ import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
 import com.guico.moviemanagesystembackend.service.IUserService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.Time;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
