@@ -2,9 +2,9 @@ import {Button, Checkbox, Form, Input, Col, Row, message} from 'antd';
 import axios from 'axios';
 import {React, Fragment} from 'react';
 import {Link, Navigate, NavLink, useNavigate} from 'react-router-dom';
-import '../styles/Login.css';
+import '../../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
-import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
+import {errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
 
 
 const LoginForm = () => {
@@ -52,7 +52,12 @@ const LoginForm = () => {
                     errorMSG('登录失败：' + error_message)
                 }
 
-            }).finally(() => {
+            })
+            .catch((err) => {
+                console.log('错误信息', err)
+                errorMSG(err.message + '\n请检查网络连接')
+            })
+            .finally(() => {
             // console.log('',localStorage.getItem("token") === null);
             // navigate('/home');
         })

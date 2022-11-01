@@ -2,12 +2,12 @@ import {Button, Checkbox, Form, Input, Col, Row} from 'antd';
 import axios from 'axios';
 import {React, Fragment, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import '../styles/Login.css';
+import '../../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
-import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
+import {errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
 
-//密码重置表单，和注册表单类似
-const ResetPWDForm = () => {
+//注册表单
+const RegisterForm = () => {
     //路由跳转方法
     const navigate = useNavigate();
 
@@ -52,9 +52,12 @@ const ResetPWDForm = () => {
                 errorMSG('邮件发送失败')
             }
         })
+        .catch((err) => {
+            console.log('错误信息', err)
+            errorMSG(err.message + '\n请检查网络连接')
+        })
     }
 
-    //表单提交时发送的数据
     const onFinish = (values) => {
         console.log('发送请求数据:', values);
 
@@ -68,28 +71,29 @@ const ResetPWDForm = () => {
         //注意，发送请求时，一定要用FormData对象来发送请求
         let req_body = getFormData({
             email: values.email,
+            nickname: values.nickname,
             password: values.password1,
             code: values.code,
         })
 
         console.log('发送的请求体:', req_body)
 
-        axios.post('/api/user/resetPassword', req_body)
+        axios.post('/api/user/register', req_body)
             .then(res => {
                 console.log('服务端返回数据', res.data);
 
                 if (res.data.success) {//如果注册成功
-                    successMSG('密码重置成功，请登录')
+                    successMSG('注册成功，请登录')
                     //TODO: 跳转到登录页面
                     navigate('/admin/login');
                 } else {
-                    errorMSG('密码重置失败：' + res.data.errorMsg)
+                    errorMSG('注册失败：' + res.data.errorMsg)
                 }
 
             })
-            .catch(err => {
-                console.log('出现错误', err)
-                errorMSG(err.message)
+            .catch((err) => {
+                console.log('错误信息',err)
+                errorMSG(err.message+'\n请检查网络连接')
             })
     };
 
@@ -124,6 +128,12 @@ const ResetPWDForm = () => {
                         }]}>
                         <Input prefix={<UserOutlined className="site-form-item-icon"/>}
                                placeholder="邮箱"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="nickname"
+                        rules={[{required: true, message: '请输入您的昵称!'}]}>
+                        <Input prefix={<UserOutlined className="site-form-item-icon"/>}
+                               placeholder="昵称"/>
                     </Form.Item>
                     <Form.Item
                         name="password1"
@@ -171,7 +181,7 @@ const ResetPWDForm = () => {
                         </Button>
 
                         <Button type="primary" htmlType="submit" className="login-form-button">
-                            重置密码
+                            注册
                         </Button>
                     </Form.Item>
                 </Form>
@@ -180,4 +190,4 @@ const ResetPWDForm = () => {
     );
 };
 
-export default ResetPWDForm;
+export default RegisterForm;
