@@ -23,4 +23,8 @@ public class User {
     String email;
     @TableField("level")
     Integer level;
+
+    public String toJsonString(){
+        return "{\"nickname\":\""+nickname+"\",\"email\":\""+email+"\",\"level\":"+level+"}";
+    }
 }
