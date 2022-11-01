@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +41,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 //        code = MailSend.doSend(email);
         code = String.valueOf(new Random().nextInt(899999) + 100000);
         //将验证码存入redis
-        stringRedisTemplate.opsForValue().set("user:code:" + email, code);
+        stringRedisTemplate.opsForValue().set("user:code:" + email, code,1, TimeUnit.MINUTES);
         log.info("验证码为：" + code);
         return Result.ok();
     }
@@ -97,6 +98,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result logout(String SAToken) {
         String id = StpUtil.getLoginId(SAToken);
+        stringRedisTemplate.delete("user:info:" + id);
         StpUtil.logout(id);
         return Result.ok();
     }
