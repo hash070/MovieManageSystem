@@ -39,19 +39,19 @@ const LoginForm = () => {
                 //如果登录成功，则弹出登录成功的提示框，然后将Token放到本地
                 if (success) {
                     successMSG('登录成功')
-                    //TODO: 将Token放到本地Storage
+                    //将Token放到本地Storage
                     console.log('存放收到的Token', token)
                     // successMSG('获取到的Token为：' + token)
 
 
-                    //TODO: 如果勾选了“记住我”按钮，则将Token保存到本地
+                    //如果勾选了“记住我”按钮，则将Token保存到本地
                     if (is_rem){
                         localStorage.setItem('token', token)
                         console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
                         successMSG('已将登录信息保存到本地存储')
                     }
 
-                    //TODO: 跳转到后台管理界面
+                    //跳转到后台管理界面
                     console.log('跳转到管理员界面')
                     navigate('/admin')
 
