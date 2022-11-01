@@ -4,11 +4,13 @@ import com.guico.moviemanagesystembackend.service.ITypeService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api/type")
+@CrossOrigin
 public class TypeController {
 
     @Autowired
@@ -20,13 +22,13 @@ public class TypeController {
     }
 
     @PostMapping("/delete")
-    public Result deleteType(Integer typeId, String SAToken) {
-        return typeService.deleteType(typeId, SAToken);
+    public Result deleteType(String name, String SAToken) {
+        return typeService.deleteType(name, SAToken);
     }
 
     @PostMapping("/update")
-    public Result updateType(Integer typeId, String typeName, String SAToken) {
-        return typeService.updateType(typeId, typeName, SAToken);
+    public Result updateType(String oldName, String typeName, String SAToken) {
+        return typeService.updateType(oldName, typeName, SAToken);
     }
 
     @PostMapping("/getAll")
