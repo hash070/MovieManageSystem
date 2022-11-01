@@ -62,6 +62,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("验证码错误");
         }
         User newUser = new User(nickname, email, password,User.USER_LEVEL_USER);
+//        删除验证码
+        stringRedisTemplate.delete("user:code:"+email);
         save(newUser);
         return Result.ok();
     }
@@ -88,7 +90,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Result addByAdmin(String nickname, String email, String password, String SAToken) {
+    public Result addByRoot(String nickname, String email, String password, String SAToken) {
 //        根據SAToken获取用户信息
         String userInfo = stringRedisTemplate.opsForValue().get("user:info:"+SAToken);
 //        将用户信息转换为User对象
