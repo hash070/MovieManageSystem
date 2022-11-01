@@ -40,8 +40,8 @@ public class UserController {
         return userService.resetPassword(email, password, code);
     }
 
-    @PostMapping("/addByAdmin")
-    public Result addByAdmin(String nickname, String email, String password, String SAToken) {
-        return userService.addByAdmin(nickname, email, password, SAToken);
+    @PostMapping("/addByRoot")
+    public Result addByARoot(String nickname, String email, String password, String SAToken) {
+        return userService.addByRoot(nickname, email, password, SAToken);
     }
 }

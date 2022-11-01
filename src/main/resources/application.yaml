@@ -10,6 +10,16 @@ spring:
     host: 101.33.210.228
     port: 6379
     password: 411326
+    # 连接时间
+    timeout: 100000000
+    # 连接池配置
+    lettuce:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 8
+        max-wait: -1ms
+
 # mybatis-plus的配置
 mybatis-plus:
   # 实体类所在的包
