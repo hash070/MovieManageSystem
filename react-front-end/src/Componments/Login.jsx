@@ -1,6 +1,6 @@
 import {Button, Checkbox, Form, Input, Col, Row, message} from 'antd';
 import axios from 'axios';
-import {React, Fragment} from 'react';
+import {React, Fragment, useState} from 'react';
 import {Link, Navigate, NavLink, useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
@@ -8,9 +8,13 @@ import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 
 
 const LoginForm = () => {
+    // 路由跳转方法
     const navigate = useNavigate();
 
-    //登录表单提交方法
+    // 绑定是否记住密码到 is_rem 中
+    let [is_rem, setRem] = useState(true)
+
+    // 登录表单提交方法
     const onFinish = (values) => {
 
         //构建FormData请求体
@@ -37,10 +41,15 @@ const LoginForm = () => {
                     successMSG('登录成功')
                     //TODO: 将Token放到本地Storage
                     console.log('存放收到的Token', token)
-                    successMSG('获取到的Token为：' + token)
-                    localStorage.setItem('token', token)
+                    // successMSG('获取到的Token为：' + token)
 
-                    console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
+
+                    //TODO: 如果勾选了“记住我”按钮，则将Token保存到本地
+                    if (is_rem){
+                        localStorage.setItem('token', token)
+                        console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
+                        successMSG('已将登录信息保存到本地存储')
+                    }
 
                     //TODO: 跳转到后台管理界面
                     console.log('跳转到管理员界面')
@@ -58,9 +67,9 @@ const LoginForm = () => {
                 errorMSG(err.message + '\n请检查网络连接')
             })
             .finally(() => {
-            // console.log('',localStorage.getItem("token") === null);
-            // navigate('/home');
-        })
+                // console.log('',localStorage.getItem("token") === null);
+                // navigate('/home');
+            })
     };
 
 
@@ -107,8 +116,12 @@ const LoginForm = () => {
                         />
                     </Form.Item>
                     <Form.Item>
-                        <Form.Item name="remember" valuePropName="checked" noStyle>
-                            <Checkbox>记住我</Checkbox>
+                        <Form.Item name="remember" valuePropName={'checked'} noStyle>
+                            <Checkbox
+                                onChange={(e) => {
+                                console.log('记住密码数值更新', e.target.checked)
+                                setRem(e.target.checked)
+                            }}>记住我</Checkbox>
                         </Form.Item>
                     </Form.Item>
 
