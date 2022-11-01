@@ -1,13 +1,15 @@
 package com.guico.moviemanagesystembackend.entry;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @TableName("user")
 public class User {
@@ -24,7 +26,7 @@ public class User {
     @TableField("level")
     Integer level;
 
-    public String toJsonString(){
-        return "{\"nickname\":\""+nickname+"\",\"email\":\""+email+"\",\"level\":"+level+"}";
+    public String toString(){
+        return JSONUtil.toJsonStr(this);
     }
 }

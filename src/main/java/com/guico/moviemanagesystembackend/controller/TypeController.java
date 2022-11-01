@@ -22,13 +22,13 @@ public class TypeController {
     }
 
     @PostMapping("/delete")
-    public Result deleteType(String name, String SAToken) {
-        return typeService.deleteType(name, SAToken);
+    public Result deleteType(Long id, String SAToken) {
+        return typeService.deleteType(id, SAToken);
     }
 
     @PostMapping("/update")
-    public Result updateType(String oldName, String typeName, String SAToken) {
-        return typeService.updateType(oldName, typeName, SAToken);
+    public Result updateType(Long id, String typeName, String SAToken) {
+        return typeService.updateType(id, typeName, SAToken);
     }
 
     @PostMapping("/getAll")

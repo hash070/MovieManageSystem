@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -30,5 +32,13 @@ public class Type {
             typeList.add(type.getName());
         }
         return typeList;
+    }
+
+    public static Map<Long, String> getTypeMap(List<Type> types) {
+        Map<Long, String> typeMap = new HashMap<>();
+        for (Type type : types) {
+            typeMap.put(type.getId(), type.getName());
+        }
+        return typeMap;
     }
 }
