@@ -1,6 +1,7 @@
 package com.guico.moviemanagesystembackend.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
@@ -88,6 +89,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result addByAdmin(String nickname, String email, String password, String SAToken) {
-        return null;
+//        根據SAToken获取用户信息
+        String userInfo = stringRedisTemplate.opsForValue().get("user:info:"+SAToken);
+//        将用户信息转换为User对象
+        User user = JSONUtil.toBean(userInfo, User.class);
+//        查看用户是否有权限
+        if (user.getLevel() != User.USER_LEVEL_ROOT) {
+            return Result.fail("权限不足");
+        }
+        User newUser = new User(nickname, email, password,User.USER_LEVEL_USER);
+        save(newUser);
+        return Result.ok();
     }
 }

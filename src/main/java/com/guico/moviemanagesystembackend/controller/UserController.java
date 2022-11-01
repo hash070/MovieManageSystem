@@ -34,4 +34,14 @@ public class UserController {
     public Result logout(String SAToken) {
         return userService.logout(SAToken);
     }
+
+    @PostMapping("/resetPassword")
+    public Result resetPassword(String email, String password, String code) {
+        return userService.resetPassword(email, password, code);
+    }
+
+    @PostMapping("/addByAdmin")
+    public Result addByAdmin(String nickname, String email, String password, String SAToken) {
+        return userService.addByAdmin(nickname, email, password, SAToken);
+    }
 }
