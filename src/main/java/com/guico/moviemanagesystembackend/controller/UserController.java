@@ -46,4 +46,9 @@ public class UserController {
     public Result addByARoot(String nickname, String email, String password, String SAToken) {
         return userService.addByRoot(nickname, email, password, SAToken);
     }
+
+    @PostMapping("/checkToken")
+    public Result checkToken(String SAToken) {
+        return userService.checkToken(SAToken);
+    }
 }
