@@ -1,0 +1,15 @@
+.logo {
+    height: 32px;
+    margin: 16px;
+    background: #fff;
+    text-align: center;
+    line-height: 16px;
+}
+
+.site-layout .site-layout-background {
+    background: #fff;
+}
+
+[data-theme="dark"] .site-layout .site-layout-background {
+    background: #141414;
+}
