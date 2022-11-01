@@ -2,9 +2,9 @@ import {Button, Checkbox, Form, Input, Col, Row} from 'antd';
 import axios from 'axios';
 import {React, Fragment, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import '../../styles/Login.css';
+import '../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
-import {errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
+import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 
 //注册表单
 const RegisterForm = () => {
@@ -20,7 +20,7 @@ const RegisterForm = () => {
 
     //返回到登录界面方法
     let backToLogin = () => {
-        navigate('/admin/login');
+        navigate('/login');
     }
 
     //发送验证码的方法
@@ -85,7 +85,7 @@ const RegisterForm = () => {
                 if (res.data.success) {//如果注册成功
                     successMSG('注册成功，请登录')
                     //TODO: 跳转到登录页面
-                    navigate('/admin/login');
+                    navigate('/login');
                 } else {
                     errorMSG('注册失败：' + res.data.errorMsg)
                 }
