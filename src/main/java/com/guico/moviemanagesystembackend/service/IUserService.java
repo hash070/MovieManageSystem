@@ -14,10 +14,9 @@ public interface IUserService extends IService<User> {
 
     Result resetPassword(String email, String password, String code);
 
-    Result updatePassword(String email, String newPassword);
 
     Result logout(String SAToken);
 
-    Result addByAdmin(String nickname, String email, String password, String SAToken);
+    Result addByRoot(String nickname, String email, String password, String SAToken);
 
 }
