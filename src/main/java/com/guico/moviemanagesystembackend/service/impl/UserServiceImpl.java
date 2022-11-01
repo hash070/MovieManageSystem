@@ -113,4 +113,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         save(newUser);
         return Result.ok();
     }
+
+    @Override
+    public Result checkToken(String saToken) {
+//        根據SAToken获取用户信息
+        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + saToken);
+//        将用户信息转换为User对象
+        User user = JSONUtil.toBean(userInfo, User.class);
+        if (user == null) {
+            return Result.fail("用户未登录");
+        }
+        return Result.ok(user.getLevel());
+    }
+
 }
