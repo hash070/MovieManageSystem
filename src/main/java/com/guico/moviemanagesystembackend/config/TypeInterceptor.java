@@ -29,12 +29,20 @@ public class TypeInterceptor implements HandlerInterceptor {
             throw new LevelException("token为空，无法认证用户权限");
         }
 //        根据token获取用户信息
-        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + token);
-        User user  = JSONUtil.toBean(userInfo, User.class);
+        String email = stringRedisTemplate.opsForValue().get("satoken:login:token:" + token);
+        if(email == null){
+            log.info("token无效");
+            throw new LevelException("token无效，无法认证用户权限");
+        }
+        email = email.substring(11);
+        log.info("email为：" + email);
+        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
         if(userInfo == null){
             log.info("用户信息为空");
             throw new LevelException("用户信息为空，无法认证用户权限");
         }
+        User user  = JSONUtil.toBean(userInfo, User.class);
+
         if(user.getLevel() > 1){
             log.info("用户权限不足");
             throw new LevelException("用户权限不足，无法访问");
