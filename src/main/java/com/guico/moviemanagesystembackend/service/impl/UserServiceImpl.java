@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.sql.Time;
 import java.util.Objects;
 import java.util.Random;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Log4j2
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
-    @Autowired
+    @Resource
     StringRedisTemplate stringRedisTemplate;
 
     @Override
