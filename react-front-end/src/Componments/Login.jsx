@@ -4,6 +4,7 @@ import {React, Fragment} from 'react';
 import {Link, Navigate, NavLink, useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
+import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 
 
 const LoginForm = () => {
@@ -11,9 +12,14 @@ const LoginForm = () => {
 
     //登录表单提交方法
     const onFinish = (values) => {
-        console.log('发送登录请求体:', values);
 
-        axios.post('/api/user/login', values)
+        //构建FormData请求体
+
+        let req_body = getFormData(values)
+
+        console.log('发送登录请求体:', req_body);
+
+        axios.post('/api/user/login', req_body)
             .then(res => {
                 console.log('收到服务端返回信息', res.data);
 
@@ -44,19 +50,9 @@ const LoginForm = () => {
             }).finally(() => {
             // console.log('',localStorage.getItem("token") === null);
             // navigate('/home');
-            console.log('登录成功2')
         })
     };
 
-    //失败提示信息回调函数
-    const errorMSG = (msg) => {
-        message.error(msg);
-    };
-
-    //成功提示信息回调函数
-    const successMSG = (msg) => {
-        message.success(msg);
-    };
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
