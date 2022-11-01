@@ -1,0 +1,26 @@
+.login-wrap {
+	display: flex;
+	height: 100vh;
+	width: auto;
+	justify-content: center;
+	margin: auto;
+	align-items: center;
+}
+
+.login-wrap .column {
+	font-size: 16px;
+	float: left;
+	/* margin-left: 20%; */
+}
+
+.login-wrap a {
+	font-size: 14px;
+	float: right;
+	/* opacity: .3; */
+}
+
+.regButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
