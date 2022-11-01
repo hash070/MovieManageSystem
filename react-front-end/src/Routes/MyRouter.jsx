@@ -22,7 +22,6 @@ class MyRouter extends Component {
                     </Route>
                     <Route path={'/admin'} element={<AdminPanel/>}>
                         <Route index element={<HelloWorld2/>}/>
-
                         <Route path='adminTest' element={<AdminTest/>}/>
                     </Route>
                 </Routes>
