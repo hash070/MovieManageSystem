@@ -34,17 +34,22 @@ const LoginForm = () => {
 
                 //如果登录成功，则弹出登录成功的提示框，然后将Token放到本地
                 if (success) {
-                   successMSG('登录成功')
+                    successMSG('登录成功')
                     //TODO: 将Token放到本地Storage
-                    console.log('存放收到的Token')
+                    console.log('存放收到的Token', token)
+                    successMSG('获取到的Token为：' + token)
+                    localStorage.setItem('token', token)
+
+                    console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
 
                     //TODO: 跳转到后台管理界面
                     console.log('跳转到管理员界面')
+                    navigate('/admin')
 
 
                 } else {//如果登录失败，则弹出提示
                     console.log('登录失败')
-                    errorMSG( '登录失败：'+error_message)
+                    errorMSG('登录失败：' + error_message)
                 }
 
             }).finally(() => {
