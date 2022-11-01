@@ -24,4 +24,24 @@ public class UserController {
     public Result login(String email, String password) {
         return userService.login(email, password);
     }
+
+    @PostMapping("/register")
+    public Result register(String nickname, String email, String password, String code) {
+        return userService.register(nickname, email, password, code);
+    }
+
+    @PostMapping("/logout")
+    public Result logout(String SAToken) {
+        return userService.logout(SAToken);
+    }
+
+    @PostMapping("/resetPassword")
+    public Result resetPassword(String email, String password, String code) {
+        return userService.resetPassword(email, password, code);
+    }
+
+    @PostMapping("/addByRoot")
+    public Result addByARoot(String nickname, String email, String password, String SAToken) {
+        return userService.addByRoot(nickname, email, password, SAToken);
+    }
 }

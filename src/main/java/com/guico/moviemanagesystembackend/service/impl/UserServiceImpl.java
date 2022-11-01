@@ -1,8 +1,8 @@
 package com.guico.moviemanagesystembackend.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.guico.moviemanagesystembackend.utils.MailSend;
 import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
@@ -48,33 +48,59 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //验证登录
         StpUtil.login("user:login:"+user.getEmail());
         String token = StpUtil.getTokenValue();
-        //将token存入redis
-        stringRedisTemplate.opsForValue().set("user:token:"+user.getEmail(), token);
+        //将用户信息存入redis
+        stringRedisTemplate.opsForValue().set("user:info:"+token, user.toString(),1, TimeUnit.MINUTES);
         return Result.ok(token);
     }
 
     @Override
     public Result register(String nickname, String email, String password, String code) {
-        return null;
+        User user = query().eq("email", email).one();
+        if (user != null) {
+            return Result.fail("邮箱已被注册");
+        } else if (!stringRedisTemplate.opsForValue().get("user:code:"+email).equals(code)) {
+            return Result.fail("验证码错误");
+        }
+        User newUser = new User(nickname, email, password,User.USER_LEVEL_USER);
+//        删除验证码
+        stringRedisTemplate.delete("user:code:"+email);
+        save(newUser);
+        return Result.ok();
     }
 
     @Override
     public Result resetPassword(String email, String password, String code) {
-        return null;
+        User user = query().eq("email", email).one();
+        if (user == null) {
+            return Result.fail("用户不存在");
+        } else if (!stringRedisTemplate.opsForValue().get("user:code:"+email).equals(code)) {
+            return Result.fail("验证码错误");
+        }
+        user.setPassword(password);
+        updateById(user);
+        return Result.ok();
     }
 
-    @Override
-    public Result updatePassword(String email, String newPassword) {
-        return null;
-    }
 
     @Override
     public Result logout(String SAToken) {
-        return null;
+        String id = StpUtil.getLoginId(SAToken);
+        StpUtil.logout(id);
+        return Result.ok();
     }
 
     @Override
-    public Result addByAdmin(String nickname, String email, String password, String SAToken) {
-        return null;
+    public Result addByRoot(String nickname, String email, String password, String SAToken) {
+//        根據SAToken获取用户信息
+        String userInfo = stringRedisTemplate.opsForValue().get("user:info:"+SAToken);
+//        将用户信息转换为User对象
+        User user = JSONUtil.toBean(userInfo, User.class);
+//        查看用户是否有权限
+        if (user.getLevel() != User.USER_LEVEL_ROOT) {
+            return Result.fail("权限不足");
+        }
+        User newUser = new User(nickname, email, password,User.USER_LEVEL_USER);
+        save(newUser);
+        return Result.ok();
     }
 }
