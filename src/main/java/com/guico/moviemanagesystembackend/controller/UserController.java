@@ -33,8 +33,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public Result logout(String SAToken) {
-        return userService.logout(SAToken);
+    public Result logout(String token) {
+        return userService.logout(token);
     }
 
     @PostMapping("/resetPassword")
@@ -43,12 +43,12 @@ public class UserController {
     }
 
     @PostMapping("/addByRoot")
-    public Result addByARoot(String nickname, String email, String password, String SAToken) {
-        return userService.addByRoot(nickname, email, password, SAToken);
+    public Result addByARoot(String nickname, String email, String password, String token) {
+        return userService.addByRoot(nickname, email, password, token);
     }
 
     @PostMapping("/checkToken")
-    public Result checkToken(String SAToken) {
-        return userService.checkToken(SAToken);
+    public Result checkToken(String token) {
+        return userService.checkToken(token);
     }
 }
