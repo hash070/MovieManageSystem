@@ -84,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         stringRedisTemplate.delete("user:code:" + email);
         user.setPassword(password);
-        updateById(user)
+        updateById(user);
         return Result.ok();
     }
 

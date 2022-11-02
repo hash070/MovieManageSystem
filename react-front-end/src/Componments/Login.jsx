@@ -5,11 +5,15 @@ import {Link, Navigate, NavLink, useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
 import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
+import Cookies from "universal-cookie/es6";
 
 
 const LoginForm = () => {
     // 路由跳转方法
     const navigate = useNavigate();
+
+    //Cookie 方法
+    const cookies = new Cookies();
 
     // 绑定是否记住密码到 is_rem 中
     let [is_rem, setRem] = useState(true)
@@ -41,11 +45,18 @@ const LoginForm = () => {
                     successMSG('登录成功')
                     //将Token放到本地Storage
                     console.log('存放收到的Token', token)
-                    // successMSG('获取到的Token为：' + token)
+                    successMSG('获取到的Token为：' + token)
+
+
+                    cookies.set('token', token, {
+                        path: '/',//在所有
+                        sameSite: 'none',
+                        secure: false});
+                    console.log('存放在cookie中的Token', cookies.get('token')); // Pacman
 
 
                     //如果勾选了“记住我”按钮，则将Token保存到本地
-                    if (is_rem){
+                    if (is_rem) {
                         localStorage.setItem('token', token)
                         console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
                         successMSG('已将登录信息保存到本地存储')
@@ -119,9 +130,9 @@ const LoginForm = () => {
                         <Form.Item name="remember" valuePropName={'checked'} noStyle>
                             <Checkbox
                                 onChange={(e) => {
-                                console.log('记住密码数值更新', e.target.checked)
-                                setRem(e.target.checked)
-                            }}>记住我</Checkbox>
+                                    console.log('记住密码数值更新', e.target.checked)
+                                    setRem(e.target.checked)
+                                }}>记住我</Checkbox>
                         </Form.Item>
                     </Form.Item>
 
