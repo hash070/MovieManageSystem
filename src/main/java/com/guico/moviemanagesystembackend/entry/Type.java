@@ -26,10 +26,12 @@ public class Type {
         this.name = name;
     }
 
-    public static List<String> getTypeList(List<Type> types) {
-        List<String> typeList = new ArrayList<>();
-        for (Type type : types) {
-            typeList.add(type.getName());
+
+
+    public static List<Type> getTypeListFromMap(Map<Object, Object> typeMap) {
+        List<Type> typeList = new ArrayList<>();
+        for (Object key : typeMap.keySet()) {
+            typeList.add(new Type(Long.parseLong(key.toString()), typeMap.get(key).toString()));
         }
         return typeList;
     }
