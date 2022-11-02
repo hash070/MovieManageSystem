@@ -12,6 +12,7 @@ import {Breadcrumb, Layout, Menu} from 'antd';
 import {Outlet, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {errorMSG, getFormData} from "../../Utils/CommonFuncs.js";
+import Cookies from "universal-cookie/es6";
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -47,6 +48,17 @@ let menu_flag = false
 const App = () => {
     //获取路由跳转方法
     const navigate = useNavigate()
+    //Cookie操作方法
+    const cookies = new Cookies();
+
+    //Token失效时的动作
+    const backToLogin = (msg) => {
+        //删除存储在Cookie中的token
+        cookies.remove('token')
+        errorMSG('请先登录', msg)
+        navigate('/login')
+    }
+
 
     // 创建菜单对象
     let [menu_items, setMenuItems] = useState([
@@ -56,59 +68,54 @@ const App = () => {
     // 不同权限时的菜单
     // root菜单 权限等级:0
     let root_user_menu = [
-        getItem('用户管理', '10010', <PieChartOutlined/>),
-        getItem('文章管理', '10011', <DesktopOutlined/>),
-        getItem('影片管理', 'sub1', <UserOutlined/>, [
-            getItem('Tom', '10012'),
-            getItem('Bill', '10013'),
-            getItem('Alex', '10014'),
+        getItem('影片管理', 'root_sub1', <PieChartOutlined/>, [
+            getItem('影片上传', '10111'),
+            getItem('所有影片', '10112'),//站内所有影片
+            getItem('分类管理', '10113'),
         ]),
-        getItem('Team', 'sub2', <TeamOutlined/>, [
-            getItem('Team1', '10015'),
-            getItem('Team2', '10016')]),
-        getItem('Files', '10017', <FileOutlined/>),
+        getItem('文章管理', 'root_sub2', <DesktopOutlined/>, [
+            getItem('写文章', '10221'),
+            getItem('所有文章', '10222'),//站内所有文章
+        ]),
+        getItem('用户管理', 'root_sub3', <UserOutlined/>, [
+            getItem('个人资料', '10331'),
+            getItem('所有用户', '10332'),//站内所有用户
+        ]),
     ]
-    // 管理员菜单 权限等级:1
+    // 管理员菜单 权限等级:1 不能管理用户
     let admin_user_menu = [
-        getItem('用户管理', '10010', <PieChartOutlined/>),
-        getItem('文章管理', '10011', <DesktopOutlined/>),
-        getItem('影片管理', 'sub1', <UserOutlined/>, [
-            getItem('Tom', '10012'),
-            getItem('Bill', '10013'),
-            getItem('Alex', '10014'),
+        getItem('影片管理', 'admin_sub1', <PieChartOutlined/>, [
+            getItem('影片上传', '10211'),
+            getItem('所有影片', '10212'),//站内所有影片
+            getItem('分类管理', '10213'),
         ]),
-        getItem('Team', 'sub2', <TeamOutlined/>, [
-            getItem('Team1', '10015'),
-            getItem('Team2', '10016')]),
-        getItem('Files', '10017', <FileOutlined/>),
+        getItem('文章管理', 'admin_sub2', <DesktopOutlined/>, [
+            getItem('写文章', '10221'),
+            getItem('所有文章', '10222'),//站内所有文章
+        ]),
+        getItem('用户管理', 'admin_sub3', <UserOutlined/>, [
+            getItem('个人资料', '10231'),
+        ]),
     ]
     // 普通用户菜单 权限等级:2
     let user_menu = [
-        getItem('用户管理', '10010', <PieChartOutlined/>),
-        getItem('文章管理', '10011', <DesktopOutlined/>),
-        getItem('影片管理', 'sub1', <UserOutlined/>, [
-            getItem('Tom', '10012'),
-            getItem('Bill', '10013'),
-            getItem('Alex', '10014'),
+        getItem('影片管理', 'user_sub1', <PieChartOutlined/>, [
+            getItem('影片上传', '10311'),
+            getItem('所有影片', '10312'),//自己的影片
         ]),
-        getItem('Team', 'sub2', <TeamOutlined/>, [
-            getItem('Team1', '10015'),
-            getItem('Team2', '10016')]),
-        getItem('Files', '10017', <FileOutlined/>),
+        getItem('文章管理', 'user_sub2', <DesktopOutlined/>, [
+            getItem('写文章', '10321'),
+            getItem('所有文章', '10322'),//自己的文章
+        ]),
+        getItem('用户管理', 'user_sub3', <UserOutlined/>, [
+            getItem('个人资料', '10331'),
+        ]),
     ]
 
     // 菜单栏跳转方法
     const onBarClicked = (e) => {
         console.log('点击菜单', e)
         navigate('/admin/adminTest')
-    }
-
-    // 跳转到主界面的方法
-    const backToLogin = (msg) => {
-        //删除存储的token
-        localStorage.removeItem('token')
-        errorMSG('请先登录')
-        navigate('/login')
     }
 
 
@@ -120,21 +127,21 @@ const App = () => {
             flag.current = true
         } else {
             console.log("组件被更新了")
-            // 检查与验证用户权限
-            console.log('开始检查用户权限')
 
-            // 如果本地Token为Null，则直接返回
-            if (localStorage.getItem('token') === null) {
-                console.log('无Token，直接跳转到登录界面')
-                backToLogin()
-                return
+            //在执行菜单更新操作前，检查之前是否更新过
+            if (menu_flag) {//默认为false，如果为true，则表明菜单已经更新过了
+                console.log('菜单已是最新')
+                return;
+            } else {//如果为false，则标明菜单还从未更新过
+                console.log('菜单即将更新')
+                menu_flag = true
             }
 
-            let req_body = getFormData({
-                token: localStorage.getItem('token')
-            })
+            // 检查与验证用户权限
+            console.log('开始检查用户token有效性')
 
-            axios.post('/api/user/checkToken', req_body)
+            //不需要在请求体中发送数据，服务端会直接检查Header中的Cookie
+            axios.post('/api/user/checkToken')
                 .then(res => {
                     console.log('收到服务端返回信息', res.data)
 
@@ -143,23 +150,15 @@ const App = () => {
                     let err_msg = res.data.errorMSG
 
                     if (!is_token_valid) {//用户Token不合法，或者未登录
-                        backToLogin()//则直接跳转回去
+                        backToLogin(err_msg)//则直接跳转回去
                         return
-                    }
-
-                    //在执行菜单更新操作前，检查之前是否更新过
-                    if (menu_flag) {//默认为false，如果为true，则表明菜单已经更新过了
-                        console.log('菜单已是最新')
-                        return;
-                    } else {//如果为false，则标明菜单还从未更新过
-                        console.log('菜单即将更新')
-                        menu_flag = true
                     }
 
                     //菜单更新操作
                     switch (user_level) {
                         case 0:
                             console.log('root用户Token')
+                            setMenuItems(root_user_menu)
                             break
                         case 1:
                             console.log('管理员Token')
