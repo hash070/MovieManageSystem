@@ -19,7 +19,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements IT
     StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public Result addType(String typeName, String SAToken) {
+    public Result addType(String typeName) {
         //由于配置了拦截器,所以不需要再次验证token
         //先从redis中查询是否存在该类型,存储的方式为HashMap
         Map<Object, Object> typeMap = stringRedisTemplate.opsForHash().entries("type");
@@ -63,7 +63,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements IT
     }
 
     @Override
-    public Result deleteType(Long id, String SAToken) {
+    public Result deleteType(Long id) {
 //        如果存在,先删除redis中的type
         stringRedisTemplate.opsForHash().delete("type", String.valueOf(id));
 //        再删除持久层中的type
@@ -72,7 +72,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements IT
     }
 
     @Override
-    public Result updateType(Long id, String typeName, String SAToken) {
+    public Result updateType(Long id, String typeName) {
 //        先修改redis中的type
         stringRedisTemplate.opsForHash().put("type", String.valueOf(id), typeName);
 //        再更新持久层中的type
@@ -92,8 +92,9 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements IT
             }
             return Result.ok(types);
         }
+        List<Type> types = Type.getTypeListFromMap(typeMap);
 //        如果不为空,则直接返回
-        return Result.ok(Type.getTypeListFromMap(typeMap));
+        return Result.ok(types, (long) typeMap.size());
     }
 }
 
