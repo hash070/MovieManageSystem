@@ -18,18 +18,18 @@ public class TypeController {
     ITypeService typeService;
 
     @PostMapping("/add")
-    public Result addType(String typeName, String token) {
-        return typeService.addType(typeName, token);
+    public Result addType(String typeName) {
+        return typeService.addType(typeName);
     }
 
     @PostMapping("/delete")
-    public Result deleteType(Long id, String token) {
-        return typeService.deleteType(id, token);
+    public Result deleteType(Long id) {
+        return typeService.deleteType(id);
     }
 
     @PostMapping("/update")
-    public Result updateType(Long id, String typeName, String token) {
-        return typeService.updateType(id, typeName, token);
+    public Result updateType(Long id, String typeName) {
+        return typeService.updateType(id, typeName);
     }
 
     @PostMapping("/getAll")

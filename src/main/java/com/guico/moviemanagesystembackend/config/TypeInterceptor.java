@@ -23,7 +23,7 @@ public class TypeInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, Object handler) throws Exception {
         log.info("拦截器拦截到请求");
-        String token = request.getParameter("token");
+        String token = request.getHeader("token");
         if(token == null){
             log.info("token为空");
             throw new LevelException("token为空，无法认证用户权限");
@@ -53,15 +53,15 @@ public class TypeInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        log.info("拦截器postHandle");
-        log.info("拦截器拦截到响应:{}",response);
-        log.info("当前状态码:{}",response.getStatus());
+//        log.info("拦截器postHandle");
+//        log.info("拦截器拦截到响应:{}",response);
+//        log.info("当前状态码:{}",response.getStatus());
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info("拦截器afterCompletion");
-        log.info("拦截器拦截到响应:{}",response);
-        log.info("当前状态码:{}",response.getStatus());
+//        log.info("拦截器afterCompletion");
+//        log.info("拦截器拦截到响应:{}",response);
+//        log.info("当前状态码:{}",response.getStatus());
     }
 }
