@@ -49,7 +49,7 @@ const RegisterForm = () => {
             if (res.data.success) {
                 successMSG('发送成功，请到邮箱中查收')
             } else {
-                errorMSG('邮件发送失败')
+                errorMSG('邮件发送失败：'+res.data.errorMsg)
             }
         })
         .catch((err) => {

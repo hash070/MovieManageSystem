@@ -48,18 +48,21 @@ const LoginForm = () => {
                     successMSG('获取到的Token为：' + token)
 
 
-                    cookies.set('token', token, {
-                        path: '/',//在所有
-                        sameSite: 'none',
-                        secure: false});
-                    console.log('存放在cookie中的Token', cookies.get('token')); // Pacman
-
 
                     //如果勾选了“记住我”按钮，则将Token保存到本地
                     if (is_rem) {
                         localStorage.setItem('token', token)
                         console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
                         successMSG('已将登录信息保存到本地存储')
+
+                        //将cookie保存在本地
+                        cookies.set('token', token, {
+                            path: '/',//在所有的路径中都把Cookie发送出去
+                            sameSite: 'none',//允许跨站发送
+                            secure: false,//允许非https时发送cookie/方便调试
+                            maxAge: 259200,//三天过期时间
+                        });
+                        console.log('存放在cookie中的Token', cookies.get('token')); // Pacman
                     }
 
                     //跳转到后台管理界面
