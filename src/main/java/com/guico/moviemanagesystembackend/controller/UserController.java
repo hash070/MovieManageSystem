@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
@@ -54,7 +55,14 @@ public class UserController {
 
     @PostMapping("/checkToken")
     public Result checkToken() {
-        String token = request.getHeader("token");
+        Cookie[] cookies = request.getCookies();
+        String token = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("token")) {
+                token = cookie.getValue();
+            }
+        }
+
         return userService.checkToken(token);
     }
 }
