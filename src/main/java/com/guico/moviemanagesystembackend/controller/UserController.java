@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin
@@ -16,6 +18,9 @@ public class UserController {
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    HttpServletRequest request;
 
     @PostMapping("/code")
     public Result sendCode(String email){
@@ -48,7 +53,8 @@ public class UserController {
     }
 
     @PostMapping("/checkToken")
-    public Result checkToken(String token) {
+    public Result checkToken() {
+        String token = request.getHeader("token");
         return userService.checkToken(token);
     }
 }

@@ -23,7 +23,7 @@ public class TypeInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, Object handler) throws Exception {
         log.info("拦截器拦截到请求");
-        String token = request.getParameter("token");
+        String token = request.getHeader("token");
         if(token == null){
             log.info("token为空");
             throw new LevelException("token为空，无法认证用户权限");
