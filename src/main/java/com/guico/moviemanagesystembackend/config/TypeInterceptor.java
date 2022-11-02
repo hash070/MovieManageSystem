@@ -53,15 +53,15 @@ public class TypeInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        log.info("拦截器postHandle");
-        log.info("拦截器拦截到响应:{}",response);
-        log.info("当前状态码:{}",response.getStatus());
+//        log.info("拦截器postHandle");
+//        log.info("拦截器拦截到响应:{}",response);
+//        log.info("当前状态码:{}",response.getStatus());
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info("拦截器afterCompletion");
-        log.info("拦截器拦截到响应:{}",response);
-        log.info("当前状态码:{}",response.getStatus());
+//        log.info("拦截器afterCompletion");
+//        log.info("拦截器拦截到响应:{}",response);
+//        log.info("当前状态码:{}",response.getStatus());
     }
 }
