@@ -94,7 +94,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements IT
         }
         List<Type> types = Type.getTypeListFromMap(typeMap);
 //        如果不为空,则直接返回
-        return Result.ok(types, (long) typeMap.size());
+        return Result.ok(types, typeMap.size());
     }
 }
 
