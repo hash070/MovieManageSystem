@@ -3,7 +3,9 @@ import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 
 //设置基础URL
-axios.defaults.baseURL = "http://127.0.0.1:8901";
+// axios.defaults.baseURL = "http://127.0.0.1:8901";
+//要求发送Cookie
+axios.defaults.withCredentials = true
 // axios请求拦截器
 axios.interceptors.request.use(
     config => {
