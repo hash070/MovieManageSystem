@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import 'antd/dist/antd.css';
 import '../../styles/AdminPanel.css';
 import {
     DesktopOutlined,
     FileOutlined,
     PieChartOutlined,
     TeamOutlined,
-    UserOutlined,
+    UserOutlined, VideoCameraOutlined,
 } from '@ant-design/icons';
 import {Breadcrumb, Layout, Menu} from 'antd';
 import {Outlet, useNavigate} from "react-router-dom";
@@ -68,54 +67,83 @@ const App = () => {
     // 不同权限时的菜单
     // root菜单 权限等级:0
     let root_user_menu = [
-        getItem('影片管理', 'root_sub1', <PieChartOutlined/>, [
-            getItem('影片上传', '10111'),
-            getItem('所有影片', '10112'),//站内所有影片
-            getItem('分类管理', '10113'),
+        getItem('影片管理', 'sub1', <VideoCameraOutlined />, [
+            getItem('影片上传', '11'),
+            getItem('所有影片', '12'),//站内所有影片
+            getItem('分类管理', '13'),
         ]),
-        getItem('文章管理', 'root_sub2', <DesktopOutlined/>, [
-            getItem('写文章', '10221'),
-            getItem('所有文章', '10222'),//站内所有文章
+        getItem('文章管理', 'sub2', <DesktopOutlined/>, [
+            getItem('写文章', '21'),
+            getItem('所有文章', '22'),//站内所有文章
         ]),
-        getItem('用户管理', 'root_sub3', <UserOutlined/>, [
-            getItem('个人资料', '10331'),
-            getItem('所有用户', '10332'),//站内所有用户
+        getItem('用户管理', 'sub3', <UserOutlined/>, [
+            getItem('个人资料', '31'),
+            getItem('所有用户', '32'),//站内所有用户
         ]),
     ]
     // 管理员菜单 权限等级:1 不能管理用户
     let admin_user_menu = [
-        getItem('影片管理', 'admin_sub1', <PieChartOutlined/>, [
-            getItem('影片上传', '10211'),
-            getItem('所有影片', '10212'),//站内所有影片
-            getItem('分类管理', '10213'),
+        getItem('影片管理', 'sub1', <VideoCameraOutlined />, [
+            getItem('影片上传', '11'),
+            getItem('所有影片', '12'),//站内所有影片
+            getItem('分类管理', '13'),
         ]),
-        getItem('文章管理', 'admin_sub2', <DesktopOutlined/>, [
-            getItem('写文章', '10221'),
-            getItem('所有文章', '10222'),//站内所有文章
+        getItem('文章管理', 'sub2', <DesktopOutlined/>, [
+            getItem('写文章', '21'),
+            getItem('所有文章', '22'),//站内所有文章
         ]),
-        getItem('用户管理', 'admin_sub3', <UserOutlined/>, [
-            getItem('个人资料', '10231'),
+        getItem('用户管理', 'sub3', <UserOutlined/>, [
+            getItem('个人资料', '31'),
         ]),
     ]
     // 普通用户菜单 权限等级:2
     let user_menu = [
-        getItem('影片管理', 'user_sub1', <PieChartOutlined/>, [
-            getItem('影片上传', '10311'),
-            getItem('所有影片', '10312'),//自己的影片
+        getItem('影片管理', 'sub1', <VideoCameraOutlined />, [
+            getItem('影片上传', '11'),
+            getItem('所有影片', '12'),//自己的影片
         ]),
-        getItem('文章管理', 'user_sub2', <DesktopOutlined/>, [
-            getItem('写文章', '10321'),
-            getItem('所有文章', '10322'),//自己的文章
+        getItem('文章管理', 'sub2', <DesktopOutlined/>, [
+            getItem('写文章', '21'),
+            getItem('所有文章', '22'),//自己的文章
         ]),
-        getItem('用户管理', 'user_sub3', <UserOutlined/>, [
-            getItem('个人资料', '10331'),
+        getItem('用户管理', 'sub3', <UserOutlined/>, [
+            getItem('个人资料', '31'),
         ]),
     ]
 
+    /*
+    key规则：
+       User    Sub    Chi
+    10 1|2|3  1|2|3  1|2|3
+     */
+
+
     // 菜单栏跳转方法
     const onBarClicked = (e) => {
-        console.log('点击菜单', e)
-        navigate('/admin/adminTest')
+        console.log('点击菜单', e.key)
+        switch (parseInt(e.key)) {
+            case 11://root 影片管理 影片上传
+                navigate('/admin/movie/upload')
+                break
+            case 12://root 影片管理 所有影片
+                navigate('/admin/movie/all')
+                break
+            case 13://root 影片管理 分类管理
+                navigate('/admin/movie/category')
+                break
+            case 21://root 文章管理 写文章
+                navigate('/admin/blog/new')
+                break
+            case 22://root 文章管理 所有文章
+                navigate('/admin/blog/all')
+                break
+            case 31://root 用户管理 个人资料
+                navigate('/admin/user/profile')
+                break
+            case 32://root 用户管理 所有用户
+                navigate('/admin/user/all')
+                break
+        }
     }
 
 
@@ -162,6 +190,7 @@ const App = () => {
                             break
                         case 1:
                             console.log('管理员Token')
+                            setMenuItems(admin_user_menu)
                             break
                         case 2:
                             console.log('普通用户Token')
@@ -169,6 +198,10 @@ const App = () => {
                             break
                     }
 
+                })
+                .catch((err) => {
+                    console.log(err)
+                    errorMSG('网络错误，请检查网络连接')
                 })
         }
     })
@@ -190,6 +223,7 @@ const App = () => {
                     theme="light"
                     defaultSelectedKeys={['1']}
                     mode="inline"
+                    defaultOpenKeys={['sub1', 'sub2', 'sub3']}
                     items={menu_items}
                     //点击监听事件
                     onClick={onBarClicked}

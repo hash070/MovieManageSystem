@@ -56,6 +56,9 @@ public class UserController {
     @PostMapping("/checkToken")
     public Result checkToken() {
         Cookie[] cookies = request.getCookies();
+        if (cookies==null){
+            return Result.fail("token为空");
+        }
         String token = null;
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("token")) {
