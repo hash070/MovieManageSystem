@@ -20,7 +20,7 @@ const ResetPWDForm = () => {
 
     //返回到登录界面方法
     let backToLogin = () => {
-        navigate('/admin/login');
+        navigate('/login');
     }
 
     //发送验证码的方法
@@ -52,6 +52,10 @@ const ResetPWDForm = () => {
                 errorMSG('邮件发送失败')
             }
         })
+        .catch((err) => {
+            console.log('错误信息',err)
+            errorMSG(err.message+'\n请检查网络连接')
+        })
     }
 
     //表单提交时发送的数据
@@ -81,15 +85,15 @@ const ResetPWDForm = () => {
                 if (res.data.success) {//如果注册成功
                     successMSG('密码重置成功，请登录')
                     //TODO: 跳转到登录页面
-                    navigate('/admin/login');
+                    navigate('/login');
                 } else {
                     errorMSG('密码重置失败：' + res.data.errorMsg)
                 }
 
             })
-            .catch(err => {
-                console.log('出现错误', err)
-                errorMSG(err.message)
+            .catch((err) => {
+                console.log('错误信息',err)
+                errorMSG(err.message+'\n请检查网络连接')
             })
     };
 

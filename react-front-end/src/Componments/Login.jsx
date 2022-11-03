@@ -1,16 +1,24 @@
 import {Button, Checkbox, Form, Input, Col, Row, message} from 'antd';
 import axios from 'axios';
-import {React, Fragment} from 'react';
+import {React, Fragment, useState} from 'react';
 import {Link, Navigate, NavLink, useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
 import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
+import Cookies from "universal-cookie/es6";
 
 
 const LoginForm = () => {
+    // 路由跳转方法
     const navigate = useNavigate();
 
-    //登录表单提交方法
+    //Cookie 方法
+    const cookies = new Cookies();
+
+    // 绑定是否记住密码到 is_rem 中
+    let [is_rem, setRem] = useState(true)
+
+    // 登录表单提交方法
     const onFinish = (values) => {
 
         //构建FormData请求体
@@ -35,14 +43,29 @@ const LoginForm = () => {
                 //如果登录成功，则弹出登录成功的提示框，然后将Token放到本地
                 if (success) {
                     successMSG('登录成功')
-                    //TODO: 将Token放到本地Storage
+                    //将Token放到本地Storage
                     console.log('存放收到的Token', token)
                     successMSG('获取到的Token为：' + token)
-                    localStorage.setItem('token', token)
 
-                    console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
 
-                    //TODO: 跳转到后台管理界面
+
+                    //如果勾选了“记住我”按钮，则将Token保存到本地
+                    if (is_rem) {
+                        localStorage.setItem('token', token)
+                        console.log('本地存储中实际存储的token为：', localStorage.getItem('token'))
+                        successMSG('已将登录信息保存到本地存储')
+
+                        //将cookie保存在本地
+                        cookies.set('token', token, {
+                            path: '/',//在所有的路径中都把Cookie发送出去
+                            sameSite: 'none',//允许跨站发送
+                            secure: false,//允许非https时发送cookie/方便调试
+                            maxAge: 259200,//三天过期时间
+                        });
+                        console.log('存放在cookie中的Token', cookies.get('token')); // Pacman
+                    }
+
+                    //跳转到后台管理界面
                     console.log('跳转到管理员界面')
                     navigate('/admin')
 
@@ -52,10 +75,15 @@ const LoginForm = () => {
                     errorMSG('登录失败：' + error_message)
                 }
 
-            }).finally(() => {
-            // console.log('',localStorage.getItem("token") === null);
-            // navigate('/home');
-        })
+            })
+            .catch((err) => {
+                console.log('错误信息', err)
+                errorMSG(err.message + '\n请检查网络连接')
+            })
+            .finally(() => {
+                // console.log('',localStorage.getItem("token") === null);
+                // navigate('/home');
+            })
     };
 
 
@@ -64,7 +92,7 @@ const LoginForm = () => {
     };
 
     let onRegisterClick = () => {
-        navigate('/admin/register');
+        navigate('/register');
     }
 
     let onLoginClick = () => {
@@ -77,7 +105,7 @@ const LoginForm = () => {
                 <div className='form-header'>
                     <h4 className='column'>登录</h4>
                     {/*使用Link来实现简单跳转*/}
-                    <Link to='/admin/reset'>密码重置</Link>
+                    <Link to='/reset'>密码重置</Link>
                 </div>
                 <br/>
                 <br/>
@@ -102,8 +130,12 @@ const LoginForm = () => {
                         />
                     </Form.Item>
                     <Form.Item>
-                        <Form.Item name="remember" valuePropName="checked" noStyle>
-                            <Checkbox>记住我</Checkbox>
+                        <Form.Item name="remember" valuePropName={'checked'} noStyle>
+                            <Checkbox
+                                onChange={(e) => {
+                                    console.log('记住密码数值更新', e.target.checked)
+                                    setRem(e.target.checked)
+                                }}>记住我</Checkbox>
                         </Form.Item>
                     </Form.Item>
 

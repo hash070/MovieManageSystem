@@ -25,8 +25,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public Result sendCode(String email) {
-
-
         //先从redis中获取验证码
         String code = stringRedisTemplate.opsForValue().get("user:code:" + email);
         if (code != null) {
@@ -52,8 +50,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //验证登录
         StpUtil.login("user:login:" + user.getEmail());
         String token = StpUtil.getTokenValue();
-        //将用户信息存入redis
-        stringRedisTemplate.opsForValue().set("user:info:" + token, user.toString(), 1, TimeUnit.MINUTES);
+        //将用户信息存入redis,并设置过期时间
+        stringRedisTemplate.opsForValue().set("user:info:" + email, user.toString(),3,TimeUnit.DAYS);
         return Result.ok(token);
     }
 
@@ -92,17 +90,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
 
     @Override
-    public Result logout(String SAToken) {
-        String id = StpUtil.getLoginId(SAToken);
-        stringRedisTemplate.delete("user:info:" + id);
+    public Result logout(String token) {
+        String email = stringRedisTemplate.opsForValue().get("satoken:login:token:" + token);
+        if(StrUtil.isBlank(email))
+            return Result.fail("用户未登录");
+        email = email.substring(11);
+        //删除redis中的用户信息
+        stringRedisTemplate.delete("user:info:" + email);
+        String id = StpUtil.getLoginId(token);
         StpUtil.logout(id);
         return Result.ok();
     }
 
     @Override
-    public Result addByRoot(String nickname, String email, String password, String SAToken) {
+    public Result addByRoot(String nickname, String email, String password, String token) {
 //        根據SAToken获取用户信息
-        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + SAToken);
+        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
 //        将用户信息转换为User对象
         User user = JSONUtil.toBean(userInfo, User.class);
 //        查看用户是否有权限
@@ -113,4 +116,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         save(newUser);
         return Result.ok();
     }
+
+    @Override
+    public Result checkToken(String token) {
+//        根據SAToken获取用户信息
+        String email = stringRedisTemplate.opsForValue().get("satoken:login:token:" + token);
+        if (email == null) {
+            return Result.fail("登录失效");
+        }
+        email = email.substring(11);
+        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
+//        将用户信息转换为User对象
+        if(userInfo == null||StrUtil.isEmptyIfStr(userInfo)){
+            return Result.fail("登录失效");
+        }
+        User user = JSONUtil.toBean(userInfo, User.class);
+        return Result.ok(user.getLevel());
+    }
+
 }
