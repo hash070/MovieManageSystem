@@ -22,9 +22,12 @@ public class Blog {
     @TableField("article")
     String article;
     @TableField("author")
-    User author;
+    Integer author;
     @TableField("upload_time")
     Date uploadTime;
     @TableField("views")
     Long views;
+
+    @TableField("isNews")
+    Boolean isNews;
 }
