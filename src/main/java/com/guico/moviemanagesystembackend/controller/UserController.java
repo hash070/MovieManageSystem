@@ -62,7 +62,10 @@ public class UserController {
                 token = cookie.getValue();
             }
         }
-
+        if(token == null){
+            return Result.fail("token为空");
+        }
         return userService.checkToken(token);
     }
+
 }
