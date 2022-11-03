@@ -17,10 +17,10 @@ public class Movie {
     Long id;
     @TableField("name")
     String name;
-    @TableField("type")
+    @TableField("desc")
     String desc;
     //此字段为外键，表中的字段为type的id
-    @TableField("desc")
+    @TableField("type")
     Type type;
     @TableField("banner")
     String banner;

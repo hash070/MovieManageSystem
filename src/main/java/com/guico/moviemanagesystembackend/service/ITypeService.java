@@ -5,11 +5,11 @@ import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.Type;
 
 public interface ITypeService extends IService<Type> {
-    Result addType(String typeName, String SAToken);
+    Result addType(String typeName);
 
-    Result deleteType(Integer typeId, String SAToken);
+    Result deleteType(Long id);
 
-    Result updateType(Integer typeId, String typeName, String SAToken);
+    Result updateType(Long id, String newName);
 
     Result getTypeList();
 

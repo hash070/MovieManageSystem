@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import MyRouter from "./Routes/MyRouter.jsx";
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
+import './Utils/AxiosConf'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

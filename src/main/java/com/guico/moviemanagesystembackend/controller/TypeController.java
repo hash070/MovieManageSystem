@@ -4,29 +4,32 @@ import com.guico.moviemanagesystembackend.service.ITypeService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/api/type")
+@CrossOrigin
 public class TypeController {
 
     @Autowired
     ITypeService typeService;
 
     @PostMapping("/add")
-    public Result addType(String typeName, String SAToken) {
-        return typeService.addType(typeName, SAToken);
+    public Result addType(String typeName) {
+        return typeService.addType(typeName);
     }
 
     @PostMapping("/delete")
-    public Result deleteType(Integer typeId, String SAToken) {
-        return typeService.deleteType(typeId, SAToken);
+    public Result deleteType(Long id) {
+        return typeService.deleteType(id);
     }
 
     @PostMapping("/update")
-    public Result updateType(Integer typeId, String typeName, String SAToken) {
-        return typeService.updateType(typeId, typeName, SAToken);
+    public Result updateType(Long id, String typeName) {
+        return typeService.updateType(id, typeName);
     }
 
     @PostMapping("/getAll")

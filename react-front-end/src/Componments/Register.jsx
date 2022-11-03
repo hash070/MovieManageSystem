@@ -20,7 +20,7 @@ const RegisterForm = () => {
 
     //返回到登录界面方法
     let backToLogin = () => {
-        navigate('/admin/login');
+        navigate('/login');
     }
 
     //发送验证码的方法
@@ -49,8 +49,12 @@ const RegisterForm = () => {
             if (res.data.success) {
                 successMSG('发送成功，请到邮箱中查收')
             } else {
-                errorMSG('邮件发送失败')
+                errorMSG('邮件发送失败：'+res.data.errorMsg)
             }
+        })
+        .catch((err) => {
+            console.log('错误信息', err)
+            errorMSG(err.message + '\n请检查网络连接')
         })
     }
 
@@ -76,20 +80,20 @@ const RegisterForm = () => {
 
         axios.post('/api/user/register', req_body)
             .then(res => {
-                console.log('服务端返回数据',res.data);
+                console.log('服务端返回数据', res.data);
 
-                if (res.data.success){//如果注册成功
+                if (res.data.success) {//如果注册成功
                     successMSG('注册成功，请登录')
                     //TODO: 跳转到登录页面
-                    navigate('/admin/login');
-                }else {
-                    errorMSG('注册失败：'+res.data.errorMsg)
+                    navigate('/login');
+                } else {
+                    errorMSG('注册失败：' + res.data.errorMsg)
                 }
 
             })
-            .catch(err => {
-                console.log('出现错误', err)
-                errorMSG(err.message)
+            .catch((err) => {
+                console.log('错误信息',err)
+                errorMSG(err.message+'\n请检查网络连接')
             })
     };
 

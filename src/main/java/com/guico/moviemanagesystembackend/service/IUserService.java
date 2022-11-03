@@ -19,4 +19,5 @@ public interface IUserService extends IService<User> {
 
     Result addByRoot(String nickname, String email, String password, String SAToken);
 
+    Result checkToken(String saToken);
 }
