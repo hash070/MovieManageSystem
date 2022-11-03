@@ -4,7 +4,7 @@ class HelloWorld2 extends Component {
     render() {
         return (
             <div>
-                您当前正在访问/admin路径
+                欢迎来到影片管理后台，您当前正在访问/admin路径
             </div>
         );
     }
