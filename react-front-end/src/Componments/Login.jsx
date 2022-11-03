@@ -47,8 +47,6 @@ const LoginForm = () => {
                     console.log('存放收到的Token', token)
                     successMSG('获取到的Token为：' + token)
 
-
-
                     //如果勾选了“记住我”按钮，则将Token保存到本地
                     if (is_rem) {
                         localStorage.setItem('token', token)
@@ -58,7 +56,7 @@ const LoginForm = () => {
                         //将cookie保存在本地
                         cookies.set('token', token, {
                             path: '/',//在所有的路径中都把Cookie发送出去
-                            sameSite: 'none',//允许跨站发送
+                            // sameSite: 'lax',//允许跨站发送
                             secure: false,//允许非https时发送cookie/方便调试
                             maxAge: 259200,//三天过期时间
                         });
@@ -78,7 +76,7 @@ const LoginForm = () => {
             })
             .catch((err) => {
                 console.log('错误信息', err)
-                errorMSG(err.message + '\n请检查网络连接')
+                errorMSG(err.message + '请检查网络连接')
             })
             .finally(() => {
                 // console.log('',localStorage.getItem("token") === null);
