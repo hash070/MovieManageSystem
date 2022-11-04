@@ -1,6 +1,5 @@
 package com.guico.moviemanagesystembackend.interceptor;
 
-import cn.hutool.json.JSONUtil;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.exception.LevelException;
 import lombok.extern.slf4j.Slf4j;
