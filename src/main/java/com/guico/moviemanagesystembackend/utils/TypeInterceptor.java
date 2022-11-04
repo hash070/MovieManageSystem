@@ -13,6 +13,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
+
 @Slf4j
 public class TypeInterceptor implements HandlerInterceptor {
 
@@ -35,14 +37,14 @@ public class TypeInterceptor implements HandlerInterceptor {
             throw new LevelException("token为空，无法认证用户权限");
         }
 //        根据token获取用户信息
-        String email = stringRedisTemplate.opsForValue().get("satoken:login:token:" + token);
+        String email = stringRedisTemplate.opsForValue().get(SATOKEN_TOKEN + token);
         if(email == null){
             log.info("token无效");
             throw new LevelException("token无效，无法认证用户权限");
         }
         email = email.substring(11);
         log.info("email为：" + email);
-        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
+        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
         if(userInfo == null){
             log.info("用户信息为空");
             throw new LevelException("用户信息为空，无法认证用户权限");
