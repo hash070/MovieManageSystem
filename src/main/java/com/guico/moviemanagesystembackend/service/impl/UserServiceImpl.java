@@ -13,9 +13,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
 
 @Service
@@ -35,7 +35,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 //        code = MailSend.doSend(email);
         code = String.valueOf(new Random().nextInt(899999) + 100000);
         //将验证码存入redis
-        stringRedisTemplate.opsForValue().set(USER_CODE + email, code,1, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(USER_CODE + email, code, 1, TimeUnit.MINUTES);
         log.info("验证码为：" + code);
         return Result.ok();
     }
@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         StpUtil.login(USER_LOGIN + user.getEmail());
         String token = StpUtil.getTokenValue();
         //将用户信息存入redis,并设置过期时间
-        stringRedisTemplate.opsForValue().set(USER_INFO + email, user.toString(),3,TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(USER_LOGIN + email, user.toString(), 3, TimeUnit.DAYS);
         return Result.ok(token);
     }
 
@@ -67,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         } else if (!Objects.equals(redisCode, code)) {
             return Result.fail("验证码错误");
         }
-        User newUser = new User(nickname, password ,email, User.USER_LEVEL_USER);
+        User newUser = new User(nickname, password, email, User.USER_LEVEL_USER);
 //        删除验证码
         stringRedisTemplate.delete(USER_CODE + email);
         save(newUser);
@@ -93,11 +93,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result logout(String token) {
         String email = stringRedisTemplate.opsForValue().get("satoken:login:token:" + token);
-        if(StrUtil.isBlank(email))
+        if (StrUtil.isBlank(email))
             return Result.fail("用户未登录");
         email = email.substring(11);
         //删除redis中的用户信息
-        stringRedisTemplate.delete(USER_INFO + email);
+        stringRedisTemplate.delete(USER_LOGIN + email);
         String id = StpUtil.getLoginId(token);
         StpUtil.logout(id);
         return Result.ok();
@@ -106,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result addByRoot(String nickname, String email, String password, String token) {
 //        根據SAToken获取用户信息
-        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
+        String userInfo = stringRedisTemplate.opsForValue().get(USER_LOGIN + email);
 //        将用户信息转换为User对象
         User user = JSONUtil.toBean(userInfo, User.class);
 //        查看用户是否有权限
@@ -126,28 +126,57 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("登录失效");
         }
         email = email.substring(11);
-        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
+        String userInfo = stringRedisTemplate.opsForValue().get(USER_LOGIN + email);
 //        将用户信息转换为User对象
-        if(userInfo == null||StrUtil.isEmptyIfStr(userInfo)){
+        if (userInfo == null || StrUtil.isEmptyIfStr(userInfo)) {
             return Result.fail("登录失效");
         }
         User user = JSONUtil.toBean(userInfo, User.class);
         return Result.ok(user.getLevel());
     }
 
-    public User getUserByEmail(String email){
+    public Result getUserByEmail(String email) {
 //        先从redis中获取用户信息
-        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
-//        判断redis中是否有用户信息
-        if(userInfo == null||StrUtil.isEmptyIfStr(userInfo)){
-//            如果没有，从数据库中获取
+//        "user:info:"目录下存储的是hash类型的数据
+        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(USER_INFO + email);
+        if (map.isEmpty()) {
+//            如果redis中没有用户信息，从数据库中获取
             User user = query().eq("email", email).one();
+            if (user == null) {
+//                如果数据库中也没有用户信息，返回null
+                return Result.fail("用户不存在");
+            }
 //            将用户信息存入redis
-            stringRedisTemplate.opsForValue().set(USER_INFO + email, user.toString(),3,TimeUnit.DAYS);
-            return user;
+            stringRedisTemplate.opsForHash().putAll(USER_INFO + email, user.toMap());
+            return Result.ok(user);
         }
-//        将用户信息转换为User对象
-        return JSONUtil.toBean(userInfo, User.class);
+        return Result.ok(new User(map));
+    }
+
+    public Result getAllUsers() {
+//                先从redis中获取用户信息
+//        "user:info:"目录下存储的是hash类型的数据
+        List<User> users = new ArrayList<>();
+        Set<String> keys = stringRedisTemplate.keys(USER_INFO + "*");
+        if (keys.isEmpty()) {
+//            如果redis中没有用户信息，从数据库中获取
+            users = query().list();
+            if (users.isEmpty()) {
+//                如果数据库中也没有用户信息，返回null
+                return Result.fail("库中没有用户信息");
+            }
+//            将用户信息存入redis
+            for (User user : users) {
+                stringRedisTemplate.opsForHash().putAll(USER_INFO + user.getEmail(), user.toMap());
+            }
+            return Result.ok(users);
+        }
+//        如果redis中有用户信息，从redis中获取
+        for (String key : keys) {
+            Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(key);
+            users.add(new User(map));
+        }
+        return Result.ok(users, users.size());
     }
 
 }

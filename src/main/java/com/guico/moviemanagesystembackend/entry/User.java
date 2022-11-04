@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,5 +31,21 @@ public class User {
 
     public String toString(){
         return JSONUtil.toJsonStr(this);
+    }
+
+    public User(Map<Object,Object> map ){
+        this.nickname = (String) map.get("nickname");
+        this.password = (String) map.get("password");
+        this.email = (String) map.get("email");
+        this.level = (Integer) map.get("level");
+    }
+
+    public Map<String,String> toMap(){
+        Map<String,String> map = new HashMap<>();
+        map.put("nickname",nickname);
+        map.put("password",password);
+        map.put("email",email);
+        map.put("level",level.toString());
+        return map;
     }
 }

@@ -1,7 +1,7 @@
 package com.guico.moviemanagesystembackend.config;
 
-import com.guico.moviemanagesystembackend.utils.BlogAndMovieInterceptor;
-import com.guico.moviemanagesystembackend.utils.TypeInterceptor;
+import com.guico.moviemanagesystembackend.interceptor.BlogAndMovieInterceptor;
+import com.guico.moviemanagesystembackend.interceptor.TypeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

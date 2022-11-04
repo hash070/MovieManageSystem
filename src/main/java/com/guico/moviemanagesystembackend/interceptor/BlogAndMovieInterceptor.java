@@ -1,15 +1,12 @@
-package com.guico.moviemanagesystembackend.utils;
+package com.guico.moviemanagesystembackend.interceptor;
 
-import cn.hutool.json.JSONUtil;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.exception.LevelException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
-import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
-import static com.guico.moviemanagesystembackend.utils.InterceptorUtil.*;
 
-import javax.servlet.http.Cookie;
+import static com.guico.moviemanagesystembackend.interceptor.InterceptorUtil.*;
 
 @Slf4j
 public class BlogAndMovieInterceptor implements HandlerInterceptor {
