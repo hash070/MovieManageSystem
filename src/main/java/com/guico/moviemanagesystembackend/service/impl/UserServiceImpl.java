@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         StpUtil.login(USER_LOGIN + user.getEmail());
         String token = StpUtil.getTokenValue();
         //将用户信息存入redis,并设置过期时间
-        stringRedisTemplate.opsForValue().set(USER_LOGIN + email, user.toString(), 3, TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(USER_LOGIN + email, email, 3, TimeUnit.DAYS);
         return Result.ok(token);
     }
 
@@ -126,13 +126,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("登录失效");
         }
         email = email.substring(11);
-        String userInfo = stringRedisTemplate.opsForValue().get(USER_LOGIN + email);
+        String userInfo = stringRedisTemplate.opsForHash().get(USER_INFO + email,"level").toString();
 //        将用户信息转换为User对象
         if (userInfo == null || StrUtil.isEmptyIfStr(userInfo)) {
             return Result.fail("登录失效");
         }
-        User user = JSONUtil.toBean(userInfo, User.class);
-        return Result.ok(user.getLevel());
+        return Result.ok(userInfo);
     }
 
     public Result getUserByEmail(String email) {
