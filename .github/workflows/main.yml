@@ -3,10 +3,12 @@ name: Project CI/CD Actions
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   compile:
-    runs-on: macos-12
+    runs-on: self-hosted
     name: Running Java ${{ matrix.java }} compile
     steps:
       - uses: actions/checkout@v3
