@@ -1,5 +1,6 @@
 package com.guico.moviemanagesystembackend.BTF;
 
+import com.guico.moviemanagesystembackend.entry.Blog;
 import com.guico.moviemanagesystembackend.entry.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,4 +20,15 @@ public class BlogBTF {
     Long views;
     Date uploadTime;
     Boolean isNews;
+
+    public BlogBTF(Blog blog,User user){
+        this.id = blog.getId();
+        this.des = blog.getDes();
+        this.title = blog.getTitle();
+        this.article = blog.getArticle();
+        this.author = user;
+        this.views = blog.getViews();
+        this.uploadTime = blog.getUploadTime();
+        this.isNews = blog.getIsNews();
+    }
 }

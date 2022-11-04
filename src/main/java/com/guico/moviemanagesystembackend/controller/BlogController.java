@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/api/blog")
@@ -34,17 +36,17 @@ public class BlogController {
     }
 
     @PostMapping("/add")
-    public Result addBlog(Blog blog) {
-        return blogService.addBlog(blog);
+    public Result addBlog(String des, String title, String article,String author, Date uploadTime, Boolean isNews) {
+        return blogService.addBlog(des, title, article, author, uploadTime, isNews);
     }
 
     @PostMapping("/delete")
-    public Result deleteBlog(String blogId) {
+    public Result deleteBlog(Long blogId) {
         return blogService.deleteBlog(blogId);
     }
 
     @PostMapping("/update")
-    public Result updateBlog(Blog blog) {
-        return blogService.updateBlog(blog);
+    public Result updateBlog(Long id, String des, String title, String article, Boolean isNews) {
+        return blogService.updateBlog(id, des, title, article, isNews);
     }
 }

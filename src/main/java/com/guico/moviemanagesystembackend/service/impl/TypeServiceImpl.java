@@ -65,10 +65,10 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements IT
     @Override
     public Result deleteType(Long id) {
 //        如果存在,先删除redis中的type
-        stringRedisTemplate.opsForHash().delete("type", String.valueOf(id));
-//        再删除持久层中的type
-        removeById(id);
-        return Result.ok();
+        if(stringRedisTemplate.opsForHash().delete("type",String.valueOf(id))==1&&removeById(id)){
+            return Result.ok();
+        }
+        return Result.fail("删除失败");
     }
 
     @Override
