@@ -33,7 +33,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: my-artifact
+          name: MovieManageSystem-Jar
           path: target/MovieManageSystem*.jar
       - name: Copy Jar to Server
         uses: appleboy/scp-action@master
@@ -52,6 +52,5 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             systemctl stop MovieManageSysJar
-            rm /root/action/movie-manage/target/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar
             systemctl daemon-reload
             systemctl start MovieManageSysJar
