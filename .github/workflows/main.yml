@@ -30,6 +30,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Generate the package
         run: mvn -B package --file pom.xml -Dmaven.test.skip=true
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: target/MovieManageSystem*.jar
       - name: Copy Jar to Server
         uses: appleboy/scp-action@master
         with:
@@ -46,5 +51,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            screen -X -S movie-manage-jar quit
-            screen -S movie-manage-jar -dm java -jar /root/action/movie-manage/target/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar
+            systemctl stop MovieManageSysJar
+            rm /root/action/movie-manage/target/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar
+            systemctl daemon-reload
+            systemctl start MovieManageSysJar
