@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
@@ -29,11 +30,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
 //        如果Redis中没有Blog对象，则从数据库中获取
         if(blogList.size() == 0) {
-            List<Blog> blogs = null;
-            blogs = query().list();
+            List<Blog> blogs =  query().list();
+            if(blogs.size() == 0) {
+                return Result.fail("暂无博客");
+            }
 //            将从数据库中获取的Blog对象存储到Redis中
             for (Blog blog : blogs) {
-                stringRedisTemplate.opsForHash().put("blog", blog.getId(), blog);
+                stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
             }
             return Result.ok(blogs, blogs.size());
         }
@@ -44,29 +47,45 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     @Override
     public Result getBlogByAuthorId(String authorId) {
 //        先从Redis中获取所有的Blog对象
-        List<Blog> blogs = Collections.unmodifiableList((List<Blog>) getAll().getData());
-//        从所有的Blog对象中筛选出authorId为authorId的Blog对象
-        for (int i = 0; i < blogs.size(); i++) {
-            if(!blogs.get(i).getAuthor().equals(authorId)){
-                blogs.remove(i);
-                i--;
+        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+//        如果Redis中没有Blog对象，则从数据库中获取
+        if(blogList.size() == 0) {
+            List<Blog> blogs =  query().eq("author", authorId).list();
+            if(blogs.size() == 0) {
+                return Result.fail("暂无博客");
             }
+//            将从数据库中获取的Blog对象存储到Redis中
+            for (Blog blog : blogs) {
+                stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
+            }
+            return Result.ok(blogs, blogs.size());
         }
-        return Result.ok(blogs, blogs.size());
+//        如果Redis中有Blog对象，则从Redis中获取
+        blogList.removeIf(blog -> !((Map)blog).get("authorId").equals(authorId));
+        return Result.ok(blogList, blogList.size());
     }
 
     @Override
     public Result getBlogBySearch(String search) {
 //        先从Redis中获取所有的Blog对象
-        List<Blog> blogs = Collections.unmodifiableList((List<Blog>) getAll().getData());
-//        从所有的Blog对象中筛选出title或content中包含search的Blog对象
-        for (int i = 0; i < blogs.size(); i++) {
-            if(!blogs.get(i).getTitle().contains(search) && !blogs.get(i).getTitle().contains(search)){
-                blogs.remove(i);
-                i--;
+        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+        List<Blog> blogs = null;
+//        如果Redis中没有Blog对象，则从数据库中获取
+        if(blogList.size() == 0) {
+            blogs =  query().like("title", search).list();
+            if(blogs.size() == 0) {
+                return Result.fail("暂无博客");
             }
+//            将从数据库中获取的Blog对象存储到Redis中
+            for (Blog blog : blogs) {
+                stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
+            }
+//            移除不符合搜索条件的Blog对象
+            blogs.removeIf(blog -> !blog.getTitle().contains(search));
         }
-        return Result.ok(blogs, blogs.size());
+//        如果Redis中有Blog对象，则从Redis中获取
+        blogList.removeIf(blog -> !((Map)blog).get("title").toString().contains(search));
+        return Result.ok(blogList, blogList.size());
     }
 
     @Override
@@ -90,7 +109,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 //        从mysql中删除Blog对象
         removeById(blogId);
 //        从Redis中删除Blog对象
-        stringRedisTemplate.opsForHash().delete("blog", blogId);
+        stringRedisTemplate.opsForHash().delete("blog:"+blogId);
         return Result.ok();
     }
 
@@ -105,7 +124,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 //        将Blog对象存储到mysql中
         updateById(blog);
 //        再从mysql中获取Blog对象
-        stringRedisTemplate.opsForHash().put("blog", blog.getId(), blog);
+        stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
         return Result.ok();
     }
 
