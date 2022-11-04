@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
 
 @Service
 @Log4j2
@@ -26,7 +27,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result sendCode(String email) {
         //先从redis中获取验证码
-        String code = stringRedisTemplate.opsForValue().get("user:code:" + email);
+        String code = stringRedisTemplate.opsForValue().get(USER_CODE + email);
         if (code != null) {
             return Result.fail("验证码已发送，请勿重复发送");
         }
@@ -34,7 +35,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 //        code = MailSend.doSend(email);
         code = String.valueOf(new Random().nextInt(899999) + 100000);
         //将验证码存入redis
-        stringRedisTemplate.opsForValue().set("user:code:" + email, code,1, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(USER_CODE + email, code,1, TimeUnit.MINUTES);
         log.info("验证码为：" + code);
         return Result.ok();
     }
@@ -48,17 +49,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("密码错误");
         }
         //验证登录
-        StpUtil.login("user:login:" + user.getEmail());
+        StpUtil.login(USER_LOGIN + user.getEmail());
         String token = StpUtil.getTokenValue();
         //将用户信息存入redis,并设置过期时间
-        stringRedisTemplate.opsForValue().set("user:info:" + email, user.toString(),3,TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(USER_INFO + email, user.toString(),3,TimeUnit.DAYS);
         return Result.ok(token);
     }
 
     @Override
     public Result register(String nickname, String email, String password, String code) {
         User user = query().eq("email", email).one();
-        String redisCode = stringRedisTemplate.opsForValue().get("user:code:" + email);
+        String redisCode = stringRedisTemplate.opsForValue().get(USER_CODE + email);
         if (redisCode == null)
             return Result.fail("验证码已过期");
         if (user != null) {
@@ -68,7 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         User newUser = new User(nickname, password ,email, User.USER_LEVEL_USER);
 //        删除验证码
-        stringRedisTemplate.delete("user:code:" + email);
+        stringRedisTemplate.delete(USER_CODE + email);
         save(newUser);
         return Result.ok();
 
@@ -79,10 +80,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User user = query().eq("email", email).one();
         if (user == null) {
             return Result.fail("用户不存在");
-        } else if (!stringRedisTemplate.opsForValue().get("user:code:" + email).equals(code)) {
+        } else if (!stringRedisTemplate.opsForValue().get(USER_CODE + email).equals(code)) {
             return Result.fail("验证码错误");
         }
-        stringRedisTemplate.delete("user:code:" + email);
+        stringRedisTemplate.delete(USER_CODE + email);
         user.setPassword(password);
         updateById(user);
         return Result.ok();
@@ -96,7 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("用户未登录");
         email = email.substring(11);
         //删除redis中的用户信息
-        stringRedisTemplate.delete("user:info:" + email);
+        stringRedisTemplate.delete(USER_INFO + email);
         String id = StpUtil.getLoginId(token);
         StpUtil.logout(id);
         return Result.ok();
@@ -105,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result addByRoot(String nickname, String email, String password, String token) {
 //        根據SAToken获取用户信息
-        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
+        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
 //        将用户信息转换为User对象
         User user = JSONUtil.toBean(userInfo, User.class);
 //        查看用户是否有权限
@@ -125,13 +126,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("登录失效");
         }
         email = email.substring(11);
-        String userInfo = stringRedisTemplate.opsForValue().get("user:info:" + email);
+        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
 //        将用户信息转换为User对象
         if(userInfo == null||StrUtil.isEmptyIfStr(userInfo)){
             return Result.fail("登录失效");
         }
         User user = JSONUtil.toBean(userInfo, User.class);
         return Result.ok(user.getLevel());
+    }
+
+    public User getUserByEmail(String email){
+//        先从redis中获取用户信息
+        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
+//        判断redis中是否有用户信息
+        if(userInfo == null||StrUtil.isEmptyIfStr(userInfo)){
+//            如果没有，从数据库中获取
+            User user = query().eq("email", email).one();
+//            将用户信息存入redis
+            stringRedisTemplate.opsForValue().set(USER_INFO + email, user.toString(),3,TimeUnit.DAYS);
+            return user;
+        }
+//        将用户信息转换为User对象
+        return JSONUtil.toBean(userInfo, User.class);
     }
 
 }
