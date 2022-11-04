@@ -27,7 +27,7 @@ function getItem(label, key, icon, children) {
 
 
 
-const AdminPanel = () => {
+const Temp001 = () => {
     //获取路由跳转方法
     const navigate = useNavigate()
     //Cookie操作方法
@@ -40,9 +40,6 @@ const AdminPanel = () => {
         errorMSG('请先登录', msg)
         navigate('/login')
     }
-
-    // 定义菜单修改Flag，确保菜单更新不会重复进行
-    let [menu_flag,setMenu_flag] = React.useState(false);
 
     // 创建菜单对象
     let [menu_items, setMenuItems] = useState([
@@ -73,7 +70,6 @@ const AdminPanel = () => {
                 //跳转到登录页面
                 navigate('/login')
             })
-
     }
 
     // 不同权限时的菜单
@@ -169,6 +165,8 @@ const AdminPanel = () => {
 
     // 模拟组件更新生命周期，该方法在组件更新时只会执行一次
     React.useEffect(() => {
+        // 定义菜单修改Flag，确保菜单更新不会重复进行
+        let menu_flag = false
         console.log("组件被更新了")
 
         //在执行菜单更新操作前，检查之前是否更新过
@@ -213,7 +211,7 @@ const AdminPanel = () => {
                         break
                 }
                 //确保菜单只更新一次
-                setMenu_flag(true);
+                menu_flag = true
 
             })
             .catch((err) => {
@@ -221,7 +219,7 @@ const AdminPanel = () => {
                 errorMSG('网络错误，请检查网络连接')
             })
 
-    })
+    },)
 
     const [collapsed, setCollapsed] = useState(false);
     return (
@@ -287,4 +285,4 @@ const AdminPanel = () => {
         </Layout>
     );
 };
-export default AdminPanel;
+export default Temp001;

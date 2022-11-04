@@ -1,12 +1,14 @@
 import {Button, Checkbox, Form, Input, Col, Row, message} from 'antd';
 import axios from 'axios';
-import {React, Fragment, useState} from 'react';
+import {React, Fragment, useState, useEffect} from 'react';
 import {Link, Navigate, NavLink, useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
 import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 import Cookies from "universal-cookie/es6";
 
+// 作用于useEffect中，让useEffect只执行一次
+let flag = true;
 
 const LoginForm = () => {
     // 路由跳转方法
@@ -17,6 +19,32 @@ const LoginForm = () => {
 
     // 绑定是否记住密码到 is_rem 中
     let [is_rem, setRem] = useState(true)
+
+    // 检查用户是否已经登录
+    useEffect(() => {
+        console.log('componentDidMount')
+        if (flag) {
+            flag = false;
+            console.log('执行一次')
+            //检查用户是否已经登录
+            axios.post('/api/user/checkToken')
+                .then(res => {
+                    console.log('收到服务端返回信息', res.data)
+                    let is_token_valid = res.data.success
+                    let user_level = res.data.data
+                    let err_msg = res.data.errorMSG
+                    if (is_token_valid) {
+                        //如果token有效，跳转到首页
+                        successMSG('您已登录，正在跳转到首页')
+                        navigate('/')
+                    }
+                })
+                .catch((err) => {
+                    console.log(err)
+                    errorMSG('网络错误，请检查网络连接')
+                })
+        }
+    }, []);
 
     // 登录表单提交方法
     const onFinish = (values) => {
