@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.entry.Blog;
 import com.guico.moviemanagesystembackend.mapper.BlogMapper;
 import com.guico.moviemanagesystembackend.service.IBlogService;
+import com.guico.moviemanagesystembackend.service.IUserService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -17,6 +18,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    IUserService userService;
 
 //    Blog对象以HashMap的形式存储在Redis中，key为blogId，value为Blog对象
     public Result getAll(){

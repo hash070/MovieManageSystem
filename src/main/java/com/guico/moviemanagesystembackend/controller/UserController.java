@@ -1,5 +1,6 @@
 package com.guico.moviemanagesystembackend.controller;
 
+import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.service.IUserService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,5 +71,16 @@ public class UserController {
         }
         return userService.checkToken(token);
     }
+
+    @PostMapping("/getByEmail")
+    public Result getByEmail(String email) {
+        return userService.getUserByEmail(email);
+    }
+
+    @PostMapping("/getAll")
+    public Result getAllUsers() {
+        return userService.getAllUsers();
+    }
+
 
 }
