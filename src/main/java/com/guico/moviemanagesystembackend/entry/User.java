@@ -37,7 +37,7 @@ public class User {
         this.nickname = (String) map.get("nickname");
         this.password = (String) map.get("password");
         this.email = (String) map.get("email");
-        this.level = (Integer) map.get("level");
+        this.level = Integer.valueOf((String) map.get("level"));
     }
 
     public Map<String,String> toMap(){

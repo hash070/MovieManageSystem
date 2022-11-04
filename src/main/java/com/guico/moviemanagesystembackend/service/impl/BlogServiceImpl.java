@@ -1,5 +1,6 @@
 package com.guico.moviemanagesystembackend.service.impl;
 
+import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.entry.Blog;
 import com.guico.moviemanagesystembackend.mapper.BlogMapper;
@@ -10,8 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
@@ -29,11 +31,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
 //        如果Redis中没有Blog对象，则从数据库中获取
         if(blogList.size() == 0) {
-            List<Blog> blogs = null;
-            blogs = query().list();
+            List<Blog> blogs =  query().list();
+            if(blogs.size() == 0) {
+                return Result.fail("暂无博客");
+            }
 //            将从数据库中获取的Blog对象存储到Redis中
             for (Blog blog : blogs) {
-                stringRedisTemplate.opsForHash().put("blog", blog.getId(), blog);
+                stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
             }
             return Result.ok(blogs, blogs.size());
         }
@@ -44,33 +48,51 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     @Override
     public Result getBlogByAuthorId(String authorId) {
 //        先从Redis中获取所有的Blog对象
-        List<Blog> blogs = Collections.unmodifiableList((List<Blog>) getAll().getData());
-//        从所有的Blog对象中筛选出authorId为authorId的Blog对象
-        for (int i = 0; i < blogs.size(); i++) {
-            if(!blogs.get(i).getAuthor().equals(authorId)){
-                blogs.remove(i);
-                i--;
+        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+//        如果Redis中没有Blog对象，则从数据库中获取
+        if(blogList.size() == 0) {
+            List<Blog> blogs =  query().eq("author", authorId).list();
+            if(blogs.size() == 0) {
+                return Result.fail("暂无博客");
             }
+//            将从数据库中获取的Blog对象存储到Redis中
+            for (Blog blog : blogs) {
+                stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
+            }
+            return Result.ok(blogs, blogs.size());
         }
-        return Result.ok(blogs, blogs.size());
+//        如果Redis中有Blog对象，则从Redis中获取
+        blogList.removeIf(blog -> !((Map)blog).get("authorId").equals(authorId));
+        return Result.ok(blogList, blogList.size());
     }
 
     @Override
     public Result getBlogBySearch(String search) {
 //        先从Redis中获取所有的Blog对象
-        List<Blog> blogs = Collections.unmodifiableList((List<Blog>) getAll().getData());
-//        从所有的Blog对象中筛选出title或content中包含search的Blog对象
-        for (int i = 0; i < blogs.size(); i++) {
-            if(!blogs.get(i).getTitle().contains(search) && !blogs.get(i).getTitle().contains(search)){
-                blogs.remove(i);
-                i--;
+        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+        List<Blog> blogs = null;
+//        如果Redis中没有Blog对象，则从数据库中获取
+        if(blogList.size() == 0) {
+            blogs =  query().like("title", search).list();
+            if(blogs.size() == 0) {
+                return Result.fail("暂无博客");
             }
+//            将从数据库中获取的Blog对象存储到Redis中
+            for (Blog blog : blogs) {
+                stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
+            }
+//            移除不符合搜索条件的Blog对象
+            blogs.removeIf(blog -> !blog.getTitle().contains(search));
+            return Result.ok(blogs, blogs.size());
         }
-        return Result.ok(blogs, blogs.size());
+//        如果Redis中有Blog对象，则从Redis中获取
+        blogList.removeIf(blog -> !((Map)blog).get("title").toString().contains(search));
+        return Result.ok(blogList, blogList.size());
     }
 
     @Override
-    public Result addBlog(Blog blog) {
+    public Result addBlog(String des, String title, String article, String author, Date uploadTime, Boolean isNews) {
+        Blog blog = new Blog(des, title, article,author , uploadTime, isNews);
 //        先在数据库中查询是否存在作者和题目相同的blog
         Blog oldBlog = query().eq("author", blog.getAuthor()).eq("title", blog.getTitle()).one();
 //        如果存在，则返回错误信息
@@ -81,21 +103,31 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         save(blog);
 //        从mysql中获取Blog对象
         Blog blog1 = query().eq("title", blog.getTitle()).one();
-        stringRedisTemplate.opsForHash().put("blog", blog1.getId(), blog1);
+        stringRedisTemplate.opsForHash().putAll("blog:" + blog1.getId(),blog1.toMap());
         return Result.ok();
     }
 
     @Override
-    public Result deleteBlog(String blogId) {
-//        从mysql中删除Blog对象
-        removeById(blogId);
-//        从Redis中删除Blog对象
-        stringRedisTemplate.opsForHash().delete("blog", blogId);
-        return Result.ok();
+    public Result deleteBlog(Long blogId) {
+//        先删除数据库中的Blog对象
+        if(removeById(blogId)&& BooleanUtil.isTrue(stringRedisTemplate.delete("blog:" + blogId))){
+            return Result.ok();
+        } else {
+            return Result.fail("删除失败");
+        }
+
     }
 
+
+
     @Override
-    public Result updateBlog(Blog blog) {
+    public Result updateBlog(Long id, String des, String title, String article, Boolean isNews) {
+        Blog blog = new Blog();
+        blog.setId(id);
+        blog.setDes(des);
+        blog.setTitle(title);
+        blog.setArticle(article);
+        blog.setIsNews(isNews);
 //        检测是否存在相同作者和题目的blog
         Blog oldBlog = query().eq("author", blog.getAuthor()).eq("title", blog.getTitle()).one();
 //        如果存在，则返回错误信息
@@ -103,9 +135,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             return Result.fail("已存在相同作者和题目的blog，请修改题目");
         }
 //        将Blog对象存储到mysql中
-        updateById(blog);
+        update().eq("id", id).set("des", des).set("title", title).set("article", article).set("isNews", isNews).update();
 //        再从mysql中获取Blog对象
-        stringRedisTemplate.opsForHash().put("blog", blog.getId(), blog);
+        stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toUpdateMap());
         return Result.ok();
     }
 
