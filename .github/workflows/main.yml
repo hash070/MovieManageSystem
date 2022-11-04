@@ -1,4 +1,4 @@
-name: Java CI/CD with Maven
+name: Project CI/CD Actions
 
 on:
   push:
