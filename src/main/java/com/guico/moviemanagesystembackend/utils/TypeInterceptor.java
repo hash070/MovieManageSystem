@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.guico.moviemanagesystembackend.utils.InterceptorUtil.getUser;
 import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
 
 @Slf4j
@@ -24,33 +25,7 @@ public class TypeInterceptor implements HandlerInterceptor {
     }
     @Override
     public boolean preHandle(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, Object handler) throws Exception {
-        log.info("拦截器拦截到请求");
-        Cookie[] cookies = request.getCookies();
-        String token = null;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("token")) {
-                token = cookie.getValue();
-            }
-        }
-        if(token == null){
-            log.info("token为空");
-            throw new LevelException("token为空，无法认证用户权限");
-        }
-//        根据token获取用户信息
-        String email = stringRedisTemplate.opsForValue().get(SATOKEN_TOKEN + token);
-        if(email == null){
-            log.info("token无效");
-            throw new LevelException("token无效，无法认证用户权限");
-        }
-        email = email.substring(11);
-        log.info("email为：" + email);
-        String userInfo = stringRedisTemplate.opsForValue().get(USER_INFO + email);
-        if(userInfo == null){
-            log.info("用户信息为空");
-            throw new LevelException("用户信息为空，无法认证用户权限");
-        }
-        User user  = JSONUtil.toBean(userInfo, User.class);
-
+        User user = getUser(request, stringRedisTemplate);
         if(user.getLevel() > 1){
             log.info("用户权限不足");
             throw new LevelException("用户权限不足，无法访问");
