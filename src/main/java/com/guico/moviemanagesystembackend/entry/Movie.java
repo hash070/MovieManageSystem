@@ -17,15 +17,15 @@ public class Movie {
     Long id;
     @TableField("name")
     String name;
-    @TableField("desc")
-    String desc;
+    @TableField("des")
+    String des;
     //此字段为外键，表中的字段为type的id
     @TableField("type")
-    Type type;
+    Integer type;
     @TableField("banner")
     String banner;
     @TableField("uploader")
-    User uploader;
+    String uploader;
     @TableField("file")
     String file;
     @TableField("visibility")
@@ -37,9 +37,9 @@ public class Movie {
     @TableField("likes")
     Long likes;
 
-    public Movie(String name, String desc, Type type, String banner, User uploader, String file, Boolean visibility, Date uploadTime, Long views, Long likes) {
+    public Movie(String name, String desc, Integer type, String banner, String uploader, String file, Boolean visibility, Date uploadTime, Long views, Long likes) {
         this.name = name;
-        this.desc = desc;
+        this.des = desc;
         this.type = type;
         this.banner = banner;
         this.uploader = uploader;
