@@ -3,6 +3,7 @@ package com.guico.moviemanagesystembackend.controller;
 import com.guico.moviemanagesystembackend.service.IMovieService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ public class MovieController {
     @Autowired
     IMovieService movieService;
 
+    @PostMapping("/uploadMovie")
     public Result uploadMovie(MultipartFile movie) throws IOException {
         return movieService.uploadMovieFile(movie);
     }

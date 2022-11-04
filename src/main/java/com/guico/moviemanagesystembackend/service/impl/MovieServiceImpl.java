@@ -7,6 +7,7 @@ import com.guico.moviemanagesystembackend.mapper.MovieMapper;
 import com.guico.moviemanagesystembackend.service.IMovieService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,15 @@ import java.util.List;
 
 @Service
 public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements IMovieService {
+
+    @Value("${file.upload.path}")
+    private String path;
+
+    @Value("${file.upload.movie-type}")
+    private String movieType;
+
+    @Value("${file.upload.pic-type}")
+    private String[] picType;
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
@@ -76,18 +86,65 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result uploadMoviePic(MultipartFile pic) throws IOException {
-        File file = new File("./files/moviePic/" + pic.getOriginalFilename());
-        if (!file.exists()) {
-            if (!file.createNewFile()){
-                return Result.fail("创建文件失败");
+//        获取文件名
+        String fileName = pic.getOriginalFilename();
+//        如果文件为空，返回失败
+        if(pic.isEmpty()||fileName==null){
+            return Result.fail("上传失败，请选择文件");
+        }
+
+//        获取文件后缀
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+//        如果文件后缀不在允许的范围内，返回失败
+        for(String type:picType){
+            if(suffixName.equals(type)){
+                return Result.fail("上传失败，文件类型不匹配");
             }
         }
-        Files.copy(pic.getInputStream(), file.toPath());
+//        创建文件对象
+        File file = new File(path+"/pics/"+fileName);
+        if(!file.getParentFile().exists()){
+            file.getParentFile().mkdirs();
+        }
+//        如果文件已存在，返回失败
+        if(file.exists()){
+            return Result.fail("上传失败，文件已存在");
+        }
+//        保存文件
+        pic.transferTo(file);
         return Result.ok(file.getPath());
+
+
     }
 
     @Override
-    public Result uploadMovieFile(MultipartFile movie) {
-        return null;
+    public Result uploadMovieFile(MultipartFile movie) throws IOException {
+        //        获取文件名
+        String fileName = movie.getOriginalFilename();
+//        如果文件为空，返回失败
+        if(movie.isEmpty()||fileName==null){
+            return Result.fail("上传失败，请选择文件");
+        }
+
+//        获取文件后缀
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        if(!suffixName.equals(movieType)){
+            return Result.fail("上传失败，文件类型不匹配");
+        }
+
+//        创建文件对象
+        File file = new File(path+"/movies/"+fileName);
+        if(!file.getParentFile().exists()){
+            file.getParentFile().mkdirs();
+        }
+//        如果文件已存在，返回失败
+        if(file.exists()){
+            return Result.fail("上传失败，文件已存在");
+        }
+//        保存文件
+        movie.transferTo(file);
+        return Result.ok(file.getPath());
+
+
     }
 }
