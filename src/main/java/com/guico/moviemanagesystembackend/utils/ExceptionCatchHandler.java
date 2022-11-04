@@ -1,4 +1,4 @@
-package com.guico.moviemanagesystembackend.config;
+package com.guico.moviemanagesystembackend.utils;
 
 
 import com.guico.moviemanagesystembackend.utils.Result;
