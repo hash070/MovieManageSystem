@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {BrowserRouter, HashRouter, NavLink, Route, Routes} from "react-router-dom";
 import HelloWorld1 from "../Componments/HelloWorld1.jsx";
 import HelloWorld2 from "../Componments/HelloWorld2.jsx";
-import AdminTest from "../Componments/AdminTest.jsx";
 import Login from "../Componments/Login.jsx";
 import Register from "../Componments/Register.jsx";
 import ResetPWD from "../Componments/ResetPWD.jsx";

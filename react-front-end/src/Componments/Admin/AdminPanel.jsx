@@ -2,12 +2,10 @@ import React, {useEffect, useState} from 'react';
 import '../../styles/AdminPanel.css';
 import {
     DesktopOutlined,
-    FileOutlined, LogoutOutlined,
-    PieChartOutlined,
-    TeamOutlined,
+    LogoutOutlined,
     UserOutlined, VideoCameraOutlined,
 } from '@ant-design/icons';
-import {Breadcrumb, Layout, Menu} from 'antd';
+import {Breadcrumb, Input, Layout, Menu, Modal} from 'antd';
 import {Outlet, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
@@ -33,6 +31,17 @@ const AdminPanel = () => {
     //Cookie操作方法
     const cookies = new Cookies();
 
+    //对话框显示状态
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleOk = () => {
+        logout()
+    }
+
+    const handleCancel = () => {
+        setIsModalOpen(false)
+    }
+
     //Token失效时的动作
     const backToLogin = (msg) => {
         //删除存储在Cookie中的token
@@ -51,6 +60,8 @@ const AdminPanel = () => {
 
     // 退出登录方法
     const logout = () => {
+
+
         console.log('退出登录')
         //构建请求体，放入token
         let req_body = getFormData({
@@ -92,6 +103,7 @@ const AdminPanel = () => {
             getItem('个人资料', '31'),
             getItem('所有用户', '32'),//站内所有用户
         ]),
+        getItem('返回首页', '77', <LogoutOutlined rotate={180}/>),
         getItem('退出登录', '88',
             <LogoutOutlined rotate={180} style={{color: 'red'}}/>),
     ]
@@ -109,6 +121,7 @@ const AdminPanel = () => {
         getItem('用户管理', 'sub3', <UserOutlined/>, [
             getItem('个人资料', '31'),
         ]),
+        getItem('返回首页', '77', <LogoutOutlined rotate={180}/>),
         getItem('退出登录', '88',
             <LogoutOutlined rotate={180} style={{color: 'red'}}/>),
     ]
@@ -125,6 +138,7 @@ const AdminPanel = () => {
         getItem('用户管理', 'sub3', <UserOutlined/>, [
             getItem('个人资料', '31'),
         ]),
+        getItem('返回首页', '77', <LogoutOutlined rotate={180}/>),
         getItem('退出登录', '88',
             <LogoutOutlined rotate={180} style={{color: 'red'}}/>),
     ]
@@ -162,7 +176,10 @@ const AdminPanel = () => {
                 navigate('/admin/user/all')
                 break
             case 88://退出登录
-                logout()
+                setIsModalOpen(true)
+                break
+            case 77://返回首页
+                navigate('/')
                 break
         }
     }
@@ -284,6 +301,17 @@ const AdminPanel = () => {
                     hash070 ©2022
                 </Footer>
             </Layout>
+            {/*弹出输入框*/}
+            <Modal title="更新电影标签"
+                   open={isModalOpen}
+                   onOk={handleOk}
+                   onCancel={handleCancel}
+                   cancelText={'取消'}
+                   okText={'确认'}
+                   maskClosable={true}//点击遮罩层后是否关闭
+            >
+                <p>确定退出？</p>
+            </Modal>
         </Layout>
     );
 };
