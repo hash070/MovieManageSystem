@@ -15,14 +15,14 @@ import java.util.Date;
 public class Blog {
     @TableId(value = "id", type= IdType.AUTO)
     Long id;
-    @TableField("desc")
-    String desc;
+    @TableField("des")
+    String des;
     @TableField("title")
     String title;
     @TableField("article")
     String article;
     @TableField("author")
-    Integer author;
+    String author;
     @TableField("upload_time")
     Date uploadTime;
     @TableField("views")

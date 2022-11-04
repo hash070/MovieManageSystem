@@ -1,4 +1,4 @@
-package com.guico.moviemanagesystembackend.config;
+package com.guico.moviemanagesystembackend.utils;
 
 import cn.hutool.json.JSONUtil;
 import com.guico.moviemanagesystembackend.entry.User;
@@ -6,23 +6,23 @@ import com.guico.moviemanagesystembackend.exception.LevelException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
-public class TypeInterceptor implements HandlerInterceptor {
+public class BlogAndMovieInterceptor implements HandlerInterceptor {
 
     StringRedisTemplate stringRedisTemplate;
-    public TypeInterceptor (StringRedisTemplate stringRedisTemplate){
+
+    public BlogAndMovieInterceptor (StringRedisTemplate stringRedisTemplate){
         this.stringRedisTemplate = stringRedisTemplate;
     }
+
+
     @Override
     public boolean preHandle(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, Object handler) throws Exception {
         log.info("拦截器拦截到请求");
+//        获取token
         Cookie[] cookies = request.getCookies();
         String token = null;
         for (Cookie cookie : cookies) {
@@ -48,26 +48,10 @@ public class TypeInterceptor implements HandlerInterceptor {
             throw new LevelException("用户信息为空，无法认证用户权限");
         }
         User user  = JSONUtil.toBean(userInfo, User.class);
-
-        if(user.getLevel() > 1){
+        if(user.getLevel() >= 2){
             log.info("用户权限不足");
             throw new LevelException("用户权限不足，无法访问");
         }
-        log.info("用户权限验证通过");
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-//        log.info("拦截器postHandle");
-//        log.info("拦截器拦截到响应:{}",response);
-//        log.info("当前状态码:{}",response.getStatus());
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-//        log.info("拦截器afterCompletion");
-//        log.info("拦截器拦截到响应:{}",response);
-//        log.info("当前状态码:{}",response.getStatus());
     }
 }
