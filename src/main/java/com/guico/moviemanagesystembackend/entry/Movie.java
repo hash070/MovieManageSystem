@@ -36,8 +36,10 @@ public class Movie {
     Long views;
     @TableField("likes")
     Long likes;
+    @TableField("pic")
+    String pic;
 
-    public Movie(String name, String desc, Integer type, String banner, String uploader, String file, Boolean visibility, Date uploadTime, Long views, Long likes) {
+    public Movie(String name, String desc, Integer type, String banner, String uploader, String file, Boolean visibility, Date uploadTime, Long views, Long likes, String pic) {
         this.name = name;
         this.des = desc;
         this.type = type;
@@ -48,5 +50,6 @@ public class Movie {
         this.uploadTime = uploadTime;
         this.views = views;
         this.likes = likes;
+        this.pic = pic;
     }
 }
