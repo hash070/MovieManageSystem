@@ -39,7 +39,7 @@ jobs:
       - name: Maven Package Jar
         run: mvn -B package --file pom.xml -Dmaven.test.skip=true
       - name: Build React Front End
-        run: yarn install && yarn build
+        run: npm install --global yarn&&yarn install && yarn build
         working-directory: react-front-end
       - name: Clean Server Files
         uses: appleboy/ssh-action@master
