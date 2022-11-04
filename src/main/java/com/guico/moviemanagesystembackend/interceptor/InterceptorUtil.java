@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
@@ -38,14 +39,13 @@ public class InterceptorUtil {
         }
         email = email.substring(11);
         log.info("email为：" + email);
-        String userInfo = stringRedisTemplate.opsForValue().get(USER_LOGIN + email);
-        if(userInfo == null||userInfo.equals("")){
+        Map<Object,Object> userInfo = stringRedisTemplate.opsForHash().entries(USER_INFO+email);
+        if(userInfo.isEmpty()){
             log.info("用户信息为空");
             throw new LevelException("用户信息为空，无法认证用户权限");
         }
 //        确认用户操作，重置token过期时间
-        stringRedisTemplate.opsForValue().set(USER_LOGIN + email, userInfo, 3, TimeUnit.DAYS);
-        User user  = JSONUtil.toBean(userInfo, User.class);
-        return user;
+        stringRedisTemplate.opsForValue().set(USER_LOGIN + email, email, 3, TimeUnit.DAYS);
+        return new User(userInfo);
     }
 }
