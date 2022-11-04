@@ -21,7 +21,7 @@ public class Movie {
     String des;
     //此字段为外键，表中的字段为type的id
     @TableField("type")
-    Type type;
+    Integer type;
     @TableField("banner")
     String banner;
     @TableField("uploader")
@@ -37,7 +37,7 @@ public class Movie {
     @TableField("likes")
     Long likes;
 
-    public Movie(String name, String desc, Type type, String banner, String uploader, String file, Boolean visibility, Date uploadTime, Long views, Long likes) {
+    public Movie(String name, String desc, Integer type, String banner, String uploader, String file, Boolean visibility, Date uploadTime, Long views, Long likes) {
         this.name = name;
         this.des = desc;
         this.type = type;
