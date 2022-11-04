@@ -59,8 +59,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          source: target/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar
-          target: /root/action/movie-manage/
+          source: "target/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar"
+          target: /root/action/movie-manage
       - name: Copy React Front End to Server
         uses: appleboy/scp-action@master
         with:
@@ -68,8 +68,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
-          source: react-front-end/dist/*
-          target: /www/web-root/movie-manage-sys/
+          source: "react-front-end/dist/*"
+          target: /www/web-root/movie-manage-sys
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
