@@ -189,7 +189,7 @@ const AdminPanel = () => {
                 console.log('收到服务端返回信息', res.data)
 
                 let is_token_valid = res.data.success
-                let user_level = res.data.data
+                let user_level = parseInt(res.data.data)
                 let err_msg = res.data.errorMSG
 
                 if (!is_token_valid) {//用户Token不合法，或者未登录
