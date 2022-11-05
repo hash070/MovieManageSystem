@@ -9,6 +9,7 @@ import com.guico.moviemanagesystembackend.mapper.BlogMapper;
 import com.guico.moviemanagesystembackend.service.IBlogService;
 import com.guico.moviemanagesystembackend.service.IUserService;
 import com.guico.moviemanagesystembackend.utils.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
 
     @Autowired
@@ -99,6 +101,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     @Override
     public Result addBlog(String des, String title, String article, String author, Date uploadTime, Boolean isNews) {
         Blog blog = new Blog(des, title, article,author , uploadTime, isNews);
+        log.info("添加博客：{}", blog);
 //        先在数据库中查询是否存在作者和题目相同的blog
         Blog oldBlog = query().eq("author", blog.getAuthor()).eq("title", blog.getTitle()).one();
 //        如果存在，则返回错误信息
@@ -106,6 +109,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             return Result.fail("已存在相同作者和题目的blog，请修改标题再试");
         }
 //        不存在，则在数据库中添加blog
+        log.info("blog:{}", blog);
         save(blog);
 //        从mysql中获取Blog对象
         Blog blog1 = query().eq("title", blog.getTitle()).one();
@@ -113,9 +117,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         return Result.ok();
     }
 
-    public Result addBlog(String des, String title, String author, Date uploadTime, Boolean isNews){
+    public Result addBlog(String des, String title, String article, Date uploadTime, Boolean isNews){
         User user = InterceptorUtil.getUser(request, stringRedisTemplate);
-        return addBlog(des, title, user.getEmail(), author, uploadTime, isNews);
+        log.info("user:{}", user);
+        return addBlog(des, title, article, user.getEmail(),  uploadTime, isNews);
     }
 
     @Override
