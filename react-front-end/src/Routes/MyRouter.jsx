@@ -11,6 +11,7 @@ import IndexNav from "../Componments/Admin/IndexNav.jsx";
 import {Button, Result} from "antd";
 import Category from "../Componments/Admin/Category.jsx";
 import NewBlog from "../Componments/Admin/NewBlog.jsx";
+import AllBlogs from "../Componments/Admin/AllBlogs.jsx";
 
 
 class MyRouter extends Component {
@@ -35,7 +36,7 @@ class MyRouter extends Component {
                         <Route path='blog'>
                             <Route index element={<IndexNav name={'新建文章'} path={'/admin/blog/new'}/>}/>
                             <Route path={'new'} element={<NewBlog/>}/>
-                            <Route path={'all'} element={<TempCom name={'所有文章'}/>}/>
+                            <Route path={'all'} element={<AllBlogs/>}/>
                         </Route>
                         <Route path='user'>
                             <Route index element={<IndexNav name={'个人资料'} path={'/admin/user/profile'}/>}/>

@@ -16,7 +16,7 @@ const {TextArea} = Input;
 
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
 function NewBlog(props) {
     // 获取Navigate
@@ -25,13 +25,20 @@ function NewBlog(props) {
     // 初始化MarkDown解析器
     const mdParser = new MarkdownIt(/* Markdown-it options */);
 
+    // 外部传入数据
+    const [searchParams] = useSearchParams()
     // MarkDown编辑器，数据绑定
     let [html_text, upDataHtml] = useState('')
-    let [markdown_text, upMarkDownText] = useState('')
+    let [markdown_text, upMarkDownText] = useState(searchParams.get('article') == null ? '' : searchParams.get('article')) // 如果是Null的话，就设置为空字符串
     // 标题输入框数据绑定
-    let [title_text, upTitleText] = useState('')
+    let [title_text, upTitleText] = useState(searchParams.get('title') == null ? '' : searchParams.get('title'))
     // 详情输入框数据绑定
-    let [detail_text, upDetailText] = useState('')
+    let [detail_text, upDetailText] = useState(searchParams.get('des') == null ? '' : searchParams.get('des'))
+    // 是否是外部跳转
+    let [is_out, upIsOut] = useState(searchParams.get('article') != null)//如果不是null，则意味着是外部跳转过来的
+    // 设置提交按钮文字
+    let [submit_button_text, submitButtonText] = useState(is_out ? '更新文章' : '发布文章')
+
 
     // 输入框内容变更Handler
     function handleEditorChange({html, text}) {
@@ -43,7 +50,7 @@ function NewBlog(props) {
     const onSubmit = () => {
         console.log('提交的数据是', title_text, markdown_text, detail_text)
         //检查数据是否为空
-        if (title_text === '' || html_text === '' || markdown_text === '' || detail_text === '') {
+        if (title_text === '' || markdown_text === '' || detail_text === '') {
             errorMSG('提交内容不能为空')
             return
         }
@@ -61,8 +68,24 @@ function NewBlog(props) {
         // isNews
         req_body.append('isNews', 'false')
 
+        let blog_api = ''
+        let blog_add_api = '/api/blog/add'
+        let blog_update_api = '/api/blog/update'
+
+        let success_msg = ''
+
+        console.log('是否为外部请求', is_out)
+
         // 发送请求
-        axios.post('/api/blog/add', req_body)
+        if (is_out) {//如果是外部请求
+            blog_api = blog_update_api // 则意味着这是更新请求
+            success_msg = '文章更新成功'
+        }else {
+            blog_api = blog_add_api // 否则是添加请求
+            success_msg = '文章发布成功'
+        }
+
+        axios.post(blog_api, req_body)
             .then(res => {
                 console.log('发送请求完成', res)
                 //检查返回状态
@@ -72,13 +95,15 @@ function NewBlog(props) {
                     return
                 }
                 //成功
-                successMSG('文章发布成功')
+                successMSG(success_msg)
                 //清空数据
                 upTitleText('')
                 upDetailText('')
                 upMarkDownText('')
-                //跳转到博客列表
-                // navigate('/admin/blog/all')
+                // 如果是修改文章的话，点击提交后就跳转到博客列表
+                if (is_out) {
+                    navigate('/admin/blog/all')
+                }
             })
             .catch((err) => {
                 console.log('error', err)
@@ -105,7 +130,7 @@ function NewBlog(props) {
             <Button
                 type="primary"
                 onClick={onSubmit}
-            >发布文章</Button>
+            >{submit_button_text}</Button>
             <br/>
             <br/>
 

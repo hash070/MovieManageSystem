@@ -10,7 +10,7 @@ on:
 
 jobs:
   compile:
-    runs-on: ubuntu-latest
+    runs-on: [ self-hosted, home ]
     name: Build and Deploy
     steps:
       - uses: actions/checkout@v3 # 拉取代码
