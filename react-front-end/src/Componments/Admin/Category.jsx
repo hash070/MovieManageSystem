@@ -170,6 +170,7 @@ function Category(props) {
                         console.log('输入框值更新', e.target.value)
                         setInputVal(e.target.value)
                     }}
+                    onPressEnter={onSubmit}//按下回车键时，添加分类
                 />
                 <Button
                     type="primary"
@@ -230,6 +231,7 @@ function Category(props) {
                             console.log('输入框值更新', e.target.value)
                             setUpdateVal(e.target.value)
                         }}
+                        onPressEnter={handleOk}
                     />
                 </Input.Group>
             </Modal>
