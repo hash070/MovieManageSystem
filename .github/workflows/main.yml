@@ -3,13 +3,11 @@ name: Project CI/CD Actions
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   compile:
-    runs-on: self-hosted
-    name: Running Java ${{ matrix.java }} compile
+    runs-on: [self-hosted, home]
+    name: Build and Deploy
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 1.8
@@ -49,6 +47,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            systemctl stop MovieManageSysJar
             rm -rf /root/action/movie-manage/*
             rm -rf /www/web-root/movie-manage-sys/*
       - name: Copy Jar to Server
@@ -77,7 +76,6 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            systemctl stop MovieManageSysJar
             systemctl daemon-reload
             systemctl start MovieManageSysJar
             nginx -s reload
