@@ -157,5 +157,30 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         return Result.ok();
     }
 
+    @Override
+    public Result getAllPublicBlogs() {
+//        先从Redis中获取所有的Blog对象
+        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+        List<Blog> blogs = null;
+//        如果Redis中没有Blog对象，则从数据库中获取
+        if(blogList.size() == 0) {
+            blogs =  query().eq("isNews", true).list();
+            if(blogs.size() == 0) {
+                return Result.fail("暂无博客");
+            }
+//            将从数据库中获取的Blog对象存储到Redis中
+            for (Blog blog : blogs) {
+                stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
+            }
+//            移除不符合搜索条件的Blog对象
+            blogs.removeIf(blog -> !blog.getIsNews());
+            return Result.ok(blogs, blogs.size());
+        }
+//        如果Redis中有Blog对象，则从Redis中获取
+        blogList.removeIf(blog -> !((Map)blog).get("isNews").toString().contains("true"));
+        return Result.ok(blogList, blogList.size());
+
+    }
+
 }
 

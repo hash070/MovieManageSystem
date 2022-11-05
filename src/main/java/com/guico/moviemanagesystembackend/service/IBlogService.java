@@ -21,4 +21,6 @@ public interface IBlogService extends IService<Blog> {
     Result deleteBlog(Long blogId);
 
     Result updateBlog(Long id, String des, String title, String article, Boolean isNews);
+
+    Result getAllPublicBlogs();
 }
