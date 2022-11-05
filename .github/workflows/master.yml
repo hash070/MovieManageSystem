@@ -39,7 +39,7 @@ jobs:
       - name: Maven Package Jar # Maven打包
         run: mvn -B package --file pom.xml -Dmaven.test.skip=true
       - name: Build React Front End # 构建前端 (Yarn install and vite build)
-        run: npm install --global yarn && yarn install && vite build
+        run: npm i -g yarn && npm i -g vite && yarn install && vite build
         working-directory: react-front-end
       - name: Clean Server Files # 停止服务端并清理服务端文件
         uses: appleboy/ssh-action@master
