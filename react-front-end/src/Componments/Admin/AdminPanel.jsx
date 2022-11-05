@@ -23,8 +23,6 @@ function getItem(label, key, icon, children) {
     };
 }
 
-
-
 const AdminPanel = () => {
     //获取路由跳转方法
     const navigate = useNavigate()
@@ -57,6 +55,9 @@ const AdminPanel = () => {
     let [menu_items, setMenuItems] = useState([
         getItem('', '1'),
     ])
+
+    // 设置当前选中菜单项
+    // let [current_selected_menu_key, setCurrentSelectedMenuKey] = useState('11')
 
     // 退出登录方法
     const logout = () => {
@@ -261,6 +262,8 @@ const AdminPanel = () => {
                     items={menu_items}
                     //点击监听事件
                     onClick={onBarClicked}
+                    // //TODO:设置当前选中
+                    // selectedKeys={[current_selected_menu_key]}
                 />
             </Sider>
             <Layout className="site-layout">

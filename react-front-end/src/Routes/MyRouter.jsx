@@ -10,6 +10,7 @@ import TempCom from "../Componments/Admin/TempCom.jsx";
 import IndexNav from "../Componments/Admin/IndexNav.jsx";
 import {Button, Result} from "antd";
 import Category from "../Componments/Admin/Category.jsx";
+import NewBlog from "../Componments/Admin/NewBlog.jsx";
 
 
 class MyRouter extends Component {
@@ -33,7 +34,7 @@ class MyRouter extends Component {
                         </Route>
                         <Route path='blog'>
                             <Route index element={<IndexNav name={'新建文章'} path={'/admin/blog/new'}/>}/>
-                            <Route path={'new'} element={<TempCom name={'写文章'}/>}/>
+                            <Route path={'new'} element={<NewBlog/>}/>
                             <Route path={'all'} element={<TempCom name={'所有文章'}/>}/>
                         </Route>
                         <Route path='user'>
