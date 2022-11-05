@@ -67,7 +67,8 @@ function NewBlog(props) {
                 console.log('发送请求完成', res)
                 //检查返回状态
                 if (!res.data.success) {//失败
-                    errorMSG('文章发布失败',res.data.errorMsg)
+                    console.log('错误信息', res.data.errorMsg)
+                    errorMSG('文章发布失败：' + res.data.errorMsg)
                     return
                 }
                 //成功
@@ -126,6 +127,7 @@ function NewBlog(props) {
             <br/>
             <MdEditor style={{height: '600px'}}
                       renderHTML={text => mdParser.render(text)} //实时渲染方法
+                      value={markdown_text} //绑定数据
                       onChange={handleEditorChange} //编辑器内容改变时的触发器
             />
 
