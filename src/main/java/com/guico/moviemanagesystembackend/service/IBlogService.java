@@ -16,6 +16,8 @@ public interface IBlogService extends IService<Blog> {
 
     Result addBlog(String des, String title, String article, String author, Date uploadTime, Boolean isNews);
 
+    Result addBlog(String des, String title, String article, Date uploadTime, Boolean isNews);
+
     Result deleteBlog(Long blogId);
 
     Result updateBlog(Long id, String des, String title, String article, Boolean isNews);
