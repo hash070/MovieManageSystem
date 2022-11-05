@@ -3,6 +3,7 @@ package com.guico.moviemanagesystembackend.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.entry.Movie;
 import com.guico.moviemanagesystembackend.entry.Tag;
+import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
 import com.guico.moviemanagesystembackend.mapper.MovieMapper;
 import com.guico.moviemanagesystembackend.service.IMovieService;
 import com.guico.moviemanagesystembackend.utils.Result;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,16 +37,21 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    HttpServletRequest request;
+
     @Override
-    public Result uploadMovie(String name, String des, Integer typeId, String tags, String uploader,
+    public Result uploadMovie(String name, String des, Integer typeId, String tags,
                               Boolean visibility, Date uploadTime, MultipartFile pic, MultipartFile movie) throws IOException {
 //        先将文件上传到服务器
         String picUrl = uploadMoviePic(pic).getData().toString();
         String movieUrl = uploadMovieFile(movie).getData().toString();
 //        创建Movie对象
+        String uploader = InterceptorUtil.getUser(request, stringRedisTemplate).getEmail();
         Movie movie1 = new Movie(name, des, typeId, tags, uploader,movieUrl, visibility, uploadTime,picUrl);
+
 //        将Movie对象存入数据库
-        addMovie(movie1);
+        save(movie1);
 //        再从数据库中获取完整对象
         movie1 = query().eq("name", name).eq("uploader",uploader).one();
 //        将完整对象存入redis,以Hash的形式存储
@@ -52,10 +59,6 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         return Result.ok();
     }
 
-    @Override
-    public Result addMovie(Movie movie) {
-        return null;
-    }
 
     @Override
     public Result getAllMovie() {

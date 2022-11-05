@@ -54,4 +54,9 @@ public class BlogController {
     public Result updateBlog(Long id, String des, String title, String article, Boolean isNews) {
         return blogService.updateBlog(id, des, title, article, isNews);
     }
+
+    @PostMapping("/getAllPublicBlogs")
+    public Result getAllPublicBlogs() {
+        return blogService.getAllPublicBlogs();
+    }
 }
