@@ -79,6 +79,8 @@ function NewBlog(props) {
         // 发送请求
         if (is_out) {//如果是外部请求
             blog_api = blog_update_api // 则意味着这是更新请求
+            //如果是外部请求，则需要添加文章ID
+            req_body.append('id', searchParams.get('id'))
             success_msg = '文章更新成功'
         }else {
             blog_api = blog_add_api // 否则是添加请求
