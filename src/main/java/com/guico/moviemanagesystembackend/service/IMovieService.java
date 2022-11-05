@@ -13,7 +13,7 @@ import java.util.List;
 public interface IMovieService extends IService<Movie> {
 
     Result uploadMovie(String name, String des, Integer typeId, String tags,
-                       Boolean visibility, Date uploadTime, MultipartFile pic, MultipartFile movie) throws IOException;
+                       Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException;
 
 
     Result getAllMovie();
