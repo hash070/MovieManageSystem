@@ -206,22 +206,21 @@ const AdminPanel = () => {
         axios.post('/api/user/checkToken')
             .then(res => {
                 console.log('收到服务端返回信息', res.data)
+                let err_msg = res.data.errorMSG
+                let is_token_valid = res.data.success
+                if (!is_token_valid) {//用户Token不合法，或者未登录
+                    backToLogin(err_msg)//则直接跳转回去
+                    return
+                }
 
                 //保存用户信息JSON到本地存储
                 localStorage.setItem('userinfo', JSON.stringify(res.data))
                 console.log('用户信息已保存', JSON.parse(localStorage.getItem('userinfo')))
 
-                let is_token_valid = res.data.success
                 let user_level = res.data.data.level
-                let err_msg = res.data.errorMSG
 
                 console.log('token有效性', is_token_valid)
                 console.log('用户权限等级', user_level)
-
-                if (!is_token_valid) {//用户Token不合法，或者未登录
-                    backToLogin(err_msg)//则直接跳转回去
-                    return
-                }
 
                 //菜单更新操作
                 switch (user_level) {
