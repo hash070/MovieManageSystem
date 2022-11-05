@@ -35,9 +35,14 @@ public class BlogController {
         return blogService.getBlogBySearch(search);
     }
 
+//    @PostMapping("/add")
+//    public Result addBlog(String des, String title, String article,String author, Date uploadTime, Boolean isNews) {
+//        return blogService.addBlog(des, title, article, author, uploadTime, isNews);
+//    }
+
     @PostMapping("/add")
-    public Result addBlog(String des, String title, String article,String author, Date uploadTime, Boolean isNews) {
-        return blogService.addBlog(des, title, article, author, uploadTime, isNews);
+    public Result addBlog(String des, String title, String article, Date uploadTime, Boolean isNews) {
+        return blogService.addBlog(des, title, article, uploadTime, isNews);
     }
 
     @PostMapping("/delete")

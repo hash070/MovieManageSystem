@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,8 +36,20 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     StringRedisTemplate stringRedisTemplate;
 
     @Override
-    public Result uploadMovie() {
-        return null;
+    public Result uploadMovie(String name, String des, Integer typeId, String tags, String uploader,
+                              Boolean visibility, Date uploadTime, MultipartFile pic, MultipartFile movie) throws IOException {
+//        先将文件上传到服务器
+        String picUrl = uploadMoviePic(pic).getData().toString();
+        String movieUrl = uploadMovieFile(movie).getData().toString();
+//        创建Movie对象
+        Movie movie1 = new Movie(name, des, typeId, tags, uploader,movieUrl, visibility, uploadTime,picUrl);
+//        将Movie对象存入数据库
+        addMovie(movie1);
+//        再从数据库中获取完整对象
+        movie1 = query().eq("name", name).eq("uploader",uploader).one();
+//        将完整对象存入redis,以Hash的形式存储
+        stringRedisTemplate.opsForHash().putAll("movie:"+ movie1.getId(), movie1.toMap());
+        return Result.ok();
     }
 
     @Override
@@ -113,8 +126,6 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        保存文件
         pic.transferTo(file);
         return Result.ok(file.getPath());
-
-
     }
 
     @Override
@@ -144,7 +155,5 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        保存文件
         movie.transferTo(file);
         return Result.ok(file.getPath());
-
-
     }
 }
