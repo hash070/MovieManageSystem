@@ -7,11 +7,13 @@ import com.guico.moviemanagesystembackend.entry.Tag;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public interface IMovieService extends IService<Movie> {
 
-    Result uploadMovie();
+    Result uploadMovie(String name, String des, Integer typeId, String tags, String uploader,
+                       Boolean visibility, Date uploadTime, MultipartFile pic, MultipartFile movie) throws IOException;
 
     Result addMovie(Movie movie);
 
