@@ -49,7 +49,7 @@ const AdminPanel = () => {
     }
 
     // 定义菜单修改Flag，确保菜单更新不会重复进行
-    let [menu_flag,setMenu_flag] = React.useState(false);
+    let [menu_flag, setMenu_flag] = React.useState(false);
 
     // 创建菜单对象
     let [menu_items, setMenuItems] = useState([
@@ -61,9 +61,10 @@ const AdminPanel = () => {
 
     // 退出登录方法
     const logout = () => {
-
-
         console.log('退出登录')
+        //清除Cookie中的userinfo
+        cookies.remove('userinfo')
+
         //构建请求体，放入token
         let req_body = getFormData({
             token: cookies.get('token')
@@ -206,9 +207,16 @@ const AdminPanel = () => {
             .then(res => {
                 console.log('收到服务端返回信息', res.data)
 
+                //保存用户信息JSON到本地存储
+                localStorage.setItem('userinfo', JSON.stringify(res.data))
+                console.log('用户信息已保存', JSON.parse(localStorage.getItem('userinfo')))
+
                 let is_token_valid = res.data.success
-                let user_level = parseInt(res.data.data)
+                let user_level = res.data.data.level
                 let err_msg = res.data.errorMSG
+
+                console.log('token有效性', is_token_valid)
+                console.log('用户权限等级', user_level)
 
                 if (!is_token_valid) {//用户Token不合法，或者未登录
                     backToLogin(err_msg)//则直接跳转回去
@@ -235,7 +243,7 @@ const AdminPanel = () => {
 
             })
             .catch((err) => {
-                console.log(err)
+                console.log('error', err)
                 errorMSG('网络错误，请检查网络连接')
             })
 
