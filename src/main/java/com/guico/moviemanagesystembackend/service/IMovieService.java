@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.Movie;
 import com.guico.moviemanagesystembackend.entry.Tag;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IMovieService extends IService<Movie> {
@@ -23,10 +25,14 @@ public interface IMovieService extends IService<Movie> {
 
     Result getMovieBySearch(String search);
 
-    Result deleteMovie(Integer movieId, String SAToken);
+    Result deleteMovie(Integer movieId);
 
-    Result updateMovie(Movie movie, String SAToken);
+    Result updateMovie(Movie movie);
 
     Result getAllTags();
+
+    Result uploadMoviePic(MultipartFile pic) throws IOException;
+
+    Result uploadMovieFile(MultipartFile movie) throws IOException;
 
 }
