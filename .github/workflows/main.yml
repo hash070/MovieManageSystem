@@ -5,8 +5,7 @@ on:
     branches: [ master ]
   pull_request: # 当有 PR 关闭时，触发master分支的CI/CD
     types: closed
-    branches:
-      - [ master ]
+    branches: [ master ]
 
 jobs:
   compile:
