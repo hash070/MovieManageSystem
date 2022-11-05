@@ -9,10 +9,10 @@ import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
 import com.guico.moviemanagesystembackend.service.IUserService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +21,7 @@ import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
 @Service
 @Log4j2
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
-    @Resource
+    @Autowired
     StringRedisTemplate stringRedisTemplate;
 
     @Override
