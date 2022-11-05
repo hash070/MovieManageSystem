@@ -49,7 +49,7 @@ function NewBlog(props) {
         <div>
             <Input
                 style={{
-                    width: 'calc(100% - 88px)',
+                    width: 'calc(100% - 90px)',
                 }}
                 //数据流双向绑定
                 value={title_text}
@@ -69,9 +69,10 @@ function NewBlog(props) {
 
             <TextArea
                 showCount
-                maxLength={100}
+                maxLength={180}
                 style={{
                     height: 120,
+                    resize: 'none',
                 }}
                 //数据流双向绑定
                 value={detail_text}

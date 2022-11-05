@@ -3,9 +3,10 @@ name: Project CI/CD Actions
 on:
   push: # 当有代码推送时触发master分支的CI/CD
     branches: [ master ]
-  pull_request: # 当有 PR 关闭时，触发master分支的CI/CD
-    types: closed
-    branches: [ master ]
+  # 下面的这个规则不是很有必要，因为master合并必触发上面的push规则 
+  # pull_request: # 当有 PR 关闭时，触发master分支的CI/CD
+  #   types: closed
+  #   branches: [ master ]
 
 jobs:
   compile:
@@ -38,9 +39,9 @@ jobs:
       - name: Maven Package Jar # Maven打包
         run: mvn -B package --file pom.xml -Dmaven.test.skip=true
       - name: Build React Front End # 构建前端
-        run: npm install --global yarn&&yarn install && yarn build
+        run: npm install --global yarn && yarn install && yarn build
         working-directory: react-front-end
-      - name: Clean Server Files # 清理服务端文件
+      - name: Clean Server Files # 停止服务端并清理服务端文件
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -51,7 +52,7 @@ jobs:
             systemctl stop MovieManageSysJar
             rm -rf /root/action/movie-manage/*
             rm -rf /www/web-root/movie-manage-sys/*
-      - name: Copy Jar to Server # 复制Jar到服务端
+      - name: Copy Jar to Server # 复制Jar包到服务端
         uses: garygrossgarten/github-action-scp@release
         with:
           local: target/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar
@@ -60,7 +61,7 @@ jobs:
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
           privateKey: ${{ secrets.KEY }}
-      - name: Copy React Front End to Server # 复制前端到服务端
+      - name: Copy React Front End to Server # 复制前端文件到服务端
         uses: garygrossgarten/github-action-scp@release
         with:
           local: react-front-end/dist
@@ -69,7 +70,7 @@ jobs:
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
           privateKey: ${{ secrets.KEY }}
-      - name: Deploy to Server Done # 服务端装载与启动
+      - name: Deploy to Server Done # 服务端重载与启动
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
