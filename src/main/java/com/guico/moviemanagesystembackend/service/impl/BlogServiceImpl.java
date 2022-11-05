@@ -3,6 +3,8 @@ package com.guico.moviemanagesystembackend.service.impl;
 import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.entry.Blog;
+import com.guico.moviemanagesystembackend.entry.User;
+import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
 import com.guico.moviemanagesystembackend.mapper.BlogMapper;
 import com.guico.moviemanagesystembackend.service.IBlogService;
 import com.guico.moviemanagesystembackend.service.IUserService;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    HttpServletRequest request;
 
 //    Blog对象以HashMap的形式存储在Redis中，key为blogId，value为Blog对象
     public Result getAll(){
@@ -105,6 +111,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         Blog blog1 = query().eq("title", blog.getTitle()).one();
         stringRedisTemplate.opsForHash().putAll("blog:" + blog1.getId(),blog1.toMap());
         return Result.ok();
+    }
+
+    public Result addBlog(String des, String title, String author, Date uploadTime, Boolean isNews){
+        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
+        return addBlog(des, title, user.getEmail(), author, uploadTime, isNews);
     }
 
     @Override
