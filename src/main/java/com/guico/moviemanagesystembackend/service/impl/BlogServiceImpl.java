@@ -144,12 +144,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         blog.setTitle(title);
         blog.setArticle(article);
         blog.setIsNews(isNews);
-        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
-        blog.setArticle(user.getEmail());
 //        检测是否存在相同作者和题目的blog
-        int counts = query().eq("author", blog.getAuthor()).eq("title", blog.getTitle()).count();
+        Blog oldBlog = query().eq("author", blog.getAuthor()).eq("title", blog.getTitle()).one();
 //        如果存在，则返回错误信息
-        if(counts > 1){
+        if(oldBlog != null){
             return Result.fail("已存在相同作者和题目的blog，请修改题目");
         }
 //        将Blog对象存储到mysql中
