@@ -126,12 +126,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("登录失效");
         }
         email = email.substring(11);
-        String userInfo = stringRedisTemplate.opsForHash().get(USER_INFO + email,"level").toString();
+        Object user  = getUserByEmail(email).getData();
 //        将用户信息转换为User对象
-        if (userInfo == null || StrUtil.isEmptyIfStr(userInfo)) {
+        if (user == null) {
             return Result.fail("登录失效");
         }
-        return Result.ok(userInfo);
+        return Result.ok(user);
     }
 
     public Result getUserByEmail(String email) {
