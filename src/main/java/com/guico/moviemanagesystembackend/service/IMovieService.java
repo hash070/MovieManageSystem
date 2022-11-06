@@ -31,7 +31,7 @@ public interface IMovieService extends IService<Movie> {
 
     Result getAllTags();
 
-    Result updateMoviePic(MultipartFile pic, Long id) throws IOException;
+    Result updateMovieMsg(MultipartFile pic, Long id) throws IOException;
 
     String uploadMovieFile(MultipartFile movie) throws IOException;
 

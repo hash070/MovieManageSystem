@@ -142,6 +142,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         blog.setId(id);
         blog.setDes(des);
         blog.setTitle(title);
+//        title不能超过100个中文字符
+        if(title.length() > 100) {
+            return Result.fail("标题不能超过100个中英文字符");
+        }
         blog.setArticle(article);
         blog.setIsNews(isNews);
 //        如果存在，则返回错误信息

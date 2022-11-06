@@ -107,34 +107,8 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     }
 
     @Override
-    public Result updateMoviePic(MultipartFile pic, Long id) throws IOException {
-//        获取文件名
-        String fileName = pic.getOriginalFilename();
-//        如果文件为空，返回失败
-        if(pic.isEmpty()||fileName==null){
-            return Result.fail("上传失败，请选择文件");
-        }
+    public Result updateMovieMsg(MultipartFile pic, Long id) throws IOException {
 
-//        获取文件后缀
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-//        如果文件后缀不在允许的范围内，返回失败
-        for(String type:picType){
-            if(suffixName.equals(type)){
-                return Result.fail("上传失败，文件类型不匹配");
-            }
-        }
-//        创建文件对象
-        File file = new File(path+"/pics/"+fileName);
-        if(!file.getParentFile().exists()){
-            file.getParentFile().mkdirs();
-        }
-//        如果文件已存在，返回失败
-        if(file.exists()){
-            return Result.fail("上传失败，文件已存在");
-        }
-//        保存文件
-        pic.transferTo(file);
-        return Result.ok(file.getPath());
     }
 
 //    上传功能实现类，如果成功返回url，失败则返回前缀为fail:的失败信息
@@ -164,6 +138,37 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 //        保存文件
         movie.transferTo(file);
+        return file.getPath();
+    }
+
+    @Override
+    public String uploadMoviePic(MultipartFile pic) throws IOException {
+        //        获取文件名
+        String fileName = pic.getOriginalFilename();
+//        如果文件为空，返回失败
+        if(pic.isEmpty()||fileName==null){
+            return "fail:上传失败，请选择文件";
+        }
+
+//        获取文件后缀
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+//        如果文件后缀不在允许的范围内，返回失败
+        for(String type:picType){
+            if(suffixName.equals(type)){
+                return "fail:上传失败，文件类型不匹配";
+            }
+        }
+//        创建文件对象
+        File file = new File(path+"/pics/"+fileName);
+        if(!file.getParentFile().exists()){
+            file.getParentFile().mkdirs();
+        }
+//        如果文件已存在，返回失败
+        if(file.exists()){
+            return "fail:上传失败，文件已存在";
+        }
+//        保存文件
+        pic.transferTo(file);
         return file.getPath();
     }
 }
