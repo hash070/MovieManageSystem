@@ -214,7 +214,7 @@ const AdminPanel = () => {
                 }
 
                 //保存用户信息JSON到本地存储
-                localStorage.setItem('userinfo', JSON.stringify(res.data))
+                localStorage.setItem('userinfo', JSON.stringify(res.data.data))
                 console.log('用户信息已保存', JSON.parse(localStorage.getItem('userinfo')))
 
                 let user_level = res.data.data.level

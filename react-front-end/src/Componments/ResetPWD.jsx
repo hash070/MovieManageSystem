@@ -4,7 +4,7 @@ import {React, Fragment, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
 import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
-import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
+import {errorMSG, getEmailCheckReg, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 
 //密码重置表单，和注册表单类似
 const ResetPWDForm = () => {
@@ -27,7 +27,7 @@ const ResetPWDForm = () => {
     let sendVerifyCode = () => {
 
         //对邮箱进行正则校验
-        let check_email = new RegExp('[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?')
+        let check_email = getEmailCheckReg()
         if (!check_email.test(email_val)) {//如果邮箱没有通过校验
             console.log('邮箱检查未通过', check_email.test(email_val))
             errorMSG('请输入正确的邮箱')

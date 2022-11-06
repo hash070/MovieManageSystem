@@ -49,52 +49,13 @@ function AllBlogs(props) {
             })
     }
 
-    //提交新分类的方法
-    const onSubmit = () => {
-        console.log('提交的数据是', input_val)
-        if (input_val === '') {//先判断输入数据是否为空
-            errorMSG('请在输入框中输入内容')
-            return
-        }
-        //启动加载状态
-        setInitLoading(true)
-        //构造请求体
-        let req_body = new FormData()
-        req_body.append('typeName', input_val)
-        //发送请求
-        axios.post('/api/type/add', req_body)
-            .then((res) => {
-                console.log('返回结果', res.data)
-                if (!res.data.success) {//检查是否成功
-                    //如果失败，则做出提示，然后直接返回
-                    errorMSG('添加失败：' + res.data.errorMsg)
-                    return
-                }
-                //如果成功，则做出提示，然后清空输入框
-                successMSG('添加成功')
-                setInputVal('')
-
-
-            })
-            .catch((err) => {
-                console.log('错误信息', err)
-                errorMSG(err.message + '请检查网络连接')
-            })
-            .finally(() => {
-                //关闭加载状态
-                setInitLoading(false)
-                //变更Loading，要求重新加载列表数据
-                setLoading(!loading)
-            })
-    }
-
     //列表初始时加载状态设置
     const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [list, setList] = useState([]);
 
-    //列表项目删除方法
+    //博客删除方法
     const deleteItem = (id) => {
         console.log('删除的ID是', id)
         //启动加载状态
@@ -132,34 +93,13 @@ function AllBlogs(props) {
                 if (!res.data.success) {//检查是否成功
                     //如果失败，则做出提示，然后直接返回
                     errorMSG('获取分类列表失败：' + res.data.errorMsg)
+                    setInitLoading(false)
+                    setList([])
                     return
                 }
                 let data_recv = res.data.data
                 //设置数据
                 setList(data_recv)
-                //关闭加载状态
-                setInitLoading(false)
-            })
-    }, [loading]);//绑定loading变量，只有当loading变化时，重新加载
-
-    const handleOk = () => {
-        //启动加载状态
-        setInitLoading(true)
-        //构造请求体
-        let req_body = new FormData()
-        req_body.append('id', item_temp.id)
-        req_body.append('typeName', update_val)
-        //发送请求
-        axios.post('/api/type/update', req_body)
-            .then((res) => {
-                console.log('返回结果', res.data)
-                if (!res.data.success) {//检查是否成功
-                    //如果失败，则做出提示，然后直接返回
-                    errorMSG('更新失败：' + res.data.errorMsg)
-                    return
-                }
-                //如果成功，则做出提示，然后清空输入框
-                successMSG('更新成功')
             })
             .catch((err) => {
                 console.log('错误信息', err)
@@ -168,14 +108,8 @@ function AllBlogs(props) {
             .finally(() => {
                 //关闭加载状态
                 setInitLoading(false)
-                //变更Loading，要求重新加载列表数据
-                setLoading(!loading)
             })
-    };
-
-
-    //对话框中的输入框数据双向绑定
-    let [update_val, setUpdateVal] = useState('')
+    }, [loading]);//绑定loading变量，只有当loading变化时，重新加载
 
     return (
         <div>
@@ -206,8 +140,8 @@ function AllBlogs(props) {
                         <Skeleton avatar title={false} loading={item.loading} active>
                             <List.Item.Meta
                                 avatar={<Avatar src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
-                                title={<a style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.title}</a>}
-                                description={<div style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.des}</div>}
+                                title={<a style={{maxWidth: '90%', wordBreak: 'break-all'}}>{item.title}</a>}
+                                description={<div style={{maxWidth: '90%', wordBreak: 'break-all'}}>{item.des}</div>}
                             />
                             <div>作者：{item.author}</div>
                         </Skeleton>

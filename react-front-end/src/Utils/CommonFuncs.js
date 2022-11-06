@@ -18,3 +18,8 @@ export function getFormData(object) {
     Object.keys(object).forEach(key => formData.append(key, object[key]));
     return formData;
 }
+
+//邮箱Regx校验
+export function getEmailCheckReg(){
+    return  new RegExp('[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?')
+}
