@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Input, List, Skeleton} from "antd";
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
-import {createSearchParams, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 
 let item_temp
@@ -13,9 +13,10 @@ function AllBlogs(props) {
     //输入框数据双向数据流绑定
     let [input_val, setInputVal] = useState('')
 
-    // 跳转到编辑页面，并传递文章参数
-    const goToEdit = (item) => {
-        navigate({
+
+    /*
+    原search传参方式
+            navigate({
             pathname: '/admin/blog/new',
             search: createSearchParams({
                 id: item.id,
@@ -28,6 +29,23 @@ function AllBlogs(props) {
                 isNews: item.isNews,
             }).toString()
         })
+
+     */
+    // 跳转到编辑页面，并传递文章参数
+    const goToEdit = (item) => {
+        navigate(`/admin/blog/new`,
+            {
+                state: {
+                    id: item.id,
+                    des: item.des,
+                    title: item.title,
+                    article: item.article,
+                    author: item.author,
+                    uploadTime: item.uploadTime,
+                    views: item.views,
+                    isNews: item.isNews,
+                }
+            })
     }
 
     //提交新分类的方法
