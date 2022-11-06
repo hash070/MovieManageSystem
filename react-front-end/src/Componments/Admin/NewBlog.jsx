@@ -4,38 +4,42 @@ import MdEditor from 'react-markdown-editor-lite'
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css'
 
-import ReactMarkdown from 'react-markdown'
+// import ReactMarkdown from 'react-markdown'
 
 // import 'github-markdown-css'
 
 //添加表格支持
-import remarkGfm from 'remark-gfm'
+// import remarkGfm from 'remark-gfm'
 import {Button, Input} from "antd";
 
 const {TextArea} = Input;
 
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 function NewBlog(props) {
     // 获取Navigate
     const navigate = useNavigate()
+    // 获取Location
+    const location = useLocation();
 
     // 初始化MarkDown解析器
     const mdParser = new MarkdownIt(/* Markdown-it options */);
 
-    // 外部传入数据
-    const [searchParams] = useSearchParams()
+    // 获得State中的所有变量
+
+    let {id, des, title, article, author, uploadTime, views, isNews} = location.state
+
     // MarkDown编辑器，数据绑定
     let [html_text, upDataHtml] = useState('')
-    let [markdown_text, upMarkDownText] = useState(searchParams.get('article') == null ? '' : searchParams.get('article')) // 如果是Null的话，就设置为空字符串
+    let [markdown_text, upMarkDownText] = useState(article == null ? '' : article) // 如果是Null的话，就设置为空字符串
     // 标题输入框数据绑定
-    let [title_text, upTitleText] = useState(searchParams.get('title') == null ? '' : searchParams.get('title'))
+    let [title_text, upTitleText] = useState(title == null ? '' : title)
     // 详情输入框数据绑定
-    let [detail_text, upDetailText] = useState(searchParams.get('des') == null ? '' : searchParams.get('des'))
+    let [detail_text, upDetailText] = useState(des == null ? '' : des)
     // 是否是外部跳转
-    let [is_out, upIsOut] = useState(searchParams.get('article') != null)//如果不是null，则意味着是外部跳转过来的
+    let [is_out, upIsOut] = useState(article != null)//如果不是null，则意味着是外部跳转过来的
     // 设置提交按钮文字
     let [submit_button_text, submitButtonText] = useState(is_out ? '更新文章' : '发布文章')
 
@@ -80,7 +84,7 @@ function NewBlog(props) {
         if (is_out) {//如果是外部请求
             blog_api = blog_update_api // 则意味着这是更新请求
             //如果是外部请求，则需要添加文章ID
-            req_body.append('id', searchParams.get('id'))
+            req_body.append('id', id)
             success_msg = '文章更新成功'
         }else {
             blog_api = blog_add_api // 否则是添加请求
