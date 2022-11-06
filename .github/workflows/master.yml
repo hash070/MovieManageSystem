@@ -1,0 +1,83 @@
+name: Project CI/CD Actions
+
+on:
+  push: # 当有代码推送时触发master分支的CI/CD
+    branches: [ master ]
+  # 下面的这个规则不是很有必要，因为master合并必触发上面的push规则 
+  # pull_request: # 当有 PR 关闭时，触发master分支的CI/CD
+  #   types: closed
+  #   branches: [ master ]
+
+jobs:
+  compile:
+    runs-on: [ self-hosted, home ]
+    name: Build and Deploy
+    steps:
+      - uses: actions/checkout@v3 # 拉取代码
+      - name: Set up JDK 1.8 # 设置JDK 1.8 构建环境
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '8'
+      - name: Set up Maven # 设置Maven构建环境
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.8.2
+      - name: SetUp NodeJS Environment # 设置NodeJS构建环境
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Configure Maven Dep # 配置Maven依赖
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Maven Compile # Maven编译
+        run: mvn compile
+      - name: Maven Package Jar # Maven打包
+        run: mvn -B package --file pom.xml -Dmaven.test.skip=true
+      - name: Build React Front End # 构建前端 (Yarn install and vite build)
+        run: npm i -g yarn && npm i -g vite && yarn install && vite build
+        working-directory: react-front-end
+      - name: Clean Server Files # 停止服务端并清理服务端文件
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            systemctl stop MovieManageSysJar
+            rm -rf /root/action/movie-manage/*
+            rm -rf /www/web-root/movie-manage-sys/*
+      - name: Copy Jar to Server # 复制Jar包到服务端
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: target/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar
+          remote: /root/action/movie-manage/MovieManageSystem-backEnd-0.0.1-SNAPSHOT.jar
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          privateKey: ${{ secrets.KEY }}
+      - name: Copy React Front End to Server # 复制前端文件到服务端
+        uses: garygrossgarten/github-action-scp@release
+        with:
+          local: react-front-end/dist
+          remote: /www/web-root/movie-manage-sys
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          privateKey: ${{ secrets.KEY }}
+      - name: Deploy to Server Done # 服务端重载与启动
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            systemctl daemon-reload
+            systemctl start MovieManageSysJar
+            nginx -s reload

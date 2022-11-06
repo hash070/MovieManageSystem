@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
+import {Button} from "antd";
 
-class HelloWorld1 extends Component {
-    render() {
-        return (
-            <div>
-                这里是第一个HelloWorld，您当前正在访问根路径
-                //使用Navigate组件进行重定向
-                <br/>
-                <NavLink to={'/admin'} >跳转到管理后台</NavLink>
-            </div>
-        );
-    }
+function HelloWorld1(props) {
+    //获取路由跳转方法
+    const navigate = useNavigate()
+    return (
+        <div>
+            您当前正在访问根路径
+            <br/>
+            <Button type={"primary"} onClick={() => navigate('/admin')}>跳转到admin</Button>
+            只因哥视频播放测试
+            <video src={'https://ts.hash070.top/103/Haganma.mp4?hash=AgADdA'} controls={true} width={500} height={300}/>
+        </div>
+    );
 }
 
 export default HelloWorld1;

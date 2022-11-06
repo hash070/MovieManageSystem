@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {BrowserRouter, HashRouter, NavLink, Route, Routes} from "react-router-dom";
 import HelloWorld1 from "../Componments/HelloWorld1.jsx";
 import HelloWorld2 from "../Componments/HelloWorld2.jsx";
-import AdminTest from "../Componments/AdminTest.jsx";
 import Login from "../Componments/Login.jsx";
 import Register from "../Componments/Register.jsx";
 import ResetPWD from "../Componments/ResetPWD.jsx";
@@ -11,6 +10,8 @@ import TempCom from "../Componments/Admin/TempCom.jsx";
 import IndexNav from "../Componments/Admin/IndexNav.jsx";
 import {Button, Result} from "antd";
 import Category from "../Componments/Admin/Category.jsx";
+import NewBlog from "../Componments/Admin/NewBlog.jsx";
+import AllBlogs from "../Componments/Admin/AllBlogs.jsx";
 
 
 class MyRouter extends Component {
@@ -34,8 +35,8 @@ class MyRouter extends Component {
                         </Route>
                         <Route path='blog'>
                             <Route index element={<IndexNav name={'新建文章'} path={'/admin/blog/new'}/>}/>
-                            <Route path={'new'} element={<TempCom name={'写文章'}/>}/>
-                            <Route path={'all'} element={<TempCom name={'所有文章'}/>}/>
+                            <Route path={'new'} element={<NewBlog/>}/>
+                            <Route path={'all'} element={<AllBlogs/>}/>
                         </Route>
                         <Route path='user'>
                             <Route index element={<IndexNav name={'个人资料'} path={'/admin/user/profile'}/>}/>
