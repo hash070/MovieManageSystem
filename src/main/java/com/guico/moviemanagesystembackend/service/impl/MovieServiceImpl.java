@@ -3,6 +3,7 @@ package com.guico.moviemanagesystembackend.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.entry.Movie;
 import com.guico.moviemanagesystembackend.entry.Tag;
+import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
 import com.guico.moviemanagesystembackend.mapper.MovieMapper;
 import com.guico.moviemanagesystembackend.service.IMovieService;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -79,16 +81,28 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result getAll() {
+//       先获取用户
+        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
+
 //        先从redis中获取所有电影
-        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie");
+        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
 //        如果redis中没有电影,则从数据库中获取
         if(movieList.size() == 0){
             List<Movie> movies = query().list();
             for(Object movie : movies){
                 stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
             }
-            return Result.ok(movies);
+            movieList = Collections.singletonList(movies);
         }
+//       如果用户为普通用户，返回自己上传的电影
+        if(user.getLevel()>1) {
+            if(movieList.size() == 0){
+                return Result.fail("暂无电影");
+            }
+            movieList.removeIf(movie -> !((Movie) movie).getUploader().equals(user.getEmail()));
+            return Result.ok(movieList);
+        }
+//        如果用户为管理员，返回所有电影
         return Result.ok(movieList);
     }
 
@@ -114,7 +128,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result deleteMovie(Integer movieId) {
-        Movie movie = getMovie((long)movieId);
+        Movie movie = getMovie(movieId);
         if(movie == null){
             return Result.fail("该电影不存在");
         }
@@ -230,7 +244,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         return file.getPath();
     }
 
-    private Movie getMovie(Long id){
+    private Movie getMovie(Integer id){
 //        先从redis中获取
         Map<Object, Object> movieMap = stringRedisTemplate.opsForHash().entries("movie:"+id);
         Movie movie;

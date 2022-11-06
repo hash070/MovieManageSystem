@@ -42,7 +42,6 @@ mybatis-plus:
     #输出sql语句
     configuration:
       log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-      shrink-whitespaces-in-sql: true
 sa-token:
   # token名称
   token-name: satoken
