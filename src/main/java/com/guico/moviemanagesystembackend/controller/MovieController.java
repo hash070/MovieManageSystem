@@ -22,7 +22,7 @@ public class MovieController {
     @Autowired
     IMovieService movieService;
 
-    @PostMapping("/uploadMovie")
+    @PostMapping("/upload")
     public Result uploadMovie(String name, String des, Integer typeId, String tags,
                               Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException {
         return movieService.uploadMovie(name, des, typeId, tags, visibility, pic, movie);
@@ -41,6 +41,12 @@ public class MovieController {
     @PostMapping("/delete")
     public Result deleteMovie(Integer movieId) {
         return movieService.deleteMovie(movieId);
+    }
+
+    @PostMapping("/update")
+    public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
+                                 Boolean visibility, MultipartFile pic) throws IOException {
+        return movieService.updateMovieMsg(id, name, des, typeId, tags, visibility, pic);
     }
 
     @PostMapping("/uploadPic")

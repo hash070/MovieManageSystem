@@ -34,6 +34,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
 //    Blog对象以HashMap的形式存储在Redis中，key为blogId，value为Blog对象
     public Result getAll(){
+        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
+        if(user.getLevel()>1){
+            return getBlogByAuthorId(user.getEmail());
+        }
 //        先从Redis中获取所有的Blog对象
         List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
 

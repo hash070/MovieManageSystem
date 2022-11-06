@@ -5,7 +5,7 @@ import com.guico.moviemanagesystembackend.utils.Result;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-//@RestControllerAdvice
+@RestControllerAdvice
 public class ExceptionCatchHandler {
 
     @ExceptionHandler

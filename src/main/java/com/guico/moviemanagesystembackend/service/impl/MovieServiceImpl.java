@@ -61,7 +61,9 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        再从数据库中获取完整对象
         movie1 = query().eq("name", name).eq("uploader",uploader).eq("file", movieUrl).one();
 //        将完整对象存入redis,以Hash的形式存储
-        stringRedisTemplate.opsForHash().putAll("movie:"+ movie1.getId(), movie1.toMap());
+        Map<String, String> map = movie1.toMap();
+        log.info("map:{}",map);
+        stringRedisTemplate.opsForHash().putAll("movie:"+ movie1.getId(), map);
         return Result.ok();
     }
 
