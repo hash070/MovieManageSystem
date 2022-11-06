@@ -105,7 +105,7 @@ const ResetPWDForm = () => {
         <div className='login-wrap'>
             <div>
                 <div className='form-header'>
-                    <h4 className='column'>账户注册</h4>
+                    <h4 className='column'>账户密码重置</h4>
                 </div>
                 <br/>
                 <br/>

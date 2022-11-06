@@ -312,7 +312,7 @@ const AdminPanel = () => {
                 </Footer>
             </Layout>
             {/*弹出输入框*/}
-            <Modal title="更新电影标签"
+            <Modal title="确定退出登录？"
                    open={isModalOpen}
                    onOk={handleOk}
                    onCancel={handleCancel}

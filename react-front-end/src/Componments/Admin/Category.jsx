@@ -201,7 +201,7 @@ function Category(props) {
                     >
                         <Skeleton title={false} loading={item.loading} active>
                             <List.Item.Meta
-                                title={<a>{item.name}</a>}
+                                title={<a style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.name}</a>}
                                 //description="分类描述"
                             />
                         </Skeleton>
