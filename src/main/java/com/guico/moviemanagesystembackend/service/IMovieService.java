@@ -15,7 +15,9 @@ public interface IMovieService extends IService<Movie> {
     Result uploadMovie(String name, String des, Integer typeId, String tags,
                        Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException;
 
-    Result getAllMovie();
+    Result getMovieById(Integer id);
+
+    Result getAll();
 
     Result getMovieByTags(List<Tag> tags);
 
@@ -27,7 +29,6 @@ public interface IMovieService extends IService<Movie> {
 
     Result deleteMovie(Integer movieId);
 
-    Result updateMovie(Movie movie);
 
     Result getAllTags();
 
@@ -36,4 +37,6 @@ public interface IMovieService extends IService<Movie> {
 
 
     String uploadMoviePic(MultipartFile pic) throws IOException;
+
+
 }

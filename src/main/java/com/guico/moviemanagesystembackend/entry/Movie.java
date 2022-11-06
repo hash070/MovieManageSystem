@@ -83,18 +83,18 @@ public class Movie {
 
     public Map toMap(){
         Map<Object,Object> map = new HashMap<>();
-        map.put("id",id);
-        map.put("name",name);
-        map.put("des",des);
-        map.put("type",type);
-        map.put("tags",banner);
-        map.put("uploader",uploader);
-        map.put("file",file);
-        map.put("visibility",visibility);
-        map.put("uploadTime",uploadTime);
-        map.put("views",views);
-        map.put("likes",likes);
-        map.put("pic",pic);
+        map.put("id",String.valueOf(this.id));
+        map.put("name",this.name);
+        map.put("des",this.des);
+        map.put("type",String.valueOf(this.type));
+        map.put("banner",this.banner);
+        map.put("uploader",this.uploader);
+        map.put("file",this.file);
+        map.put("visibility",String.valueOf(this.visibility));
+        map.put("uploadTime",String.valueOf(this.uploadTime));
+        map.put("views",String.valueOf(this.views));
+        map.put("likes",String.valueOf(this.likes));
+        map.put("pic",this.pic);
         return map;
 
     }
