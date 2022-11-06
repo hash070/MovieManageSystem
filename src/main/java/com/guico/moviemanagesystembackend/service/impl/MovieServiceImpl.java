@@ -42,12 +42,18 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result uploadMovie(String name, String des, Integer typeId, String tags,
-                              Boolean visibility, Date uploadTime, MultipartFile pic, MultipartFile movie) throws IOException {
+                              Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException {
 //        先将文件上传到服务器
-        String picUrl = uploadMoviePic(pic).getData().toString();
-        String movieUrl = uploadMovieFile(movie).getData().toString();
-//        创建Movie对象
+        String picUrl = uploadMoviePic(pic);
+        String movieUrl = uploadMovieFile(movie);
+        if(movieUrl.startsWith("fail:")){
+            return Result.fail(movieUrl.substring(5));
+        }
+//        获取作者信息
         String uploader = InterceptorUtil.getUser(request, stringRedisTemplate).getEmail();
+//        获取当前时间
+        Date uploadTime = new Date();
+//        创建Movie对象
         Movie movie1 = new Movie(name, des, typeId, tags, uploader,movieUrl, visibility, uploadTime,picUrl);
 
 //        将Movie对象存入数据库
@@ -101,7 +107,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     }
 
     @Override
-    public Result uploadMoviePic(MultipartFile pic) throws IOException {
+    public Result updateMoviePic(MultipartFile pic, Long id) throws IOException {
 //        获取文件名
         String fileName = pic.getOriginalFilename();
 //        如果文件为空，返回失败
@@ -131,19 +137,20 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         return Result.ok(file.getPath());
     }
 
+//    上传功能实现类，如果成功返回url，失败则返回前缀为fail:的失败信息
     @Override
-    public Result uploadMovieFile(MultipartFile movie) throws IOException {
+    public String uploadMovieFile(MultipartFile movie) throws IOException {
         //        获取文件名
         String fileName = movie.getOriginalFilename();
 //        如果文件为空，返回失败
         if(movie.isEmpty()||fileName==null){
-            return Result.fail("上传失败，请选择文件");
+            return "fail:上传失败，请选择文件";
         }
 
 //        获取文件后缀
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         if(!suffixName.equals(movieType)){
-            return Result.fail("上传失败，文件类型不匹配");
+            return "fail:上传失败，文件类型不匹配";
         }
 
 //        创建文件对象
@@ -153,10 +160,10 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 //        如果文件已存在，返回失败
         if(file.exists()){
-            return Result.fail("上传失败，文件已存在");
+            return "fail:上传失败，文件已存在";
         }
 //        保存文件
         movie.transferTo(file);
-        return Result.ok(file.getPath());
+        return file.getPath();
     }
 }
