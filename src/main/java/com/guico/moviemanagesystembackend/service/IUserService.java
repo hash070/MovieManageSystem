@@ -17,7 +17,12 @@ public interface IUserService extends IService<User> {
 
     Result logout(String SAToken);
 
-    Result addByRoot(String nickname, String email, String password, String SAToken);
+
+    Result addByRoot(String nickname, String email, String password, Integer level);
+
+    Result updateByRoot(String nickname, String email, String password, Integer level);
+
+    Result deleteByRoot(String email);
 
     Result checkToken(String saToken);
 

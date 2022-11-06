@@ -49,10 +49,7 @@ public class UserController {
         return userService.resetPassword(email, password, code);
     }
 
-    @PostMapping("/addByRoot")
-    public Result addByARoot(String nickname, String email, String password, String token) {
-        return userService.addByRoot(nickname, email, password, token);
-    }
+
 
     @PostMapping("/checkToken")
     public Result checkToken() {
@@ -80,6 +77,21 @@ public class UserController {
     @PostMapping("/getAll")
     public Result getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @PostMapping("/addByRoot")
+    public Result addByARoot(String nickname, String email, String password, Integer level) {
+        return userService.addByRoot(nickname, email, password, level);
+    }
+
+    @PostMapping("/updateByRoot")
+    public Result updateByRoot(String nickname, String email, String password, Integer level) {
+        return userService.updateByRoot(nickname, email, password, level);
+    }
+
+    @PostMapping("/deleteByRoot")
+    public Result deleteByRoot(String email) {
+        return userService.deleteByRoot(email);
     }
 
 

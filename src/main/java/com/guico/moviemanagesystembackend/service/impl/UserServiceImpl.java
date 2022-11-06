@@ -2,8 +2,8 @@ package com.guico.moviemanagesystembackend.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
 import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +24,9 @@ import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    HttpServletRequest request;
 
     @Override
     public Result sendCode(String email) {
@@ -103,19 +107,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok();
     }
 
+
     @Override
-    public Result addByRoot(String nickname, String email, String password, String token) {
-//        根據SAToken获取用户信息
-        String userInfo = stringRedisTemplate.opsForValue().get(USER_LOGIN + email);
-//        将用户信息转换为User对象
-        User user = JSONUtil.toBean(userInfo, User.class);
+    public Result addByRoot(String nickname, String email, String password, Integer level) {
 //        查看用户是否有权限
-        if (user.getLevel() != User.USER_LEVEL_ROOT) {
+        if (!isRoot()) {
             return Result.fail("权限不足");
         }
-        User newUser = new User(nickname, email, password, User.USER_LEVEL_USER);
+        User newUser = new User(nickname, email, password, level);
+        if(query().eq("email",email).one()!=null){
+            return Result.fail("邮箱已被注册");
+        }
         save(newUser);
+        stringRedisTemplate.opsForHash().putAll(USER_INFO + email, newUser.toMap());
         return Result.ok();
+    }
+
+    @Override
+    public Result updateByRoot(String nickname, String email, String password, Integer level) {
+        if (!isRoot()) {
+            return Result.fail("权限不足");
+        }
+        User user = query().eq("email", email).one();
+        if (user == null) {
+            return Result.fail("用户不存在");
+        }
+        if(query().eq("email",email).count()>1){
+            return Result.fail("邮箱已被注册");
+        }
+        user =  new User(nickname, email, password, level);
+        updateById(user);
+//        更新redis中的用户信息
+        stringRedisTemplate.opsForHash().putAll(USER_INFO + email, user.toMap());
+        return Result.ok();
+    }
+
+    @Override
+    public Result deleteByRoot(String email) {
+        if (!isRoot()) {
+            return Result.fail("权限不足");
+        }
+        Map<String, Object> hashMap = new HashMap<>();
+        hashMap.put("email", email);
+        if(removeByMap(hashMap)){
+            stringRedisTemplate.delete(USER_INFO + email);
+            return Result.ok();
+        }
+        return Result.fail("删除失败");
     }
 
     @Override
@@ -178,4 +216,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok(users, users.size());
     }
 
+
+    private boolean isRoot(){
+        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
+        return user.getLevel() == User.USER_LEVEL_ROOT;
+    }
+
+    private boolean isAdmin(){
+        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
+        return user.getLevel() >= User.USER_LEVEL_ADMIN;
+    }
 }
