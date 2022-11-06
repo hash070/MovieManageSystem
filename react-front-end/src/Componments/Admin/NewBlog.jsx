@@ -28,7 +28,7 @@ function NewBlog(props) {
     const mdParser = new MarkdownIt(/* Markdown-it options */);
 
     // 获得State中的所有变量
-    // do nothing if state is null
+    // Check if state is null
     let {id, des, title, article, author, uploadTime, views, isNews} = location.state===null?{id:null, des:null, title:null, article:null, author:null, uploadTime:null, views:null, isNews:null}:location.state
 
     // MarkDown编辑器，数据绑定
@@ -67,7 +67,7 @@ function NewBlog(props) {
         req_body.append('des', detail_text)
         // 文章内容
         req_body.append('article', markdown_text)
-        // 当前日期 格式：2022-11-04T04:30:31.000+00:00
+        // 当前日期 格式：2022-11-04T04:30:31.000+00:00 //decrypted//现在使用服务端时间
         req_body.append('uploadTime', new Date().toISOString())
         // isNews
         req_body.append('isNews', 'false')
@@ -90,6 +90,8 @@ function NewBlog(props) {
             blog_api = blog_add_api // 否则是添加请求
             success_msg = '文章发布成功'
         }
+
+        console.log('发送的请求体：', req_body)
 
         axios.post(blog_api, req_body)
             .then(res => {
@@ -131,6 +133,7 @@ function NewBlog(props) {
                     upTitleText(e.target.value)
                 }}
                 placeholder="文章标题"
+                maxLength={100}
             />
 
             <Button

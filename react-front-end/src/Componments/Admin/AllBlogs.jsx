@@ -182,7 +182,7 @@ function AllBlogs(props) {
             {/*中间列表*/}
             <List
                 loading={initLoading}
-                itemLayout="horizontal"xx
+                itemLayout="horizontal"
                 dataSource={list}
                 renderItem={(item) => (
                     <List.Item
