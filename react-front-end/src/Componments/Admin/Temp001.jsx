@@ -2,10 +2,12 @@ import React, {useEffect, useState} from 'react';
 import '../../styles/AdminPanel.css';
 import {
     DesktopOutlined,
-    LogoutOutlined,
+    FileOutlined, LogoutOutlined,
+    PieChartOutlined,
+    TeamOutlined,
     UserOutlined, VideoCameraOutlined,
 } from '@ant-design/icons';
-import {Breadcrumb, Input, Layout, Menu, Modal} from 'antd';
+import {Breadcrumb, Layout, Menu} from 'antd';
 import {Outlet, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
@@ -23,22 +25,13 @@ function getItem(label, key, icon, children) {
     };
 }
 
-const AdminPanel = () => {
+
+
+const Temp001 = () => {
     //获取路由跳转方法
     const navigate = useNavigate()
     //Cookie操作方法
     const cookies = new Cookies();
-
-    //对话框显示状态
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const handleOk = () => {
-        logout()
-    }
-
-    const handleCancel = () => {
-        setIsModalOpen(false)
-    }
 
     //Token失效时的动作
     const backToLogin = (msg) => {
@@ -48,23 +41,14 @@ const AdminPanel = () => {
         navigate('/login')
     }
 
-    // 定义菜单修改Flag，确保菜单更新不会重复进行
-    let [menu_flag, setMenu_flag] = React.useState(false);
-
     // 创建菜单对象
     let [menu_items, setMenuItems] = useState([
         getItem('', '1'),
     ])
 
-    // 设置当前选中菜单项
-    // let [current_selected_menu_key, setCurrentSelectedMenuKey] = useState('11')
-
     // 退出登录方法
     const logout = () => {
         console.log('退出登录')
-        //清除Cookie中的userinfo
-        cookies.remove('userinfo')
-
         //构建请求体，放入token
         let req_body = getFormData({
             token: cookies.get('token')
@@ -86,7 +70,6 @@ const AdminPanel = () => {
                 //跳转到登录页面
                 navigate('/login')
             })
-
     }
 
     // 不同权限时的菜单
@@ -105,7 +88,6 @@ const AdminPanel = () => {
             getItem('个人资料', '31'),
             getItem('所有用户', '32'),//站内所有用户
         ]),
-        getItem('返回首页', '77', <LogoutOutlined rotate={180}/>),
         getItem('退出登录', '88',
             <LogoutOutlined rotate={180} style={{color: 'red'}}/>),
     ]
@@ -123,7 +105,6 @@ const AdminPanel = () => {
         getItem('用户管理', 'sub3', <UserOutlined/>, [
             getItem('个人资料', '31'),
         ]),
-        getItem('返回首页', '77', <LogoutOutlined rotate={180}/>),
         getItem('退出登录', '88',
             <LogoutOutlined rotate={180} style={{color: 'red'}}/>),
     ]
@@ -140,7 +121,6 @@ const AdminPanel = () => {
         getItem('用户管理', 'sub3', <UserOutlined/>, [
             getItem('个人资料', '31'),
         ]),
-        getItem('返回首页', '77', <LogoutOutlined rotate={180}/>),
         getItem('退出登录', '88',
             <LogoutOutlined rotate={180} style={{color: 'red'}}/>),
     ]
@@ -178,16 +158,15 @@ const AdminPanel = () => {
                 navigate('/admin/user/all')
                 break
             case 88://退出登录
-                setIsModalOpen(true)
-                break
-            case 77://返回首页
-                navigate('/')
+                logout()
                 break
         }
     }
 
     // 模拟组件更新生命周期，该方法在组件更新时只会执行一次
     React.useEffect(() => {
+        // 定义菜单修改Flag，确保菜单更新不会重复进行
+        let menu_flag = false
         console.log("组件被更新了")
 
         //在执行菜单更新操作前，检查之前是否更新过
@@ -206,21 +185,15 @@ const AdminPanel = () => {
         axios.post('/api/user/checkToken')
             .then(res => {
                 console.log('收到服务端返回信息', res.data)
-                let err_msg = res.data.errorMSG
+
                 let is_token_valid = res.data.success
+                let user_level = res.data.data
+                let err_msg = res.data.errorMSG
+
                 if (!is_token_valid) {//用户Token不合法，或者未登录
                     backToLogin(err_msg)//则直接跳转回去
                     return
                 }
-
-                //保存用户信息JSON到本地存储
-                localStorage.setItem('userinfo', JSON.stringify(res.data))
-                console.log('用户信息已保存', JSON.parse(localStorage.getItem('userinfo')))
-
-                let user_level = res.data.data.level
-
-                console.log('token有效性', is_token_valid)
-                console.log('用户权限等级', user_level)
 
                 //菜单更新操作
                 switch (user_level) {
@@ -238,15 +211,15 @@ const AdminPanel = () => {
                         break
                 }
                 //确保菜单只更新一次
-                setMenu_flag(true);
+                menu_flag = true
 
             })
             .catch((err) => {
-                console.log('error', err)
+                console.log(err)
                 errorMSG('网络错误，请检查网络连接')
             })
 
-    })
+    },)
 
     const [collapsed, setCollapsed] = useState(false);
     return (
@@ -269,8 +242,6 @@ const AdminPanel = () => {
                     items={menu_items}
                     //点击监听事件
                     onClick={onBarClicked}
-                    // //TODO:设置当前选中
-                    // selectedKeys={[current_selected_menu_key]}
                 />
             </Sider>
             <Layout className="site-layout">
@@ -311,18 +282,7 @@ const AdminPanel = () => {
                     hash070 ©2022
                 </Footer>
             </Layout>
-            {/*弹出输入框*/}
-            <Modal title="更新电影标签"
-                   open={isModalOpen}
-                   onOk={handleOk}
-                   onCancel={handleCancel}
-                   cancelText={'取消'}
-                   okText={'确认'}
-                   maskClosable={true}//点击遮罩层后是否关闭
-            >
-                <p>确定退出？</p>
-            </Modal>
         </Layout>
     );
 };
-export default AdminPanel;
+export default Temp001;

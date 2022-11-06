@@ -1,14 +1,34 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, List, Modal, Skeleton} from "antd";
+import {Button, Input, List, Skeleton} from "antd";
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
+import {createSearchParams, useNavigate} from "react-router-dom";
 
 
 let item_temp
 
-function Category(props) {
+function AllBlogs(props) {
+    // 获取Navigate
+    const navigate = useNavigate()
     //输入框数据双向数据流绑定
     let [input_val, setInputVal] = useState('')
+
+    // 跳转到编辑页面，并传递文章参数
+    const goToEdit = (item) => {
+        navigate({
+            pathname: '/admin/blog/new',
+            search: createSearchParams({
+                id: item.id,
+                des: item.des,
+                title: item.title,
+                article: item.article,
+                author: item.author,
+                uploadTime: item.uploadTime,
+                views: item.views,
+                isNews: item.isNews,
+            }).toString()
+        })
+    }
 
     //提交新分类的方法
     const onSubmit = () => {
@@ -62,9 +82,9 @@ function Category(props) {
         setInitLoading(true)
         //构造请求体
         let req_body = new FormData()
-        req_body.append('id', id)
+        req_body.append('blogId', id)
         //发送请求
-        axios.post('/api/type/delete', req_body)
+        axios.post('/api/blog/delete', req_body)
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
@@ -87,7 +107,7 @@ function Category(props) {
 
     useEffect(() => {//数据加载函数
         //发送请求
-        axios.post('/api/type/getAll')
+        axios.post('/api/blog/getAll')
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
@@ -102,15 +122,6 @@ function Category(props) {
                 setInitLoading(false)
             })
     }, [loading]);//绑定loading变量，只有当loading变化时，重新加载
-
-    //对话框显示状态
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const showModal = (item) => {//打开对话框
-        item_temp = item
-        setUpdateVal(item_temp.name)//设置对话框中的输入框的值
-        setIsModalOpen(true);
-    };
 
     const handleOk = () => {
         //启动加载状态
@@ -141,40 +152,14 @@ function Category(props) {
                 //变更Loading，要求重新加载列表数据
                 setLoading(!loading)
             })
-
-
-        setIsModalOpen(false);
     };
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
 
     //对话框中的输入框数据双向绑定
     let [update_val, setUpdateVal] = useState('')
 
     return (
         <div>
-            {/*头部输入框*/}
-            <Input.Group compact>
-                <Input
-                    style={{
-                        width: 'calc(100% - 90px)',
-                    }}//给右边的按钮留出空间
-                    placeholder="请输入要添加的分类名称"
-                    //数据双向绑定
-                    value={input_val}
-                    onChange={(e) => {
-                        console.log('输入框值更新', e.target.value)
-                        setInputVal(e.target.value)
-                    }}
-                    onPressEnter={onSubmit}//按下回车键时，添加分类
-                />
-                <Button
-                    type="primary"
-                    onClick={onSubmit}
-                >添加分类</Button>
-            </Input.Group>
             {/*中间列表*/}
             <List
                 loading={initLoading}
@@ -187,7 +172,7 @@ function Category(props) {
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
-                                    showModal(item)
+                                    goToEdit(item)
                                 }}
                             >编辑</Button>,
                             <Button
@@ -201,40 +186,15 @@ function Category(props) {
                     >
                         <Skeleton title={false} loading={item.loading} active>
                             <List.Item.Meta
-                                title={<a>{item.name}</a>}
-                                //description="分类描述"
+                                title={<a>{item.title}</a>}
+                                description={item.des}
                             />
                         </Skeleton>
                     </List.Item>
                 )}
             />
-            {/*弹出输入框*/}
-            <Modal title="更新电影标签"
-                   open={isModalOpen}
-                   onOk={handleOk}
-                   onCancel={handleCancel}
-                   cancelText={'取消'}
-                   okText={'确认'}
-                   maskClosable={true}//点击遮罩层后是否关闭
-            >
-                <Input.Group compact>
-                    <p>输入新的标签</p>
-                    <Input
-                        style={{
-                            width: 'calc(100%)',
-                        }}
-                        //数据流双向绑定
-                        value={update_val}
-                        onChange={(e) => {
-                            console.log('输入框值更新', e.target.value)
-                            setUpdateVal(e.target.value)
-                        }}
-                        onPressEnter={handleOk}
-                    />
-                </Input.Group>
-            </Modal>
         </div>
     );
 }
 
-export default Category;
+export default AllBlogs;

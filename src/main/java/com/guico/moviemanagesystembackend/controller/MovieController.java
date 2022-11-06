@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 @RestController
 @CrossOrigin
@@ -23,12 +22,11 @@ public class MovieController {
     IMovieService movieService;
 
     @PostMapping("/uploadMovie")
-    public Result  uploadMovie(String name, String des, Integer typeId, String tags,
-                               Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException {
+    public Result uploadMovie(MultipartFile movie) throws IOException {
         return movieService.uploadMovieFile(movie);
     }
 
-    @PostMapping("/updatePic")
+    @PostMapping("/uploadPic")
     public Result uploadMovieImg(MultipartFile pic) throws IOException {
         return movieService.uploadMoviePic(pic);
     }
