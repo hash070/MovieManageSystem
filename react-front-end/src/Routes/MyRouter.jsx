@@ -12,6 +12,8 @@ import {Button, Result} from "antd";
 import Category from "../Componments/Admin/Category.jsx";
 import NewBlog from "../Componments/Admin/NewBlog.jsx";
 import AllBlogs from "../Componments/Admin/AllBlogs.jsx";
+import UserProfile from "../Componments/Admin/UserProfile.jsx";
+import AllUsers from "../Componments/Admin/AllUsers.jsx";
 
 
 class MyRouter extends Component {
@@ -40,8 +42,8 @@ class MyRouter extends Component {
                         </Route>
                         <Route path='user'>
                             <Route index element={<IndexNav name={'个人资料'} path={'/admin/user/profile'}/>}/>
-                            <Route path={'profile'} element={<TempCom name={'个人资料'}/>}/>
-                            <Route path={'all'} element={<TempCom name={'所有用户'}/>}/>
+                            <Route path={'profile'} element={<UserProfile/>}/>
+                            <Route path={'all'} element={<AllUsers/>}/>
                         </Route>
                     </Route>
 
