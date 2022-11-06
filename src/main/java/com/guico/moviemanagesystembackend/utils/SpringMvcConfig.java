@@ -1,4 +1,4 @@
-package com.guico.moviemanagesystembackend.config;
+package com.guico.moviemanagesystembackend.utils;
 
 import com.guico.moviemanagesystembackend.interceptor.BlogAndMovieInterceptor;
 import com.guico.moviemanagesystembackend.interceptor.TypeInterceptor;
@@ -27,16 +27,8 @@ public class SpringMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new TypeInterceptor(stringRedisTemplate))
                 .addPathPatterns("/api/type/*")
                 .excludePathPatterns("/api/type/getAll");
-        registry.addInterceptor(new BlogAndMovieInterceptor(stringRedisTemplate))
-                .addPathPatterns("/api/blog/getAll")
-                .addPathPatterns("/api/movie/getAll");
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/files/**")
-                .addResourceLocations("../files/");
-    }
 
 }
 

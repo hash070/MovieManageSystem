@@ -13,10 +13,11 @@ import java.util.List;
 public interface IMovieService extends IService<Movie> {
 
     Result uploadMovie(String name, String des, Integer typeId, String tags,
-                       Boolean visibility, Date uploadTime, MultipartFile pic, MultipartFile movie) throws IOException;
+                       Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException;
 
+    Result getMovieById(Integer id);
 
-    Result getAllMovie();
+    Result getAll();
 
     Result getMovieByTags(List<Tag> tags);
 
@@ -28,12 +29,14 @@ public interface IMovieService extends IService<Movie> {
 
     Result deleteMovie(Integer movieId);
 
-    Result updateMovie(Movie movie);
 
     Result getAllTags();
 
-    Result uploadMoviePic(MultipartFile pic) throws IOException;
+    Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
+                          Boolean visibility, MultipartFile pic) throws IOException;
 
-    Result uploadMovieFile(MultipartFile movie) throws IOException;
+
+    String uploadMoviePic(MultipartFile pic) throws IOException;
+
 
 }

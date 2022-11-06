@@ -1,12 +1,10 @@
 package com.guico.moviemanagesystembackend.entry;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +30,7 @@ public class Movie {
     String file;
     @TableField("visibility")
     Boolean visibility;
+    @OrderBy
     @TableField("upload_time")
     Date uploadTime;
     @TableField("views")
@@ -69,20 +68,35 @@ public class Movie {
         this.pic = pic;
     }
 
+    public Movie(Map<Object, Object> map){
+        this.id = Long.parseLong((String) map.get("id"));
+        this.name = (String) map.get("name");
+        this.des = (String) map.get("des");
+        this.type = Integer.parseInt((String)map.get("type"));
+        this.banner = (String) map.get("banner");
+        this.uploader = (String) map.get("uploader");
+        this.file = (String) map.get("file");
+        this.visibility = Boolean.parseBoolean( (String)map.get("visibility"));
+        this.uploadTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse((String) map.get("uploadTime"), new java.text.ParsePosition(0));
+        this.views = Long.parseLong((String) map.get("views")) ;
+        this.likes = Long.parseLong((String) map.get("likes"));
+        this.pic = (String) map.get("pic");
+    }
+
     public Map toMap(){
         Map<Object,Object> map = new HashMap<>();
-        map.put("id",id);
-        map.put("name",name);
-        map.put("des",des);
-        map.put("type",type);
-        map.put("tags",banner);
-        map.put("uploader",uploader);
-        map.put("file",file);
-        map.put("visibility",visibility);
-        map.put("uploadTime",uploadTime);
-        map.put("views",views);
-        map.put("likes",likes);
-        map.put("pic",pic);
+        map.put("id",String.valueOf(this.id));
+        map.put("name",this.name);
+        map.put("des",this.des);
+        map.put("type",String.valueOf(this.type));
+        map.put("banner",this.banner);
+        map.put("uploader",this.uploader);
+        map.put("file",this.file);
+        map.put("visibility",String.valueOf(this.visibility));
+        map.put("uploadTime",String.valueOf(this.uploadTime));
+        map.put("views",String.valueOf(this.views));
+        map.put("likes",String.valueOf(this.likes));
+        map.put("pic",this.pic);
         return map;
 
     }

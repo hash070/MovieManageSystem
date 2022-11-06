@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 @RestController
 @CrossOrigin
@@ -21,14 +22,37 @@ public class MovieController {
     @Autowired
     IMovieService movieService;
 
-    @PostMapping("/uploadMovie")
-    public Result uploadMovie(MultipartFile movie) throws IOException {
-        return movieService.uploadMovieFile(movie);
+    @PostMapping("/upload")
+    public Result uploadMovie(String name, String des, Integer typeId, String tags,
+                              Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException {
+        return movieService.uploadMovie(name, des, typeId, tags, visibility, pic, movie);
+    }
+
+    @PostMapping("/getMovieById")
+    public Result getMovieById(Integer id) {
+        return movieService.getMovieById(id);
+    }
+
+    @PostMapping("/getAll")
+    public Result getAll() {
+        return movieService.getAll();
+    }
+
+    @PostMapping("/delete")
+    public Result deleteMovie(Integer movieId) {
+        return movieService.deleteMovie(movieId);
+    }
+
+    @PostMapping("/update")
+    public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
+                                 Boolean visibility, MultipartFile pic) throws IOException {
+        return movieService.updateMovieMsg(id, name, des, typeId, tags, visibility, pic);
     }
 
     @PostMapping("/uploadPic")
-    public Result uploadMovieImg(MultipartFile pic) throws IOException {
-        return movieService.uploadMoviePic(pic);
+    public Result uploadMoviePic(MultipartFile pic) throws IOException {
+        return Result.ok(movieService.uploadMoviePic(pic));
     }
+
 
 }
