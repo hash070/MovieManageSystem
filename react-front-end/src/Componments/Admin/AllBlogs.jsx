@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, List, Skeleton} from "antd";
+import {Avatar, Button, Input, List, Skeleton} from "antd";
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import 'antd/dist/antd.css';
 
 
 let item_temp
@@ -181,7 +182,7 @@ function AllBlogs(props) {
             {/*中间列表*/}
             <List
                 loading={initLoading}
-                itemLayout="horizontal"
+                itemLayout="horizontal"xx
                 dataSource={list}
                 renderItem={(item) => (
                     <List.Item
@@ -202,11 +203,13 @@ function AllBlogs(props) {
                             >删除</Button>,
                         ]}
                     >
-                        <Skeleton title={false} loading={item.loading} active>
+                        <Skeleton avatar title={false} loading={item.loading} active>
                             <List.Item.Meta
-                                title={<a>{item.title}</a>}
-                                description={item.des}
+                                avatar={<Avatar src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
+                                title={<a style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.title}</a>}
+                                description={<div style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.des}</div>}
                             />
+                            <div>作者：{item.author}</div>
                         </Skeleton>
                     </List.Item>
                 )}
