@@ -40,6 +40,10 @@ spring:
 mybatis-plus:
   # 实体类所在的包
     typeAliasesPackage: com.guico.moviemanagesystembackend.entity
+    #输出sql语句
+    configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+      shrink-whitespaces-in-sql: true
 sa-token:
   # token名称
   token-name: satoken

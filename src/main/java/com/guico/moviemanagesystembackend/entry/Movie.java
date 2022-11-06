@@ -1,9 +1,6 @@
 package com.guico.moviemanagesystembackend.entry;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -32,6 +29,7 @@ public class Movie {
     String file;
     @TableField("visibility")
     Boolean visibility;
+    @OrderBy
     @TableField("upload_time")
     Date uploadTime;
     @TableField("views")
@@ -67,6 +65,20 @@ public class Movie {
         this.views = 0L;
         this.likes = 0L;
         this.pic = pic;
+    }
+
+    public Movie(Map<Object, Object> map){
+        this.name = (String) map.get("name");
+        this.des = (String) map.get("des");
+        this.type = (Integer) map.get("type");
+        this.banner = (String) map.get("banner");
+        this.uploader = (String) map.get("uploader");
+        this.file = (String) map.get("file");
+        this.visibility = (Boolean) map.get("visibility");
+        this.uploadTime = (Date) map.get("uploadTime");
+        this.views = (Long) map.get("views");
+        this.likes = (Long) map.get("likes");
+        this.pic = (String) map.get("pic");
     }
 
     public Map toMap(){

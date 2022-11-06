@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.2</version>
+            <version>3.5.2</version>
         </dependency>
         
         <dependency>
@@ -96,8 +96,12 @@
             <artifactId>hutool-all</artifactId>
             <version>5.7.17</version>
         </dependency>
-
-
+    <!--导入spring-jdbc-3.2.13.RELEASE-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.2.15.RELEASE</version>
+        </dependency>
 
     </dependencies>
     

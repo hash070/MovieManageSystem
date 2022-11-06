@@ -28,5 +28,10 @@ public class MovieController {
         return movieService.uploadMovie(name, des, typeId, tags, visibility, pic, movie);
     }
 
+    @PostMapping("/uploadMoviePic")
+    public Result uploadMoviePic(MultipartFile pic) throws IOException {
+        return Result.ok(movieService.uploadMoviePic(pic));
+    }
+
 
 }
