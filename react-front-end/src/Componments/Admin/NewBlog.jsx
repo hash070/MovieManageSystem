@@ -28,8 +28,8 @@ function NewBlog(props) {
     const mdParser = new MarkdownIt(/* Markdown-it options */);
 
     // 获得State中的所有变量
-
-    let {id, des, title, article, author, uploadTime, views, isNews} = location.state
+    // do nothing if state is null
+    let {id, des, title, article, author, uploadTime, views, isNews} = location.state===null?{id:null, des:null, title:null, article:null, author:null, uploadTime:null, views:null, isNews:null}:location.state
 
     // MarkDown编辑器，数据绑定
     let [html_text, upDataHtml] = useState('')
