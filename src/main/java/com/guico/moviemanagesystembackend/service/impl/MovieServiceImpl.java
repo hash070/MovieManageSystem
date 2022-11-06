@@ -15,12 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements IMovieService {
@@ -107,12 +105,44 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     }
 
     @Override
-    public Result updateMovieMsg(MultipartFile pic, Long id) throws IOException {
-
+    public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
+                                 Boolean visibility, MultipartFile pic) throws IOException {
+//        根据id获取movie对象
+//        先从redis中获取
+        Map<Object, Object> movieMap = stringRedisTemplate.opsForHash().entries("movie:"+id);
+        Movie movie;
+//        如果redis中没有,则从数据库中获取
+        if(movieMap.size() == 0){
+            movie = getById(id);
+        }else{
+            movie = new Movie(movieMap);
+        }
+//        获取picUrl
+        String picUrl = movie.getPic();
+//        如果不为空，删除
+        if(picUrl != null){
+            File file = new File(path + picUrl);
+            if(file.exists()){
+                file.delete();
+            }
+        }
+//        上传新的pic
+        picUrl = uploadMoviePic(pic);
+//        更新movie对象
+        movie.setName(name);
+        movie.setDes(des);
+        movie.setType(typeId);
+        movie.setBanner(tags);
+        movie.setVisibility(visibility);
+        movie.setPic(picUrl);
+//        更新数据库
+        updateById(movie);
+//        更新redis
+        stringRedisTemplate.opsForHash().putAll("movie:"+id, movie.toMap());
+        return Result.ok();
     }
 
 //    上传功能实现类，如果成功返回url，失败则返回前缀为fail:的失败信息
-    @Override
     public String uploadMovieFile(MultipartFile movie) throws IOException {
         //        获取文件名
         String fileName = movie.getOriginalFilename();
@@ -141,7 +171,6 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         return file.getPath();
     }
 
-    @Override
     public String uploadMoviePic(MultipartFile pic) throws IOException {
         //        获取文件名
         String fileName = pic.getOriginalFilename();
@@ -171,4 +200,6 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         pic.transferTo(file);
         return file.getPath();
     }
+
+
 }
