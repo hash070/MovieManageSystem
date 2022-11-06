@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,16 +69,17 @@ public class Movie {
     }
 
     public Movie(Map<Object, Object> map){
+        this.id = Long.parseLong((String) map.get("id"));
         this.name = (String) map.get("name");
         this.des = (String) map.get("des");
-        this.type = (Integer) map.get("type");
+        this.type = Integer.parseInt((String)map.get("type"));
         this.banner = (String) map.get("banner");
         this.uploader = (String) map.get("uploader");
         this.file = (String) map.get("file");
-        this.visibility = (Boolean) map.get("visibility");
-        this.uploadTime = (Date) map.get("uploadTime");
-        this.views = (Long) map.get("views");
-        this.likes = (Long) map.get("likes");
+        this.visibility = Boolean.parseBoolean( (String)map.get("visibility"));
+        this.uploadTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse((String) map.get("uploadTime"), new java.text.ParsePosition(0));
+        this.views = Long.parseLong((String) map.get("views")) ;
+        this.likes = Long.parseLong((String) map.get("likes"));
         this.pic = (String) map.get("pic");
     }
 
