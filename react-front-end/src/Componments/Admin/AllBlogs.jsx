@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Input, List, Skeleton} from "antd";
+import {Avatar, Button, Input, List, Skeleton} from "antd";
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
-import {createSearchParams, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import 'antd/dist/antd.css';
 
 
 let item_temp
@@ -13,9 +14,10 @@ function AllBlogs(props) {
     //输入框数据双向数据流绑定
     let [input_val, setInputVal] = useState('')
 
-    // 跳转到编辑页面，并传递文章参数
-    const goToEdit = (item) => {
-        navigate({
+
+    /*
+    原search传参方式
+            navigate({
             pathname: '/admin/blog/new',
             search: createSearchParams({
                 id: item.id,
@@ -28,6 +30,23 @@ function AllBlogs(props) {
                 isNews: item.isNews,
             }).toString()
         })
+
+     */
+    // 跳转到编辑页面，并传递文章参数
+    const goToEdit = (item) => {
+        navigate(`/admin/blog/new`,
+            {
+                state: {
+                    id: item.id,
+                    des: item.des,
+                    title: item.title,
+                    article: item.article,
+                    author: item.author,
+                    uploadTime: item.uploadTime,
+                    views: item.views,
+                    isNews: item.isNews,
+                }
+            })
     }
 
     //提交新分类的方法
@@ -163,7 +182,7 @@ function AllBlogs(props) {
             {/*中间列表*/}
             <List
                 loading={initLoading}
-                itemLayout="horizontal"
+                itemLayout="horizontal"xx
                 dataSource={list}
                 renderItem={(item) => (
                     <List.Item
@@ -184,11 +203,13 @@ function AllBlogs(props) {
                             >删除</Button>,
                         ]}
                     >
-                        <Skeleton title={false} loading={item.loading} active>
+                        <Skeleton avatar title={false} loading={item.loading} active>
                             <List.Item.Meta
-                                title={<a>{item.title}</a>}
-                                description={item.des}
+                                avatar={<Avatar src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
+                                title={<a style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.title}</a>}
+                                description={<div style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.des}</div>}
                             />
+                            <div>作者：{item.author}</div>
                         </Skeleton>
                     </List.Item>
                 )}
