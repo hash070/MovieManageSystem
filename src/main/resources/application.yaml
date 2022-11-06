@@ -1,6 +1,5 @@
 file:
   upload:
-    path: D:/MovieManageSystem/
     movie-type: mp4
     # 设置pic的类型：所有的图片类型
     pic-type: jpg|jpeg|png|bmp|gif|ico|tiff|tif|svg|webp
@@ -40,6 +39,10 @@ spring:
 mybatis-plus:
   # 实体类所在的包
     typeAliasesPackage: com.guico.moviemanagesystembackend.entity
+    #输出sql语句
+    configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+      shrink-whitespaces-in-sql: true
 sa-token:
   # token名称
   token-name: satoken

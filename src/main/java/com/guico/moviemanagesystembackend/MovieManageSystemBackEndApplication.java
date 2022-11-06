@@ -8,6 +8,7 @@ public class MovieManageSystemBackEndApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MovieManageSystemBackEndApplication.class, args);
+        System.out.println(System.getProperty("user.dir"));
     }
 
 }

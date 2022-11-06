@@ -34,6 +34,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
 
 //    Blog对象以HashMap的形式存储在Redis中，key为blogId，value为Blog对象
     public Result getAll(){
+        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
+        if(user.getLevel()>1){
+            return getBlogByAuthorId(user.getEmail());
+        }
 //        先从Redis中获取所有的Blog对象
         List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
 
@@ -142,12 +146,14 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         blog.setId(id);
         blog.setDes(des);
         blog.setTitle(title);
+//        title不能超过100个中文字符
+        if(title.length() > 100) {
+            return Result.fail("标题不能超过100个中英文字符");
+        }
         blog.setArticle(article);
         blog.setIsNews(isNews);
-//        检测是否存在相同作者和题目的blog
-        Blog oldBlog = query().eq("author", blog.getAuthor()).eq("title", blog.getTitle()).one();
 //        如果存在，则返回错误信息
-        if(oldBlog != null){
+        if(query().eq("title", blog.getTitle()).count() > 1){
             return Result.fail("已存在相同作者和题目的blog，请修改题目");
         }
 //        将Blog对象存储到mysql中
