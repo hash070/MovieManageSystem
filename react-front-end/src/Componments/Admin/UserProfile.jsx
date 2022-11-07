@@ -11,6 +11,10 @@ function UserProfile(props) {
 
     const userinfo = JSON.parse(localStorage.getItem('userinfo') == null ? navigate('/login') : localStorage.getItem('userinfo'))
 
+    let [user_email, setUserEmail] = useState(userinfo.email)
+    let [user_nickname, setUserNickName] = useState(userinfo.nickname)
+    let [user_level, setUserLevel] = useState(userinfo.level)
+
     const getAvatar = () => {
         switch (userinfo.level) {
             case 0://root
@@ -61,11 +65,13 @@ function UserProfile(props) {
 
         // 构建请求体
         let req_body = new FormData()
-        if (values.nickname !== '') {
+        if (values.nickname !== '' && values.nickname !== undefined) {
+            console.log('昵称不为空')
             req_body.append('nickname', values.nickname)
         }
 
-        if (values.password !== '') {
+        if (values.password !== '' && values.password !== undefined) {
+            console.log('密码不为空')
             req_body.append('password', values.password)
         }
 
@@ -81,6 +87,7 @@ function UserProfile(props) {
                 if (res.data.success) {
                     console.log('用户信息更新成功')
                     successMSG('用户信息更新成功')
+                    //清空表单
                 } else {
                     console.log('用户信息更新失败')
                     errorMSG('用户信息更新失败')
@@ -88,7 +95,20 @@ function UserProfile(props) {
             })
             .catch(err => {
                 console.log(err)
-                errorMSG('用户信息更新失败','请检查网络连接')
+                errorMSG('用户信息更新失败', '请检查网络连接')
+            })
+            .finally(() => {
+                axios.post('/api/user/checkToken')
+                    .then(res => {
+                        console.log('收到服务端返回信息', res.data)
+                        //保存用户信息JSON到本地存储
+                        localStorage.setItem('userinfo', JSON.stringify(res.data.data))
+                        console.log('用户信息已保存', JSON.parse(localStorage.getItem('userinfo')))
+                        //更新用户信息
+                        setUserNickName(res.data.data.nickname)
+                        setUserLevel(res.data.data.level)
+                        setUserEmail(res.data.data.email)
+                    })
             })
     }
 
@@ -97,9 +117,9 @@ function UserProfile(props) {
 
             <div style={{width: '128px', margin: 'auto'}}>{getAvatar()}</div>
 
-            <p style={{textAlign: 'center'}}>用户角色：{getUserLevel(userinfo.level)}</p>
-            <p style={{textAlign: 'center'}}>用户邮箱：{userinfo.email}</p>
-            <p style={{textAlign: 'center'}}>用户昵称：{userinfo.nickname}</p>
+            <p style={{textAlign: 'center'}}>用户角色：{getUserLevel(user_level)}</p>
+            <p style={{textAlign: 'center'}}>用户邮箱：{user_email}</p>
+            <p style={{textAlign: 'center'}}>用户昵称：{user_nickname}</p>
 
             <Form
                 name="normal_login"
