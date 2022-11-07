@@ -14,6 +14,7 @@ public interface IUserService extends IService<User> {
 
     Result resetPassword(String email, String password, String code);
 
+    Result update(String nickname, String password);
 
     Result logout(String SAToken);
 
