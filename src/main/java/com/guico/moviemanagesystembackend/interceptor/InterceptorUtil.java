@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
+import static com.guico.moviemanagesystembackend.utils.RedisKeyContains.*;
 
 @Slf4j
 @Component

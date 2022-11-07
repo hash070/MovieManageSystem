@@ -163,6 +163,14 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         if(movie == null){
             return Result.fail("该电影不存在");
         }
+        File file = new File(movie.getFile());
+        if(file.exists()){
+            file.delete();
+        }
+        File pic = new File(movie.getPic());
+        if(pic.exists()){
+            pic.delete();
+        }
         removeById(movieId);
         stringRedisTemplate.delete("movie:"+movieId);
         return Result.ok();
@@ -189,8 +197,8 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 //        获取picUrl
         String picUrl = movie.getPic();
-//        如果不为空，删除
-        if(picUrl != null){
+//        如果不为空，且和之前的Pic不一样，删除之前的Pic
+        if(picUrl != null&&!pic.equals(picUrl)&&!pic.equals("")){
             File file = new File(path + picUrl);
             if(file.exists()){
                 file.delete();
