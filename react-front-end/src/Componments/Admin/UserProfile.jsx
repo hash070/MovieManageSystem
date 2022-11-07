@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {Avatar, Button, Col, Form, Input, Row} from "antd";
 import {CheckCircleOutlined, LockOutlined, UserOutlined} from "@ant-design/icons";
+import axios from "axios";
+import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 
 function UserProfile(props) {
     //获取Navigate
@@ -56,6 +58,38 @@ function UserProfile(props) {
     const onFinish = (values) => {
         console.log('用户信息更新表单提交: ', values);
         //TODO:发送更新请求
+
+        // 构建请求体
+        let req_body = new FormData()
+        if (values.nickname !== '') {
+            req_body.append('nickname', values.nickname)
+        }
+
+        if (values.password !== '') {
+            req_body.append('password', values.password)
+        }
+
+        //log all form data
+
+        for (let key of req_body.keys()) {
+            console.log(key, req_body.get(key))
+        }
+
+        // 发送请求
+        axios.post('/api/user/update', req_body)
+            .then(res => {
+                if (res.data.success) {
+                    console.log('用户信息更新成功')
+                    successMSG('用户信息更新成功')
+                } else {
+                    console.log('用户信息更新失败')
+                    errorMSG('用户信息更新失败')
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                errorMSG('用户信息更新失败','请检查网络连接')
+            })
     }
 
     return (
@@ -92,7 +126,7 @@ function UserProfile(props) {
                 </Form.Item>
                 <br/>
                 <Form.Item className='regButton'>
-                    <Button type="primary" htmlType="submit" style={{marginRight: '50px'}}>
+                    <Button type="primary" htmlType="submit" style={{width: '100px', margin: 'auto'}}>
                         更新信息
                     </Button>
                 </Form.Item>
