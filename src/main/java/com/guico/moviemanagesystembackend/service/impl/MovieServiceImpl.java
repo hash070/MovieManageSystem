@@ -113,17 +113,48 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result getMovieByType(Integer typeId) {
-        return null;
+//        先从redis中获取typeId对应的电影
+        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
+//        如果redis中没有电影,则从数据库中获取
+        if(movieList.size() == 0){
+            List<Movie> movies = query().list();
+            for(Object movie : movies){
+                stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
+            }
+            movieList = Collections.singletonList(movies);
+        }
+        movieList.removeIf(movie -> !((Movie) movie).getType().equals(typeId));
+        return Result.ok(movieList, movieList.size());
     }
 
     @Override
     public Result getMovieByUp(Integer upId) {
-        return null;
+        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
+//        如果redis中没有电影,则从数据库中获取
+        if(movieList.size() == 0){
+            List<Movie> movies = query().list();
+            for(Object movie : movies){
+                stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
+            }
+            movieList = Collections.singletonList(movies);
+        }
+        movieList.removeIf(movie -> !((Movie) movie).getUploader().equals(upId));
+        return Result.ok(movieList, movieList.size());
     }
 
     @Override
     public Result getMovieBySearch(String search) {
-        return null;
+        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
+//        如果redis中没有电影,则从数据库中获取
+        if(movieList.size() == 0){
+            List<Movie> movies = query().list();
+            for(Object movie : movies){
+                stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
+            }
+            movieList = Collections.singletonList(movies);
+        }
+        movieList.removeIf(movie -> !((Movie) movie).getName().contains(search));
+        return Result.ok(movieList, movieList.size());
     }
 
     @Override
