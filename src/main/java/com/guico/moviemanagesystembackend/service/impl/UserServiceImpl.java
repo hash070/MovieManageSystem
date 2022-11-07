@@ -93,6 +93,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok();
     }
 
+    @Override
+    public Result update(String nickname, String password) {
+        User user = InterceptorUtil.getUser(request, stringRedisTemplate);
+        user.setNickname(nickname);
+        user.setPassword(password);
+        updateById(user);
+        stringRedisTemplate.opsForHash().putAll(USER_INFO + user.getEmail(), user.toMap());
+        return Result.ok();
+
+    }
+
 
     @Override
     public Result logout(String token) {

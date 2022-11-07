@@ -98,5 +98,8 @@ public class UserController {
         return userService.deleteByRoot(email);
     }
 
-
+    @PostMapping("/update")
+    public Result update(String nickname, String password) {
+        return userService.update(nickname, password);
+    }
 }
