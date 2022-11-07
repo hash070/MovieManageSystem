@@ -4,8 +4,6 @@ import com.guico.moviemanagesystembackend.service.IMovieService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Date;
 
 @RestController
 @CrossOrigin
@@ -35,7 +32,7 @@ public class MovieController {
         return movieService.uploadMovie(name, des, typeId, tags, visibility, pic, movie);
     }
 
-    @PostMapping("/getMovieById")
+    @PostMapping("/getById")
     public Result getMovieById(Integer id) {
         return movieService.getMovieById(id);
     }
