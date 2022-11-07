@@ -8,6 +8,7 @@ import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
 import com.guico.moviemanagesystembackend.service.IUserService;
+import io.micrometer.core.lang.Nullable;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -94,10 +95,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Result update(String nickname, String password) {
+    public Result update(@Nullable String nickname,@Nullable String password) {
         User user = InterceptorUtil.getUser(request, stringRedisTemplate);
-        user.setNickname(nickname);
-        user.setPassword(password);
+        if(nickname!=null)
+            user.setNickname(nickname);
+        if (password!=null)
+            user.setPassword(password);
         updateById(user);
         stringRedisTemplate.opsForHash().putAll(USER_INFO + user.getEmail(), user.toMap());
         return Result.ok();
