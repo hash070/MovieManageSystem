@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
+import static com.guico.moviemanagesystembackend.utils.RedisKeyContains.*;
 
 @Service
 @Log4j2
