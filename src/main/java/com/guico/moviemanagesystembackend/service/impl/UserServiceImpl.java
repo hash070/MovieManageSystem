@@ -97,14 +97,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Result update(@Nullable String nickname,@Nullable String password) {
         User user = InterceptorUtil.getUser(request, stringRedisTemplate);
-        if(nickname!=null)
+        if(nickname!=null&&!nickname.equals(""))
             user.setNickname(nickname);
-        if (password!=null)
+        if (password!=null&&!password.equals(""))
             user.setPassword(password);
-        updateById(user);
-        stringRedisTemplate.opsForHash().putAll(USER_INFO + user.getEmail(), user.toMap());
-        return Result.ok();
-
+        if(update().eq("email",user.getEmail()).update(user)) {
+            stringRedisTemplate.opsForHash().putAll(USER_INFO + user.getEmail(), user.toMap());
+            return Result.ok();
+        } else
+            return Result.fail("修改失败");
     }
 
 
