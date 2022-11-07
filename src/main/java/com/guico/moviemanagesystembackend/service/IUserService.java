@@ -18,7 +18,6 @@ public interface IUserService extends IService<User> {
 
     Result logout(String SAToken);
 
-
     Result addByRoot(String nickname, String email, String password, Integer level);
 
     Result updateByRoot(String nickname, String email, String password, Integer level);

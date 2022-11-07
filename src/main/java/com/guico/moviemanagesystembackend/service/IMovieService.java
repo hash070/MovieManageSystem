@@ -23,7 +23,7 @@ public interface IMovieService extends IService<Movie> {
 
     Result getMovieByType(Integer typeId);
 
-    Result getMovieByUp(Integer upId);
+    Result getMovieByUp(String upId);
 
     Result getMovieBySearch(String search);
 
