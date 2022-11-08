@@ -14,6 +14,7 @@ import NewBlog from "../Componments/Admin/NewBlog.jsx";
 import AllBlogs from "../Componments/Admin/AllBlogs.jsx";
 import UserProfile from "../Componments/Admin/UserProfile.jsx";
 import AllUsers from "../Componments/Admin/AllUsers.jsx";
+import MovieUpload from "../Componments/Admin/MovieUpload.jsx";
 
 
 class MyRouter extends Component {
@@ -31,7 +32,7 @@ class MyRouter extends Component {
                         <Route index element={<HelloWorld2/>}/>
                         <Route path='movie'>
                             <Route index element={<IndexNav name={'影片上传'} path={'/admin/movie/upload'}/>}/>
-                            <Route path={'upload'} element={<TempCom name={'上传影片'}/>}/>
+                            <Route path={'upload'} element={<MovieUpload/>}/>
                             <Route path={'all'} element={<TempCom name={'所有影片'}/>}/>
                             <Route path={'category'} element={<Category/>}/>
                         </Route>
