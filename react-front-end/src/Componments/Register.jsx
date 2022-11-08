@@ -3,7 +3,7 @@ import axios from 'axios';
 import {React, Fragment, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
-import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
+import {LockOutlined, UserOutlined, CheckCircleOutlined, MailOutlined} from '@ant-design/icons';
 import {errorMSG, getEmailCheckReg, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 
 //注册表单
@@ -126,7 +126,7 @@ const RegisterForm = () => {
                             pattern: /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/,
                             message: '请输入正确的邮箱!'
                         }]}>
-                        <Input prefix={<UserOutlined className="site-form-item-icon"/>}
+                        <Input prefix={<MailOutlined className="site-form-item-icon"/>}
                                placeholder="邮箱"/>
                     </Form.Item>
                     <Form.Item

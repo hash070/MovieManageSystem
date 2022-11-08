@@ -10,8 +10,10 @@ function HelloWorld1(props) {
             您当前正在访问根路径
             <br/>
             <Button type={"primary"} onClick={() => navigate('/admin')}>跳转到admin</Button>
-            只因哥视频播放测试
-            <video src={'https://ts.hash070.top/103/Haganma.mp4?hash=AgADdA'} controls={true} width={500} height={300}/>
+            <br/>
+
+            <p style={{width:'100%',textAlign:'center',marginTop:'10vh'}}>只因哥视频播放测试</p>
+            <video style={{width:'100%',marginTop:'10vh'}}   src={'https://ts.hash070.top/103/Haganma.mp4?hash=AgADdA'} controls={true}/>
         </div>
     );
 }

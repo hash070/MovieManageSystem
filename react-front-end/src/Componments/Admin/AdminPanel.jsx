@@ -8,20 +8,11 @@ import {
 import {Breadcrumb, Input, Layout, Menu, Modal} from 'antd';
 import {Outlet, useNavigate} from "react-router-dom";
 import axios from "axios";
-import {errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
+import {errorMSG, getFormData, getItem, successMSG} from "../../Utils/CommonFuncs.js";
 import Cookies from "universal-cookie/es6";
 
 const {Header, Content, Footer, Sider} = Layout;
 
-// 菜单对象构造方法，生成菜单对象
-function getItem(label, key, icon, children) {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    };
-}
 
 const AdminPanel = () => {
     //获取路由跳转方法
