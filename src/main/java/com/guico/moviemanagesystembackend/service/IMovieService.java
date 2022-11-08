@@ -12,8 +12,10 @@ import java.util.List;
 
 public interface IMovieService extends IService<Movie> {
 
-    Result uploadMovie(String name, String des, Integer typeId, String tags,
-                       Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException;
+    Result upload(String name, String des, Integer typeId, String tags,
+                  Boolean visibility, String pic, String movie);
+
+    Result uploadMovie(MultipartFile movie) throws IOException;
 
     Result getMovieById(Integer id);
 
