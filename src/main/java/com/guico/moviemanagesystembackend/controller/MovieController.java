@@ -204,9 +204,7 @@ public class MovieController {
             }
         }
         log.error("文件不存在");
-
         response.setStatus(404);
-
         return null;
     }
 
