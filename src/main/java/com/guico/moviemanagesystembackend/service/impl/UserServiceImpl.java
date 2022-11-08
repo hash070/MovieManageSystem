@@ -129,7 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!isRoot()) {
             return Result.fail("权限不足");
         }
-        User newUser = new User(nickname, email, password, level);
+        User newUser = new User(nickname, password, email, level);
         if(query().eq("email",email).one()!=null){
             return Result.fail("邮箱已被注册");
         }
