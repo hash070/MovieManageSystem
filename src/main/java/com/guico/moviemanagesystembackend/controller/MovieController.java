@@ -28,8 +28,8 @@ public class MovieController {
 
     @PostMapping("/upload")
     public Result uploadMovie(String name, String des, Integer typeId, String tags,
-                              Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException {
-        return movieService.uploadMovie(name, des, typeId, tags, visibility, pic, movie);
+                              Boolean visibility, String pic, String movie) throws IOException {
+        return movieService.upload(name, des, typeId, tags, visibility, pic, movie);
     }
 
     @PostMapping("/getById")
@@ -40,7 +40,6 @@ public class MovieController {
     @PostMapping("/getBySearch")
     public Result getMovieBySearch(String search) {
         return movieService.getMovieBySearch(search);
-
     }
 
     @PostMapping("/getByUp")
@@ -67,6 +66,11 @@ public class MovieController {
     public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
                                  Boolean visibility, MultipartFile pic) throws IOException {
         return movieService.updateMovieMsg(id, name, des, typeId, tags, visibility, pic);
+    }
+
+    @PostMapping("/uploadMovie")
+    public Result uploadMovie(MultipartFile movie) throws IOException {
+        return movieService.uploadMovie(movie);
     }
 
     @PostMapping("/uploadPic")
