@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Files;
@@ -29,6 +30,9 @@ public class MovieController {
 
     @Autowired
     HttpServletResponse response;
+
+    @Autowired
+    HttpServletRequest request;
 
     String path = System.getProperty("user.dir")+ "/upload";
 
@@ -104,6 +108,13 @@ public class MovieController {
                 headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
                 headers.add("Pragma", "no-cache");
                 headers.add("Expires", "0");
+//                如果后缀为mp4则设置为视频格式
+                if (url.endsWith(".mp4")) {
+                    String range = request.getHeader("Range");
+                    headers.add("Content-Type", "video/mp4");
+                    headers.add("Content-Range", String.valueOf(range+file.length()));
+                    response.setContentLength((int) file.length());
+                }
                 ResponseEntity<byte[]> responseEntity = ResponseEntity
                         .ok()
                         .headers(headers)
