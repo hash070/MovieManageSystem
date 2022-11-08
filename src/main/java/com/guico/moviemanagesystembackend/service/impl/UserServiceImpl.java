@@ -150,7 +150,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(query().eq("email",email).count()>1){
             return Result.fail("邮箱已被注册");
         }
-        user =  new User(nickname, email, password, level);
+        user =  new User(nickname, password, email, level);
         updateById(user);
 //        更新redis中的用户信息
         stringRedisTemplate.opsForHash().putAll(USER_INFO + email, user.toMap());
@@ -210,7 +210,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 //        "user:info:"目录下存储的是hash类型的数据
         List<User> users = new ArrayList<>();
         Set<String> keys = stringRedisTemplate.keys(USER_INFO + "*");
-        if (keys.isEmpty()) {
+        if (keys==null||keys.isEmpty()) {
 //            如果redis中没有用户信息，从数据库中获取
             users = query().list();
             if (users.isEmpty()) {
