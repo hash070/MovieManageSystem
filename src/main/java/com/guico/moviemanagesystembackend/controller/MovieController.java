@@ -4,6 +4,7 @@ import com.guico.moviemanagesystembackend.service.IMovieService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,33 +80,10 @@ public class MovieController {
     }
 
     @RequestMapping("/getFile")
-    public Result getFile(String url){
+    public String getFile(String url){
         url = path + url;
-        File file = new File(url);
-        if(file.exists()){
-            response.setHeader("Content-Disposition", "attachment;filename="+ url);
-            response.setContentType("application/octet-stream");
-            response.setHeader("Content-Length", String.valueOf(file.length()));
-            byte[] buffer = new byte[(int)file.length()];
-            FileInputStream fis = null;
-            BufferedInputStream bfs = null;
-            try {
-                fis = new FileInputStream(file);
-                bfs = new BufferedInputStream(fis);
-                OutputStream os = response.getOutputStream();
-                int len = bfs.read(buffer);
-                while (len != -1) {
-                    os.write(buffer, 0, len);
-                    len = bfs.read(buffer);
-                }
-                response.getOutputStream().write(buffer);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return Result.fail(e.getMessage());
-            }
-        }
-        log.info("下载成功文件{}", file.getName());
-        return Result.ok();
+        log.info(url);
+        return url;
     }
 
 
