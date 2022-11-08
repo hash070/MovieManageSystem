@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Col, Dropdown, Form, Input, List, Modal, Radio, Row, Skeleton, Space} from "antd";
-import {errorMSG, getItem, getUserLevel, simulateMouseClick, successMSG} from "../../Utils/CommonFuncs.js";
+import {
+    errorMSG,
+    getEmailCheckReg,
+    getItem,
+    getUserLevel,
+    simulateMouseClick,
+    successMSG
+} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
 import {
     DesktopOutlined,
@@ -132,23 +139,36 @@ function AllUsers(props) {
         let add_user_api_url = '/api/user/addByRoot'
         let edit_user_api_url = '/api/user/updateByRoot'
 
-        //通过标题判断对话框类型
-        if (modalTitle === modalAddUserTitleStr) {//添加新用户
-            api_url = add_user_api_url
-        } else if (modalTitle === modalEditUserTitleStr) {//修改用户信息
-            api_url = edit_user_api_url
-        }
 
         console.log('操作API：', api_url)
 
         //开始构建请求体
         let req_body = new FormData()
         req_body.append('nickname', user_nick_name)
-        req_body.append('email', email_temp)
+
+        //通过标题判断对话框类型
+        if (modalTitle === modalAddUserTitleStr) {//添加新用户对话框
+            console.log('添加新用户')
+            if(getEmailCheckReg().test(user_email)){//检查邮箱格式
+                console.log('邮箱格式正确')
+                req_body.append('email', user_email)
+            }else {
+                console.log('邮箱格式错误')
+                errorMSG('邮箱格式错误')
+                return
+            }
+            api_url = add_user_api_url
+        } else if (modalTitle === modalEditUserTitleStr) {//修改用户信息对话框
+            console.log('修改用户信息')
+            //不修改邮箱
+            req_body.append('email', email_temp)
+            api_url = edit_user_api_url
+        }
+
         if (user_password !== '') {//如果密码不为空，则添加密码
             console.log('密码不为空')
             req_body.append('password', user_password)
-        }else {//如果密码为空，则使用原密码
+        } else {//如果密码为空，则使用原密码
             console.log('密码为空')
             req_body.append('password', pwd_temp)
         }
