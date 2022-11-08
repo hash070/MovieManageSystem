@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {Avatar, Button, Col, Form, Input, Row} from "antd";
 import {CheckCircleOutlined, LockOutlined, UserOutlined} from "@ant-design/icons";
 import axios from "axios";
-import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
+import {errorMSG, getUserLevel, successMSG} from "../../Utils/CommonFuncs.js";
 
 function UserProfile(props) {
     //获取Navigate
@@ -31,21 +31,6 @@ function UserProfile(props) {
         }
     }
 
-    const getUserLevel = (level) => {
-        switch (level) {
-            case 0://root
-                return '根用户'
-                break
-            case 1://admin
-                return '管理员'
-                break
-            case 2://user
-                return '普通用户'
-                break
-            default:
-                return 'Error'
-        }
-    }
 
     //Get Current Date
     // const getNowDate = () =>{

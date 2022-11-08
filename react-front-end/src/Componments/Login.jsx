@@ -120,10 +120,6 @@ const LoginForm = () => {
         navigate('/register');
     }
 
-    let onLoginClick = () => {
-        // localStorage.setItem("token", "logined")
-    }
-
     return (
         <div className='login-wrap'>
             <div>
@@ -170,8 +166,7 @@ const LoginForm = () => {
                             <Col span={6}>
                                 <Button type="primary"
                                         htmlType="submit"
-                                        className="login-form-button"
-                                        onClick={onLoginClick}>
+                                        className="login-form-button">
                                     登录
                                 </Button>
                             </Col>
@@ -179,7 +174,8 @@ const LoginForm = () => {
                             <Col span={6}></Col>
                             <Col span={6}>
                                 <Button type="primary"
-                                        onClick={onRegisterClick}>注册</Button>
+                                        onClick={onRegisterClick}>注册
+                                </Button>
                             </Col>
                         </Row>
                         {/*<a href="/register">注册</a>*/}
