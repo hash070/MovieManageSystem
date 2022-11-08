@@ -80,6 +80,7 @@ public class MovieController {
 
     @RequestMapping("/getFile")
     public Result getFile(String url){
+        url = path + url;
         File file = new File(url);
         if(file.exists()){
             response.setHeader("Content-Disposition", "attachment;filename="+ path + file.getName());
