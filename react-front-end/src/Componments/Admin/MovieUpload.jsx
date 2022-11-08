@@ -294,7 +294,7 @@ const MovieUpload = () => {
                             console.log('删除影片文件', e)
                         }}
                         listType="picture"
-                        onChange={(info) => onPictureFileUpload(info)}
+                        onChange={(info) => onMovieFileUpload(info)}
 
                     >
                         <p className="ant-upload-drag-icon">

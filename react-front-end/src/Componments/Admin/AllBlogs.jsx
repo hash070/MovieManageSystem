@@ -11,10 +11,6 @@ let item_temp
 function AllBlogs(props) {
     // 获取Navigate
     const navigate = useNavigate()
-    //输入框数据双向数据流绑定
-    let [input_val, setInputVal] = useState('')
-
-
     /*
     原search传参方式
             navigate({
