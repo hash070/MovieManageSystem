@@ -2,7 +2,6 @@ package com.guico.moviemanagesystembackend.interceptor;
 
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.exception.LevelException;
-import com.guico.moviemanagesystembackend.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
+import static com.guico.moviemanagesystembackend.utils.RedisUtil.*;
 
 @Slf4j
 @Component

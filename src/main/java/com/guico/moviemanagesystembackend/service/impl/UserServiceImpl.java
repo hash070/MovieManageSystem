@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static com.guico.moviemanagesystembackend.utils.RedisKeyContrains.*;
+import static com.guico.moviemanagesystembackend.utils.RedisUtil.*;
 
 @Service
 @Log4j2
@@ -129,7 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (!isRoot()) {
             return Result.fail("权限不足");
         }
-        User newUser = new User(nickname, email, password, level);
+        User newUser = new User(nickname, password, email, level);
         if(query().eq("email",email).one()!=null){
             return Result.fail("邮箱已被注册");
         }
