@@ -64,7 +64,7 @@ public class MovieController {
 
     @PostMapping("/update")
     public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
-                                 Boolean visibility, MultipartFile pic) throws IOException {
+                                 Boolean visibility, String pic) throws IOException {
         return movieService.updateMovieMsg(id, name, des, typeId, tags, visibility, pic);
     }
 

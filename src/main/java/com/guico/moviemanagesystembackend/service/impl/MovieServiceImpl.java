@@ -45,7 +45,15 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result upload(String name, String des, Integer typeId, String tags, Boolean visibility, String pic, String movie) {
-//        生成Movie对象
+//      检查文件是否存在
+        if (pic == null || movie == null) {
+            return Result.fail("文件不存在");
+        }
+        if(!new File(path+pic).exists()||!new File(path+movie).exists()){
+            return Result.fail("文件不存在");
+        }
+
+        //        生成Movie对象
         String uploader = InterceptorUtil.getUser(request,stringRedisTemplate).getEmail();
         Movie movie1 = new Movie(name,des,typeId,tags,uploader,visibility,pic,movie);
 //        保存到数据库
@@ -171,39 +179,33 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
-                                 Boolean visibility, MultipartFile pic) throws IOException {
-//        根据id获取movie对象
-//        先从redis中获取
-        Map<Object, Object> movieMap = stringRedisTemplate.opsForHash().entries("movie:"+id);
-        Movie movie;
-//        如果redis中没有,则从数据库中获取
-        if(movieMap.size() == 0){
-            movie = getById(id);
-        }else{
-            movie = new Movie(movieMap);
-        }
-//        获取picUrl
-        String picUrl = movie.getPic();
-//        如果不为空，且和之前的Pic不一样，删除之前的Pic
-        if(picUrl != null&&!pic.equals(picUrl)&&!pic.equals("")){
-            File file = new File(path + picUrl);
-            if(file.exists()){
-                file.delete();
+                                 Boolean visibility, String pic) throws IOException {
+//      检查文件是否存在
+        if(pic != null){
+            File file = new File(pic);
+            if(!file.exists()){
+                return Result.fail("图片不存在");
             }
         }
-//        上传新的pic
-        picUrl = uploadMoviePic(pic);
-//        更新movie对象
-        movie.setName(name);
-        movie.setDes(des);
-        movie.setType(typeId);
-        movie.setBanner(tags);
-        movie.setVisibility(visibility);
-        movie.setPic(picUrl);
-//        更新数据库
-        updateById(movie);
-//        更新redis
-        stringRedisTemplate.opsForHash().putAll("movie:"+id, movie.toMap());
+        //        先从redis中获取电影
+        Map movieMap = stringRedisTemplate.opsForHash().entries("movie:"+id);
+        if(movieMap.size() == 0){
+//            如果redis中没有电影,则从数据库中获取
+            Movie movie = getById(id);
+            if(movie == null){
+                return Result.fail("该电影不存在");
+            }
+            movieMap = movie.toMap();
+        }
+//        更新电影信息
+        movieMap.put("name", name);
+        movieMap.put("des", des);
+        movieMap.put("type", typeId);
+        movieMap.put("tags", tags);
+        movieMap.put("visibility", visibility);
+        movieMap.put("pic", pic);
+        stringRedisTemplate.opsForHash().putAll("movie:"+id, movieMap);
+        updateById(new Movie(movieMap));
         return Result.ok();
     }
 
