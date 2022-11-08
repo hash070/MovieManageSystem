@@ -44,30 +44,21 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     HttpServletRequest request;
 
     @Override
-    public Result uploadMovie(String name, String des, Integer typeId, String tags,
-                              Boolean visibility, MultipartFile pic, MultipartFile movie) throws IOException {
-//        先将文件上传到服务器
-        String picUrl = uploadMoviePic(pic);
-        String movieUrl = uploadMovieFile(movie);
-        if(movieUrl.startsWith("fail:")){
-            return Result.fail(movieUrl.substring(5));
-        }
-//        获取作者信息
-        String uploader = InterceptorUtil.getUser(request, stringRedisTemplate).getEmail();
-//        获取当前时间
-        Date uploadTime = new Date();
-//        创建Movie对象
-        Movie movie1 = new Movie(name, des, typeId, tags, uploader,movieUrl, visibility, uploadTime,picUrl);
-
-//        将Movie对象存入数据库
+    public Result upload(String name, String des, Integer typeId, String tags, Boolean visibility, String pic, String movie) {
+//        生成Movie对象
+        String uploader = InterceptorUtil.getUser(request,stringRedisTemplate).getEmail();
+        Movie movie1 = new Movie(name,des,typeId,tags,uploader,visibility,pic,movie);
+//        保存到数据库
         save(movie1);
-//        再从数据库中获取完整对象
-        movie1 = query().eq("name", name).eq("uploader",uploader).eq("file", movieUrl).one();
-//        将完整对象存入redis,以Hash的形式存储
-        Map map = movie1.toMap();
-        log.info("map:{}",map);
-        stringRedisTemplate.opsForHash().putAll("movie:"+ movie1.getId(), map);
+//        保存到redis
+        stringRedisTemplate.opsForHash().putAll("movie:"+movie1.getId(),movie1.toMap());
         return Result.ok();
+    }
+
+    @Override
+    public Result uploadMovie(MultipartFile movie) throws IOException {
+        String url = uploadMovieFile(movie);
+        return Result.ok(url);
     }
 
     @Override

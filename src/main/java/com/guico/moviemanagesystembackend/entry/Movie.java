@@ -69,6 +69,23 @@ public class Movie {
         this.pic = pic.replace("\\", "/");
     }
 
+    public Movie(String name, String des, Integer typeId, String tags,String uploader, Boolean visibility, String pic, String movie){
+        this.name = name;
+        this.des = des;
+        this.type = typeId;
+        this.banner = tags;
+        this.uploader = uploader;
+        this.file = movie.replace("\\", "/");
+        this.visibility = visibility;
+        this.uploadTime = new Date();
+        this.views = 0L;
+        this.likes = 0L;
+        this.pic = pic.replace("\\", "/");
+
+
+
+    }
+
     public Movie(Map<Object, Object> map){
         this.id = Long.parseLong((String) map.get("id"));
         this.name = (String) map.get("name");
