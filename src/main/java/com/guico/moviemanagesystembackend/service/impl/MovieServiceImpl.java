@@ -182,7 +182,6 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     @Override
     public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
                                  Boolean visibility, String pic) throws IOException {
-
         //        先从redis中获取电影
         Map movieMap = stringRedisTemplate.opsForHash().entries("movie:"+id);
         if(movieMap.size() == 0){
