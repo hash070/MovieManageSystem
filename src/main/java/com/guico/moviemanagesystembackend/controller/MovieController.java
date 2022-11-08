@@ -4,6 +4,8 @@ import com.guico.moviemanagesystembackend.service.IMovieService;
 import com.guico.moviemanagesystembackend.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @CrossOrigin
@@ -25,7 +30,7 @@ public class MovieController {
     @Autowired
     HttpServletResponse response;
 
-    String path = System.getProperty("user.dir");
+    String path = System.getProperty("user.dir")+ "/upload";
 
     @PostMapping("/upload")
     public Result uploadMovie(String name, String des, Integer typeId, String tags,
@@ -80,11 +85,38 @@ public class MovieController {
     }
 
     @RequestMapping("/getFile")
-    public String getFile(String url){
+    public ResponseEntity<byte[]> getFile(String url) {
         url = path + url;
+//        将url中的/替换为\
+        url = url.replace("/", "\\");
+        File file = new File(url);
         log.info(url);
-        return url;
+        if (file.exists()) {
+            try {
+                log.info("文件存在,开始下载");
+                log.info("文件路径为:{}", url);
+                byte[] bytes = Files.readAllBytes(file.toPath());
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+                headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
+                headers.add("Pragma", "no-cache");
+                headers.add("Expires", "0");
+                ResponseEntity<byte[]> responseEntity = ResponseEntity
+                        .ok()
+                        .headers(headers)
+                        .contentLength(file.length())
+                        .body(bytes);
+                return responseEntity;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        log.error("文件不存在");
+        return null;
     }
+
+
+
 
 
 }
