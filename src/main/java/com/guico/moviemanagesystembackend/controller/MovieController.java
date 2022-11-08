@@ -89,6 +89,9 @@ public class MovieController {
         url = path + url;
 //        将url中的/替换为\
         url = url.replace("/", "\\");
+        if(System.getProperty("os.name").equalsIgnoreCase("linux")) {
+            url = url.replace("\\", "/");
+        }
         File file = new File(url);
         log.info(url);
         if (file.exists()) {
@@ -112,6 +115,7 @@ public class MovieController {
             }
         }
         log.error("文件不存在");
+        response.setStatus(404);
         return null;
     }
 
