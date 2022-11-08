@@ -205,7 +205,6 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
                 file.delete();
 
             }
-            movieMap = movie.toMap();
         }
 //        更新电影信息
         movieMap.put("name", name);
