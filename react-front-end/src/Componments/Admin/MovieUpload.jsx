@@ -1,9 +1,10 @@
 import React, {useEffect} from "react";
 import "antd/dist/antd.css";
-import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Select, Switch, Upload, Input } from "antd";
+import {InboxOutlined, UploadOutlined} from "@ant-design/icons";
+import {Button, Form, Select, Switch, Upload, Input} from "antd";
 import axios from "axios";
-import {convertTypeObjToSelectList, errorMSG} from "../../Utils/CommonFuncs.js";
+import {convertTypeObjToSelectList, errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
+import TextArea from "antd/es/input/TextArea.js";
 
 // 表单布局
 const formItemLayout = {
@@ -16,13 +17,15 @@ const formItemLayout = {
 };
 
 const normFile = (e) => {
-    console.log("Upload event:", e);
+    console.log("表单文件上传回调函数:", e);
     if (Array.isArray(e)) {
         return e;
     }
     return e?.fileList;
 };
 
+let pic_upload_info
+let movie_upload_info
 
 const MovieUpload = () => {
     useEffect(() => {//数据加载函数
@@ -36,13 +39,18 @@ const MovieUpload = () => {
                     return
                 }
                 let data_recv = res.data.data
-                //设置数据
-                console.log('默认数据',type_array)
-                let list_data=  convertTypeObjToSelectList(data_recv)
+                //转换与设置数据
+                let list_data = convertTypeObjToSelectList(data_recv)
+                //如果长度为0，则提示添加分类且不设置数据
+                if (list_data.length === 0) {
+                    errorMSG('请先联系管理员添加电影分类')
+                    return
+                }
                 console.log('转换后的数据', list_data)
                 setTypeArray(list_data)
             })
-    },[]);//绑定loading变量，只有当loading变化时，重新加载
+    }, []);//绑定loading变量，只有当loading变化时，重新加载
+    //在严格模式下，React会故意运行两次这个钩子函数，以便检查是否有副作用
 
 
     const [type_array, setTypeArray] = React.useState([
@@ -52,14 +60,95 @@ const MovieUpload = () => {
         }
     ]);
 
-    const onFinish = (values) => {
-        console.log("Received values of form: ", values);
+    const [is_public, setIsPublic] = React.useState(true);
+
+    const onFormSubmit = (values) => {
+
+        console.log("表单信息: ", values)
+        console.log()
+        //检查文件是否上传
+        if (values.dragger.length === 0) {
+            errorMSG('请先上传电影文件')
+            return
+        }
+        //检查图片是否上传
+        if (values["picture-upload"].length === 0) {
+            errorMSG('请先上传电影图片')
+            return
+        }
+
+        //构建请求体
+        let req_body = getFormData({
+            name: values["movie-name"],
+            des: values["movie-desc"],
+            typeId: values["movie-type"],
+            tags: values["movie-tags"],
+            visibility: is_public,
+            pic: values["picture-upload"][0].response.data,
+            movie: values.dragger[0].response.data
+        })
+
+        //循环遍历请求体中的键和值
+        for (let key of req_body.entries()) {
+            console.log(key[0] + ', ' + key[1]);
+        }
+
+        //发送请求
+        axios.post('/api/movie/upload', req_body)
+            .then((res) => {
+                console.log('返回结果', res.data)
+                if (!res.data.success) {//检查是否成功
+                    //如果失败，则做出提示，然后直接返回
+                    errorMSG('上传电影失败：' + res.data.errorMsg)
+                    return
+                }
+                successMSG('上传电影成功')
+            })
+            .catch((err) => {
+                errorMSG('上传电影失败：' + err)
+            })
+
     };
+
+    //图片文件上传回调函数
+    const onPictureFileUpload = (info) => {
+        console.log('图片文件上传信息', info)
+        //当info包含response属性时，执行处理函数
+        if (info.file.response) {
+            console.log('图片文件上传结果', info.file.response.success)
+            if (!info.file.response.success) {//检查是否成功
+                errorMSG('图片文件上传失败：' + info.file.response.errorMsg)
+                return
+            }
+            successMSG('操作成功')
+            //临时保存图片文件上传信息到变量中
+            pic_upload_info = info.file.response.data
+            console.log('获取到的图片url', pic_upload_info)
+        }
+    }
+
+    //影片上传回调函数
+    const onMovieFileUpload = (info) => {
+        console.log('影片文件上传信息', info)
+        //当info包含response属性时，执行处理函数
+        if (info.file.response) {
+            console.log('影片文件上传结果', info.file.response.success)
+            if (!info.file.response.success) {//检查是否成功
+                errorMSG('影片文件上传失败：' + info.file.response.errorMsg)
+                return
+            }
+            successMSG('操作成功')
+            //临时保存图片文件上传信息到变量中
+            movie_upload_info = info.file.response.data
+            console.log('获取到的影片url', movie_upload_info)
+        }
+    }
+
     return (
         <Form
             name="validate_other"
             {...formItemLayout}
-            onFinish={onFinish}
+            onFinish={onFormSubmit}
             initialValues={{
                 "input-number": 3,
                 "checkbox-group": ["A", "B"],
@@ -76,7 +165,7 @@ const MovieUpload = () => {
                     }
                 ]}
             >
-                <Input placeholder="输入影片的名称" />
+                <Input placeholder="输入影片的名称"/>
             </Form.Item>
             <Form.Item
                 name="movie-type"
@@ -124,11 +213,38 @@ const MovieUpload = () => {
             </Form.Item>
 
             <Form.Item
+                name="movie-desc"
+                rules={[
+                    {
+                        required: true,
+                        message: "请输入电影描述"
+                    }
+                ]}
+                label="电影描述"
+            >
+                <TextArea
+                    showCount
+                    maxLength={180}
+                    style={{
+                        height: 120,
+                        resize: 'none',
+                    }}
+                    placeholder="请输入影片描述"
+                />
+            </Form.Item>
+
+            <Form.Item
                 name="movie-visibility"
                 label="影片是否公开"
                 valuePropName="checked"
             >
-                <Switch defaultChecked />
+                <Switch
+                    checked={is_public}
+                    onChange={(e) => {
+                        console.log('是否公开', e)
+                        setIsPublic(e)
+                    }}
+                    defaultChecked/>
             </Form.Item>
 
             <Form.Item
@@ -138,9 +254,22 @@ const MovieUpload = () => {
                 getValueFromEvent={normFile}
                 extra="电影封面"
             >
-                <Upload name="logo" action="/upload.do" listType="picture">
-                    <Button icon={<UploadOutlined />}>点击上传</Button>
+                <Upload name="pic"
+                        action="/api/movie/uploadPic"
+                        maxCount={1}
+                        onRemove={(e) => {
+                            console.log('删除图片文件', e)
+                        }}
+                        listType="picture"
+                        onChange={(info) => onPictureFileUpload(info)}
+                >
+                    <Button icon={<UploadOutlined/>}>点击上传</Button>
                 </Upload>
+                {/*<Input*/}
+                {/*    type="file"*/}
+                {/*    accept="image/*"*/}
+                {/*    placeholder="点击上传影片封面"*/}
+                {/*/>*/}
             </Form.Item>
 
             <Form.Item label="影片上传">
@@ -150,13 +279,28 @@ const MovieUpload = () => {
                     getValueFromEvent={normFile}
                     noStyle
                 >
-                    <Upload.Dragger name="files" action="/upload.do">
+                    <Upload.Dragger
+                        name="movie"
+                        action="/api/movie/uploadMovie"
+                        maxCount={1}
+                        onRemove={(e) => {
+                            console.log('删除影片文件', e)
+                        }}
+                        listType="picture"
+                        onChange={(info) => onPictureFileUpload(info)}
+
+                    >
                         <p className="ant-upload-drag-icon">
-                            <InboxOutlined />
+                            <InboxOutlined/>
                         </p>
                         <p className="ant-upload-text">拖拽影片到这里</p>
                         <p className="ant-upload-hint">支持上传mp4</p>
                     </Upload.Dragger>
+                    {/*<Input*/}
+                    {/*    type="file"*/}
+                    {/*    accept="video/mp4"*/}
+                    {/*    placeholder="点击上传影片"*/}
+                    {/*/>*/}
                 </Form.Item>
             </Form.Item>
 
