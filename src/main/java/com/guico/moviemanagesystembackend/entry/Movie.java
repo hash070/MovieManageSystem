@@ -22,7 +22,7 @@ public class Movie {
     //此字段为外键，表中的字段为type的id
     @TableField("type")
     Integer type;
-    @TableField("banner")
+    @TableField("tags")
     String banner;
     @TableField("uploader")
     String uploader;
@@ -46,12 +46,12 @@ public class Movie {
         this.type = type;
         this.banner = banner;
         this.uploader = uploader;
-        this.file = file;
+        this.file = file.replace("\\", "/");
         this.visibility = visibility;
         this.uploadTime = uploadTime;
         this.views = views;
         this.likes = likes;
-        this.pic = pic;
+        this.pic = pic.replace("\\", "/");
     }
 
     public Movie(String name, String desc, Integer type, String banner, String uploader, String file, Boolean visibility, Date uploadTime,  String pic) {
@@ -60,12 +60,13 @@ public class Movie {
         this.type = type;
         this.banner = banner;
         this.uploader = uploader;
-        this.file = file;
+//        将file的所有反斜杠替换为正斜杠
+        this.file = file.replace("\\", "/");
         this.visibility = visibility;
         this.uploadTime = uploadTime;
         this.views = 0L;
         this.likes = 0L;
-        this.pic = pic;
+        this.pic = pic.replace("\\", "/");
     }
 
     public Movie(Map<Object, Object> map){

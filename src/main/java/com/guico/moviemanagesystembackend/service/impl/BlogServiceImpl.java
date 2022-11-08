@@ -8,6 +8,7 @@ import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
 import com.guico.moviemanagesystembackend.mapper.BlogMapper;
 import com.guico.moviemanagesystembackend.service.IBlogService;
 import com.guico.moviemanagesystembackend.service.IUserService;
+import com.guico.moviemanagesystembackend.utils.RedisUtil;
 import com.guico.moviemanagesystembackend.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +40,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             return getBlogByAuthorId(user.getEmail());
         }
 //        先从Redis中获取所有的Blog对象
-        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
-
+        List<Blog> blogList = RedisUtil.getAllBlogs(stringRedisTemplate);
 //        如果Redis中没有Blog对象，则从数据库中获取
         if(blogList.size() == 0) {
             List<Blog> blogs =  query().list();
@@ -60,7 +60,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     @Override
     public Result getBlogByAuthorId(String authorId) {
 //        先从Redis中获取所有的Blog对象
-        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+        List<Blog> blogList = RedisUtil.getAllBlogs(stringRedisTemplate);
 //        如果Redis中没有Blog对象，则从数据库中获取
         if(blogList.size() == 0) {
             List<Blog> blogs =  query().eq("author", authorId).list();
@@ -74,14 +74,14 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             return Result.ok(blogs, blogs.size());
         }
 //        如果Redis中有Blog对象，则从Redis中获取
-        blogList.removeIf(blog -> !((Map)blog).get("authorId").equals(authorId));
+        blogList.removeIf(blog -> !(blog).getAuthor().equals(authorId));
         return Result.ok(blogList, blogList.size());
     }
 
     @Override
     public Result getBlogBySearch(String search) {
 //        先从Redis中获取所有的Blog对象
-        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+        List<Blog> blogList = RedisUtil.getAllBlogs(stringRedisTemplate);
         List<Blog> blogs = null;
 //        如果Redis中没有Blog对象，则从数据库中获取
         if(blogList.size() == 0) {
@@ -98,7 +98,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             return Result.ok(blogs, blogs.size());
         }
 //        如果Redis中有Blog对象，则从Redis中获取
-        blogList.removeIf(blog -> !((Map)blog).get("title").toString().contains(search));
+        blogList.removeIf(blog -> !(blog).getTitle().contains(search));
         return Result.ok(blogList, blogList.size());
     }
 
@@ -166,7 +166,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     @Override
     public Result getAllPublicBlogs() {
 //        先从Redis中获取所有的Blog对象
-        List<Object> blogList = stringRedisTemplate.opsForHash().values("blog");
+        List<Blog> blogList = RedisUtil.getAllBlogs(stringRedisTemplate);
         List<Blog> blogs = null;
 //        如果Redis中没有Blog对象，则从数据库中获取
         if(blogList.size() == 0) {

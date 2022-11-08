@@ -7,6 +7,7 @@ import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
 import com.guico.moviemanagesystembackend.mapper.MovieMapper;
 import com.guico.moviemanagesystembackend.service.IMovieService;
+import com.guico.moviemanagesystembackend.utils.RedisUtil;
 import com.guico.moviemanagesystembackend.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        再从数据库中获取完整对象
         movie1 = query().eq("name", name).eq("uploader",uploader).eq("file", movieUrl).one();
 //        将完整对象存入redis,以Hash的形式存储
-        Map<String, String> map = movie1.toMap();
+        Map map = movie1.toMap();
         log.info("map:{}",map);
         stringRedisTemplate.opsForHash().putAll("movie:"+ movie1.getId(), map);
         return Result.ok();
@@ -85,14 +86,13 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         User user = InterceptorUtil.getUser(request, stringRedisTemplate);
 
 //        先从redis中获取所有电影
-        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
+        List<Movie> movieList = RedisUtil.getAllMovies(stringRedisTemplate);
 //        如果redis中没有电影,则从数据库中获取
         if(movieList.size() == 0){
-            List<Movie> movies = query().list();
-            for(Object movie : movies){
-                stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
+            movieList = query().list();
+            for(Movie movie : movieList){
+                stringRedisTemplate.opsForHash().putAll("movie:"+movie.getId(), movie.toMap());
             }
-            movieList = Collections.singletonList(movies);
         }
 //       如果用户为普通用户，返回自己上传的电影
         if(user.getLevel()>1) {
@@ -113,30 +113,27 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result getMovieByType(Integer typeId) {
-//        先从redis中获取typeId对应的电影
-        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
+        List<Movie> movieList = RedisUtil.getAllMovies(stringRedisTemplate);
 //        如果redis中没有电影,则从数据库中获取
         if(movieList.size() == 0){
-            List<Movie> movies = query().list();
-            for(Object movie : movies){
-                stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
+            movieList = query().list();
+            for(Movie movie : movieList){
+                stringRedisTemplate.opsForHash().putAll("movie:"+movie.getId(), movie.toMap());
             }
-            movieList = Collections.singletonList(movies);
         }
         movieList.removeIf(movie -> !((Movie) movie).getType().equals(typeId));
         return Result.ok(movieList, movieList.size());
     }
 
     @Override
-    public Result getMovieByUp(Integer upId) {
-        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
+    public Result getMovieByUp(String upId) {
+        List<Movie> movieList = RedisUtil.getAllMovies(stringRedisTemplate);
 //        如果redis中没有电影,则从数据库中获取
         if(movieList.size() == 0){
-            List<Movie> movies = query().list();
-            for(Object movie : movies){
-                stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
+            movieList = query().list();
+            for(Movie movie : movieList){
+                stringRedisTemplate.opsForHash().putAll("movie:"+movie.getId(), movie.toMap());
             }
-            movieList = Collections.singletonList(movies);
         }
         movieList.removeIf(movie -> !((Movie) movie).getUploader().equals(upId));
         return Result.ok(movieList, movieList.size());
@@ -144,14 +141,13 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result getMovieBySearch(String search) {
-        List<Object> movieList = stringRedisTemplate.opsForHash().values("movie:*");
+        List<Movie> movieList = RedisUtil.getAllMovies(stringRedisTemplate);
 //        如果redis中没有电影,则从数据库中获取
         if(movieList.size() == 0){
-            List<Movie> movies = query().list();
-            for(Object movie : movies){
-                stringRedisTemplate.opsForHash().putAll("movie:"+((Movie)movie).getId(), ((Movie)movie).toMap());
+            movieList = query().list();
+            for(Movie movie : movieList){
+                stringRedisTemplate.opsForHash().putAll("movie:"+movie.getId(), movie.toMap());
             }
-            movieList = Collections.singletonList(movies);
         }
         movieList.removeIf(movie -> !((Movie) movie).getName().contains(search));
         return Result.ok(movieList, movieList.size());
@@ -162,6 +158,14 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         Movie movie = getMovie(movieId);
         if(movie == null){
             return Result.fail("该电影不存在");
+        }
+        File file = new File(movie.getFile());
+        if(file.exists()){
+            file.delete();
+        }
+        File pic = new File(movie.getPic());
+        if(pic.exists()){
+            pic.delete();
         }
         removeById(movieId);
         stringRedisTemplate.delete("movie:"+movieId);
@@ -189,8 +193,8 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 //        获取picUrl
         String picUrl = movie.getPic();
-//        如果不为空，删除
-        if(picUrl != null){
+//        如果不为空，且和之前的Pic不一样，删除之前的Pic
+        if(picUrl != null&&!pic.equals(picUrl)&&!pic.equals("")){
             File file = new File(path + picUrl);
             if(file.exists()){
                 file.delete();
@@ -240,7 +244,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 //        保存文件
         movie.transferTo(file);
-        return file.getPath();
+        return "/movies/"+fileName;
     }
 
     public String uploadMoviePic(MultipartFile pic) throws IOException {
@@ -272,7 +276,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 //        保存文件
         pic.transferTo(file);
-        return file.getPath();
+        return "/pics/"+fileName;
     }
 
     private Movie getMovie(Integer id){
