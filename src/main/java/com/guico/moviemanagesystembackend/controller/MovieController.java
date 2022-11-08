@@ -83,7 +83,7 @@ public class MovieController {
         url = path + url;
         File file = new File(url);
         if(file.exists()){
-            response.setHeader("Content-Disposition", "attachment;filename="+ path + file.getName());
+            response.setHeader("Content-Disposition", "attachment;filename="+ url);
             response.setContentType("application/octet-stream");
             response.setHeader("Content-Length", String.valueOf(file.length()));
             byte[] buffer = new byte[(int)file.length()];
