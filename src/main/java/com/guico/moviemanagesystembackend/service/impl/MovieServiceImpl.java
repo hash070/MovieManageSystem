@@ -203,7 +203,9 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
             File file = new File((String) movieMap.get("pic"));
             if(file.exists()){
                 file.delete();
+
             }
+            movieMap = movie.toMap();
         }
 //        更新电影信息
         movieMap.put("name", name);

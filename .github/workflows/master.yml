@@ -52,7 +52,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             systemctl stop MovieManageSysJar
-            rm -rf /root/action/movie-manage/*
+            rm -rf /root/action/movie-manage/*.jar
             rm -rf /www/web-root/movie-manage-sys/*
       - name: Copy Jar to Server # 复制Jar包到服务端
         uses: garygrossgarten/github-action-scp@release

@@ -65,3 +65,20 @@ export function simulateMouseClick(element){
         )
     );
 }
+
+function getValueAndLabel(obj) {
+    return {
+        value: obj.id.toString(),
+        label: obj.name,
+    };
+}
+
+// 转换[{id:'',name:''}...]列表为[{value:'',label:''}...]，用于适配antd的Select组件
+export function convertTypeObjToSelectList(list) {
+    let select = []
+    //打印出list中的键和值
+    for (let i = 0; i < list.length; i++) {
+        select.push(getValueAndLabel(list[i]))
+    }
+    return select
+}
