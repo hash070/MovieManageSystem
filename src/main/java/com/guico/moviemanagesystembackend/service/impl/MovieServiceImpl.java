@@ -185,8 +185,8 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //      检查文件是否存在
         if(pic != null){
             File file = new File(pic);
-            if(!file.exists()){
-                return Result.fail("图片不存在");
+            if(file.exists()){
+                file.delete();
             }
         }
         //        先从redis中获取电影
