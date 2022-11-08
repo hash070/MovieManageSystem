@@ -67,13 +67,13 @@ const MovieUpload = () => {
         console.log("表单信息: ", values)
         console.log()
         //检查文件是否上传
-        if (values.dragger.length === 0) {
-            errorMSG('请先上传电影文件')
+        if (values.dragger===undefined||values.dragger.length === 0) {
+            errorMSG('请上传电影文件')
             return
         }
         //检查图片是否上传
-        if (values["picture-upload"].length === 0) {
-            errorMSG('请先上传电影图片')
+        if (values["picture-upload"]===undefined||values["picture-upload"].length === 0) {
+            errorMSG('请上传电影图片')
             return
         }
 
