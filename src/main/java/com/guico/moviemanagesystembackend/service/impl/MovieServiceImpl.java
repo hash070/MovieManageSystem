@@ -54,6 +54,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 
         //        生成Movie对象
+
         String uploader = InterceptorUtil.getUser(request,stringRedisTemplate).getEmail();
         Movie movie1 = new Movie(name,des,typeId,tags,uploader,visibility,pic,movie);
 //        保存到数据库
