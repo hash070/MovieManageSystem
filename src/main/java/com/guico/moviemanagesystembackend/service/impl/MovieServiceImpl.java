@@ -198,6 +198,15 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
             }
             movieMap = movie.toMap();
         }
+//        对比pic是否变化，变化则删除之前的文件
+        if(pic != null && !pic.equals(movieMap.get("pic"))){
+            File file = new File((String) movieMap.get("pic"));
+            if(file.exists()){
+                file.delete();
+
+            }
+            movieMap = movie.toMap();
+        }
 //        更新电影信息
         movieMap.put("name", name);
         movieMap.put("des", des);
