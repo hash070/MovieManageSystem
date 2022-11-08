@@ -64,7 +64,7 @@ public class MovieController {
 
     @PostMapping("/update")
     public Result updateMovieMsg(Long id, String name, String des, Integer typeId, String tags,
-                                 Boolean visibility, MultipartFile pic) throws IOException {
+                                 Boolean visibility, String pic) throws IOException {
         return movieService.updateMovieMsg(id, name, des, typeId, tags, visibility, pic);
     }
 
@@ -80,6 +80,7 @@ public class MovieController {
 
     @RequestMapping("/getFile")
     public Result getFile(String url){
+        url = path + url;
         File file = new File(url);
         if(file.exists()){
             response.setHeader("Content-Disposition", "attachment;filename="+ path + file.getName());
