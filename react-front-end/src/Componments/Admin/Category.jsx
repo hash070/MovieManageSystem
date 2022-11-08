@@ -52,7 +52,6 @@ function Category(props) {
     //列表初始时加载状态设置
     const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState([]);
     const [list, setList] = useState([]);
 
     //列表项目删除方法
