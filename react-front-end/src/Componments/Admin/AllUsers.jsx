@@ -14,9 +14,12 @@ import {
 
 
 let item_temp
+let email_temp
+let pwd_temp
 
 const inputStyle = {
     width: '100%',
+    margin: '10px',
 }
 
 const gridTextStyle = {
@@ -37,12 +40,9 @@ function AllUsers(props) {
     const [modalTitle, setModalTitle] = useState('')
 
     //表单输入框 数据绑定
-    // const [user_nick_name, setUserNickName] = useState('')
-    // const [user_email, setUserEmail] = useState('')
-    // const [user_password, setUserPassword] = useState('')
-
-    //Form表单无法使用useState+value变更数值，只能使用下面的这个方法
-    const form = Form.useFormInstance();
+    const [user_nick_name, setUserNickName] = useState('')
+    const [user_email, setUserEmail] = useState('')
+    const [user_password, setUserPassword] = useState('')
 
     //对话框标题
     const modalAddUserTitleStr = '添加新用户'
@@ -110,42 +110,22 @@ function AllUsers(props) {
             // setUpdateVal(item_temp.name)//设置对话框中的输入框的值
             console.log('修改用户信息', item_temp)
 
-            // setUserNickName(item_temp.nickname)
-            // setUserEmail(item_temp.email)
-            // setUserPassword(item_temp.password)
-
-            form.setFieldValue('user_nickname', item_temp.nickname)
-            form.setFieldValue('user_email', item_temp.email)
-            form.setFieldValue('user_password', item_temp.password)
-
+            setUserNickName(item_temp.nickname)
+            setUserEmail(item_temp.email + '(不可修改)')
+            email_temp = item_temp.email
+            pwd_temp = item_temp.password
+            // setUserPassword(item_temp.password)//不显示密码
+            setUserPermission(item_temp.level)
             setIsModalOpen(true);
         }
     };
 
     //对话框确认按钮点击事件
     const handleOk = () => {
-        //获取提交按钮
-        let submit_btn = document.getElementById('user_submit_button')
-
-        simulateMouseClick(submit_btn)//模拟点击提交按钮
-
-        //触发流程：
-        //确认按钮->模拟点击隐藏的表单提交按钮->表单提交->表单提交成功后关闭对话框
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    let [user_permission_val, setUserPermission] = useState(2)
-
-    //表单提交事件
-    const onFormSubmit = (e) => {
-        console.log('表单提交事件', e)
-        console.log('菜单点击事件', e)
-        console.log('用户昵称', e.user_nickname)
-        console.log('用户邮箱', e.user_email)
-        console.log('用户密码', e.password)
+        console.log('表单提交事件')
+        console.log('用户昵称', user_nick_name)
+        console.log('用户邮箱', user_email)
+        console.log('用户密码', user_password)
         console.log('用户权限', getUserLevel(user_permission_val))
 
         let api_url = ''
@@ -159,16 +139,22 @@ function AllUsers(props) {
             api_url = edit_user_api_url
         }
 
-        console.log('操作API：',api_url)
-
+        console.log('操作API：', api_url)
 
         //开始构建请求体
         let req_body = new FormData()
-        req_body.append('nickname', e.user_nickname)
-        req_body.append('email', e.user_email)
-        req_body.append('password', e.password)
-        req_body.append('level', user_permission_val)
+        req_body.append('nickname', user_nick_name)
+        req_body.append('email', email_temp)
+        if (user_password !== '') {//如果密码不为空，则添加密码
+            console.log('密码不为空')
+            req_body.append('password', user_password)
+        }else {//如果密码为空，则使用原密码
+            console.log('密码为空')
+            req_body.append('password', pwd_temp)
+        }
+        req_body.append('level', user_permission_val.toString())
         //打印请求体中的值
+        console.log('提交请求')
         for (let key of req_body.keys()) {
             console.log(key, req_body.get(key))
         }
@@ -187,6 +173,11 @@ function AllUsers(props) {
                 }
                 //如果成功，则做出提示，然后清空输入框
                 successMSG('操作成功')
+                //清空输入框
+                setUserNickName('')
+                setUserEmail('')
+                setUserPassword('')
+                setUserPermission(2)
                 //关闭对话框
                 setIsModalOpen(false)
             })
@@ -200,7 +191,16 @@ function AllUsers(props) {
                 //变更Loading，要求重新加载列表数据
                 setLoading(!loading)
             })
-    }
+
+
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    let [user_permission_val, setUserPermission] = useState(2)
+
 
     const onRadioChange = (e) => {
         console.log(e.target.value)
@@ -279,88 +279,53 @@ function AllUsers(props) {
                    cancelText={'取消'}
                    okText={'确认'}
                    maskClosable={false}//点击遮罩层后是否关闭
-                   destroyOnClose={true}//关闭时销毁 Modal 里的子元素
+                // destroyOnClose={true}//关闭时销毁 Modal 里的子元素
             >
                 <Input.Group compact>
-                    <Form
-                        form={form}
-                        onFinish={onFormSubmit}
-                        name={'user_edit_form'}
-                        className={'user_edit_form'}
+                    <Input
+                        //受控Input
+                        value={user_nick_name}
+                        onChange={e => {
+                            setUserNickName(e.target.value)
+                        }}
+                        style={inputStyle}
+                        prefix={<UserOutlined className="site-form-item-icon"/>}
+                        placeholder="用户昵称"/>
+                    <Input
+                        //TODO:受控Input 不受控制。。。
+                        // 受控Input
+                        value={user_email}
+                        style={inputStyle}
+                        onChange={e => {
+                            console.log('邮箱', e.target.value)
+                            setUserEmail(e.target.value)
+                        }}
+                        prefix={<MailOutlined className="site-form-item-icon"/>}
+                        placeholder="用户邮箱"/>
+                    <Input
+                        //受控Input
+                        value={user_password}
+                        style={inputStyle}
+                        onChange={e => {
+                            setUserPassword(e.target.value)
+                        }}
+                        prefix={<LockOutlined className="site-form-item-icon"/>}
+                        type="password"
+                        placeholder="用户密码"
+                    />
+                    <span style={{marginLeft: '20px', marginTop: '15px'}}>用户权限：</span>
+                    <Radio.Group
+                        style={{marginLeft: '20px', marginTop: '10px'}}
+                        onChange={onRadioChange}
+                        value={user_permission_val}
+                        optionType={'button'}
+                        buttonStyle={'solid'}
+                        defaultValue={user_permission_val}
                     >
-                        <Form.Item
-                            name={'user_nickname'}
-                            label={'用户昵称'}
-                            rules={[{required: true, message: '请输入用户昵称'}]}
-                        >
-                            <Input
-                                //受控Input
-                                // value={user_nick_name}
-                                // onChange={e => {
-                                //     setUserNickName(e.target.value)
-                                // }}
-                                // id={'user_nickname_input'}
-                                style={inputStyle}
-                                prefix={<UserOutlined className="site-form-item-icon"/>}
-                                placeholder="用户昵称"/>
-                        </Form.Item>
-
-                        <Form.Item
-                            name={'user_email'}
-                            label={'用户邮箱'}
-                            rules={[{
-                                required: true,
-                                message: '请输入正确的用户邮箱',
-                                pattern: /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/,
-                            }
-                            ]}>
-                            <Input
-                                //TODO:受控Input 不受控制。。。
-                                //受控Input
-                                // value={user_email}
-                                // onChange={e => {
-                                //     console.log('邮箱', e.target.value)
-                                //     setUserEmail(e.target.value)
-                                // }}
-                                // id={'user_email_input'}
-                                prefix={<MailOutlined className="site-form-item-icon"/>}
-                                placeholder="用户邮箱"/>
-                        </Form.Item>
-                        <Form.Item
-                            name="password"
-                            label={'用户密码'}
-                            rules={[{required: true, message: '请输入您的密码!'}]}>
-                            <Input
-                                //受控Input
-                                // value={user_password}
-                                // onChange={e => {
-                                //     setUserPassword(e.target.value)
-                                // }}
-                                // id={'user_password_input'}
-                                prefix={<LockOutlined className="site-form-item-icon"/>}
-                                type="password"
-                                placeholder="密码"
-                            />
-                        </Form.Item>
-
-                        <Form.Item
-                            name={'user_permission'}
-                        >
-                            <span style={{color: 'red'}}>* </span> <span>用户权限：</span>
-                            <Radio.Group
-                                onChange={onRadioChange}
-                                value={user_permission_val}
-                                optionType={'button'}
-                                buttonStyle={'solid'}
-                                defaultValue={user_permission_val}
-                            >
-                                <Radio value={2}>普通用户</Radio>
-                                <Radio value={1}>管理员用户</Radio>
-                                <Radio value={0}>根用户</Radio>
-                            </Radio.Group>
-                        </Form.Item>
-                        <Button id={'user_submit_button'} htmlType={'submit'} style={{height: '0px'}}></Button>
-                    </Form>
+                        <Radio value={2}>普通用户</Radio>
+                        <Radio value={1}>管理员用户</Radio>
+                        <Radio value={0}>根用户</Radio>
+                    </Radio.Group>
                 </Input.Group>
             </Modal>
         </div>
