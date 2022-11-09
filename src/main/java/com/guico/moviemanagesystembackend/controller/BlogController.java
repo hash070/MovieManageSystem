@@ -42,8 +42,8 @@ public class BlogController {
 //    }
 
     @PostMapping("/getById")
-    public Object getBlogById(Long id) {
-        return blogService.getBlogById(id).getData();
+    public Result getBlogById(Long id) {
+        return blogService.getBlogById(id);
     }
 
     @PostMapping("/add")
