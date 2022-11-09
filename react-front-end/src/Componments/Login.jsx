@@ -73,7 +73,7 @@ const LoginForm = () => {
                     successMSG('登录成功')
                     //将Token放到本地Storage
                     console.log('存放收到的Token', token)
-                    successMSG('获取到的Token为：' + token)
+                    // successMSG('获取到的Token为：' + token)
 
                     //如果勾选了“记住我”按钮，则将Token保存到本地
                     if (is_rem) {

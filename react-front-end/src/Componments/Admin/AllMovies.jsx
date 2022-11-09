@@ -1,7 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
-import {convertTypeObjToSelectList, errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
+import {
+    convertTagsStrToArray,
+    convertTypeObjToSelectList,
+    errorMSG,
+    getFormData,
+    successMSG
+} from "../../Utils/CommonFuncs.js";
 import {Avatar, Button, Form, Input, List, Modal, Select, Skeleton, Switch, Upload} from "antd";
 import TextArea from "antd/es/input/TextArea.js";
 import {InboxOutlined, UploadOutlined} from "@ant-design/icons";
@@ -26,6 +32,7 @@ const normFile = (e) => {
 
 let pic_upload_info
 let movie_upload_info
+let movie_edit_id = -1
 
 function AllMovies(props) {
     // 获取Form操作对象
@@ -70,8 +77,6 @@ function AllMovies(props) {
                 //变更Loading，要求重新加载列表数据
                 setLoading(!loading)
             })
-
-
         setIsModalOpen(false);
     };
 
@@ -79,18 +84,22 @@ function AllMovies(props) {
         setIsModalOpen(false);
     };
 
-    // 对话框数值
-    const [movie_name, setMovieName] = useState('')
 
     // 跳转到编辑页面，并传递视频参数
     const goToEdit = (item) => {
-        setMovieName(item.name)
-        errorMSG('暂未开发完成')
-        setIsModalOpen(true);
+        // 保存当前编辑的视频id到变量中
+        movie_edit_id = item.id
         //TODO: 跳转到编辑页面并传递数值
         form.setFieldsValue({
-            'movie-name': item.name
+            'movie-name': item.name,
+            //'movie-type': item.type,//Type 就不传了，让用户自己选
+            'movie-tags': convertTagsStrToArray(item.banner),
+            'movie-desc': item.des,
+            'movie-visibility': item.visibility,
+            // 'movie-visibility': false, //测试是否有效->有效
         })
+        //打开编辑框
+        setIsModalOpen(true);
     }
 
     //列表初始时加载状态设置
@@ -146,33 +155,10 @@ function AllMovies(props) {
         }
     }
 
-    //影片上传回调函数
-    const onMovieFileUpload = (info) => {
-        console.log('影片文件上传信息', info)
-        //当info包含response属性时，执行处理函数
-        if (info.file.response) {
-            console.log('影片文件上传结果', info.file.response.success)
-            if (!info.file.response.success) {//检查是否成功
-                errorMSG('影片文件上传失败：' + info.file.response.errorMsg)
-                return
-            }
-            successMSG('操作成功')
-            //临时保存图片文件上传信息到变量中
-            movie_upload_info = info.file.response.data
-            console.log('获取到的影片url', movie_upload_info)
-        }
-    }
-
     //表单上传函数
     const onFormSubmit = (values) => {
 
         console.log("表单信息: ", values)
-        console.log()
-        //检查文件是否上传
-        if (values.dragger === undefined || values.dragger.length === 0) {
-            errorMSG('请上传电影文件')
-            return
-        }
         //检查图片是否上传
         if (values["picture-upload"] === undefined || values["picture-upload"].length === 0) {
             errorMSG('请上传电影图片')
@@ -181,36 +167,37 @@ function AllMovies(props) {
 
         //构建请求体
         let req_body = getFormData({
+            id: movie_edit_id,
             name: values["movie-name"],
             des: values["movie-desc"],
             typeId: values["movie-type"],
             tags: values["movie-tags"],
-            visibility: is_public,
+            visibility: values['movie-visibility'],
             pic: values["picture-upload"][0].response.data,
-            movie: values.dragger[0].response.data
         })
 
+        console.log('开始发送电影更新请求')
         //循环遍历请求体中的键和值
         for (let key of req_body.entries()) {
             console.log(key[0] + ', ' + key[1]);
         }
 
         //发送请求
-        axios.post('/api/movie/upload', req_body)
+        axios.post('/api/movie/update', req_body)
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
                     //如果失败，则做出提示，然后直接返回
-                    errorMSG('上传电影失败：' + res.data.errorMsg)
+                    errorMSG('电影信息更新失败：' + res.data.errorMsg)
                     return
                 }
-                successMSG('上传电影成功')
-                //跳转到电影列表
-                navigate('/admin/movie/all')
+                successMSG('电影信息更新成功')
+                //关闭模态框
+                setIsModalOpen(false)
 
             })
             .catch((err) => {
-                errorMSG('上传电影失败：' + err)
+                errorMSG('服务器错误：' + err)
             })
 
     };
@@ -297,13 +284,16 @@ function AllMovies(props) {
                                     xl: 80,
                                     xxl: 100,
                                 }}
-                                avatar={<Avatar src={'/api/movie/getFile?url=' + item.pic}/>}
+                                avatar={<Avatar src={'/api/movie/getFile?url=' + item.pic}
+                                                shape='square'
+                                                size={200}
+                                />}
                                 title={<a style={{maxWidth: '90%', wordBreak: 'break-all'}}>{item.name}</a>}
                                 description={<div style={{maxWidth: '90%', wordBreak: 'break-all'}}>{item.des}</div>}
                             />
                             <video
                                 src={'/api/movie/getFile?url=' + item.file}
-                                style={{width: '50%',maxHeight:'350px'}}
+                                style={{width: '40%', maxHeight: '350px'}}
                                 controls={true}
                             />
                             <div>作者：{item.uploader}</div>
@@ -320,6 +310,7 @@ function AllMovies(props) {
                    cancelText={'取消'}
                    okText={'确认'}
                    maskClosable={false}//点击遮罩层后是否关闭
+                   destroyOnClose={true}//关闭时销毁数据
             >
                 <Form
                     form={form}
@@ -343,10 +334,6 @@ function AllMovies(props) {
                         ]}
                     >
                         <Input
-                            value={movie_name}
-                            onChange={(e) => {
-                                setMovieName(e.target.value)
-                            }}
                             placeholder="输入影片的名称"/>
                     </Form.Item>
                     <Form.Item
@@ -433,7 +420,7 @@ function AllMovies(props) {
                                     console.log('删除图片文件', e)
                                 }}
                                 listType="picture"
-                                onChange={(info) => onMovieFileUpload(info)}
+                                onChange={(info) => onPictureFileUpload(info)}
                         >
                             <Button icon={<UploadOutlined/>}>点击上传</Button>
                         </Upload>

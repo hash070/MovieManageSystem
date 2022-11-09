@@ -82,3 +82,8 @@ export function convertTypeObjToSelectList(list) {
     }
     return select
 }
+
+//将以逗号分割的字符串转换为字符数组
+export function convertTagsStrToArray(str) {
+    return str.split(',')
+}
