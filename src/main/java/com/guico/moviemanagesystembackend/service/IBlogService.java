@@ -5,6 +5,7 @@ import com.guico.moviemanagesystembackend.entry.Blog;
 import com.guico.moviemanagesystembackend.utils.Result;
 
 import java.util.Date;
+import java.util.List;
 
 public interface IBlogService extends IService<Blog> {
 
