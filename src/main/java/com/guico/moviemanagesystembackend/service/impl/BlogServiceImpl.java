@@ -116,7 +116,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
             return Result.ok(blog);
         }
-//        如果Redis中有Blog对象，则直接返回
+//        如果Redis中有Blog对象，则直接返回w
         return Result.ok(new Blog(blogMap));
     }
 
@@ -197,6 +197,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
                 stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
             }
             return Result.ok(blogs, blogs.size());
+        }
+//        将所有的Blog
+        for (Blog blog : blogList) {
+            User user = (User)userService.getUserByEmail(blog.getAuthor()).getData();
+            blog.setAuthor(user.getNickname());
         }
 //        如果Redis中有Blog对象，则从Redis中获取
         return Result.ok(blogList, blogList.size());
