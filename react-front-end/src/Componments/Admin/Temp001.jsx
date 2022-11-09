@@ -1,12 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import '../../styles/AdminPanel.css';
-import {
-    DesktopOutlined,
-    FileOutlined, LogoutOutlined,
-    PieChartOutlined,
-    TeamOutlined,
-    UserOutlined, VideoCameraOutlined,
-} from '@ant-design/icons';
+import {DesktopOutlined, LogoutOutlined, UserOutlined, VideoCameraOutlined,} from '@ant-design/icons';
 import {Breadcrumb, Layout, Menu} from 'antd';
 import {Outlet, useNavigate} from "react-router-dom";
 import axios from "axios";

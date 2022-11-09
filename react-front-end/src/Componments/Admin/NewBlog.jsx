@@ -5,18 +5,15 @@ import MdEditor from 'react-markdown-editor-lite'
 import 'react-markdown-editor-lite/lib/index.css'
 
 // import ReactMarkdown from 'react-markdown'
-
 // import 'github-markdown-css'
-
 //添加表格支持
 // import remarkGfm from 'remark-gfm'
 import {Button, Input} from "antd";
-
-const {TextArea} = Input;
-
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
 import {useLocation, useNavigate} from "react-router-dom";
+
+const {TextArea} = Input;
 
 function NewBlog(props) {
     // 获取Navigate
