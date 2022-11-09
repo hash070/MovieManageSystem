@@ -286,6 +286,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
                 stringRedisTemplate.opsForHash().putAll("movie:"+movie.getId(), movie.toMap());
             }
         }
+        movieList.removeIf(movie ->!movie.getVisibility() );
         return Result.ok(movieList, movieList.size());
     }
 
