@@ -5,7 +5,6 @@ import {Button, Form, Select, Switch, Upload, Input} from "antd";
 import axios from "axios";
 import {convertTypeObjToSelectList, errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
 import TextArea from "antd/es/input/TextArea.js";
-import {useNavigate} from "react-router-dom";
 
 // 表单布局
 const formItemLayout = {
@@ -29,9 +28,6 @@ let pic_upload_info
 let movie_upload_info
 
 const MovieUpload = () => {
-    //获取navigate
-    const navigate = useNavigate()
-
     useEffect(() => {//数据加载函数
         //发送请求
         axios.post('/api/type/getAll')
@@ -71,13 +67,13 @@ const MovieUpload = () => {
         console.log("表单信息: ", values)
         console.log()
         //检查文件是否上传
-        if (values.dragger===undefined||values.dragger.length === 0) {
-            errorMSG('请上传电影文件')
+        if (values.dragger.length === 0) {
+            errorMSG('请先上传电影文件')
             return
         }
         //检查图片是否上传
-        if (values["picture-upload"]===undefined||values["picture-upload"].length === 0) {
-            errorMSG('请上传电影图片')
+        if (values["picture-upload"].length === 0) {
+            errorMSG('请先上传电影图片')
             return
         }
 
@@ -107,9 +103,6 @@ const MovieUpload = () => {
                     return
                 }
                 successMSG('上传电影成功')
-                //跳转到电影列表
-                navigate('/admin/movie/all')
-
             })
             .catch((err) => {
                 errorMSG('上传电影失败：' + err)
@@ -294,7 +287,7 @@ const MovieUpload = () => {
                             console.log('删除影片文件', e)
                         }}
                         listType="picture"
-                        onChange={(info) => onMovieFileUpload(info)}
+                        onChange={(info) => onPictureFileUpload(info)}
 
                     >
                         <p className="ant-upload-drag-icon">
