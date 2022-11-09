@@ -6,7 +6,7 @@ function MovieDetail(props) {
     const params = useParams()
     return (
         <div>
-            这里是文章详情界面{params.id}
+            这里是影片详情界面{params.id}
         </div>
     );
 }
