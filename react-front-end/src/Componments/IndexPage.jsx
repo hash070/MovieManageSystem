@@ -66,7 +66,7 @@ function IndexPage(props) {
             })
     }
 
-    //网页HeaderJS加载Hooks
+    //网页头部JS动态效果加载Hooks
     useEffect(() => {
         var startX = 0;
         let blurValue;
