@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin
@@ -39,6 +40,11 @@ public class BlogController {
 //    public Result addBlog(String des, String title, String article,String author, Date uploadTime, Boolean isNews) {
 //        return blogService.addBlog(des, title, article, author, uploadTime, isNews);
 //    }
+
+    @PostMapping("/getById")
+    public Object getBlogById(Long id) {
+        return blogService.getBlogById(id).getData();
+    }
 
     @PostMapping("/add")
     public Result addBlog(String des, String title, String article, Date uploadTime, Boolean isNews) {

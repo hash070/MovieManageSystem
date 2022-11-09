@@ -103,6 +103,25 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     }
 
     @Override
+    public Result getBlogById(Long id) {
+//        先从Redis中获取Blog对象
+        List<Blog> blogList = RedisUtil.getAllBlogs(stringRedisTemplate);
+//        如果Redis中没有Blog对象，则从数据库中获取
+        if(blogList.size() == 0) {
+            Blog blog = query().eq("id", id).one();
+            if(blog == null) {
+                return Result.fail("博客不存在");
+            }
+//            将从数据库中获取的Blog对象存储到Redis中
+            for (Blog b : blogList) {
+                stringRedisTemplate.opsForHash().putAll("blog:" + b.getId(), b.toMap());
+            }
+        }
+        blogList.removeIf(blog -> !(blog).getId().equals(id));
+        return Result.ok(blogList, blogList.size());
+    }
+
+    @Override
     public Result addBlog(String des, String title, String article, String author, Date uploadTime, Boolean isNews) {
         Blog blog = new Blog(des, title, article,author , uploadTime, isNews);
         log.info("添加博客：{}", blog);

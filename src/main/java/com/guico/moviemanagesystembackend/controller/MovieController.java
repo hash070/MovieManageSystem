@@ -91,7 +91,7 @@ public class MovieController {
     public Result getAllPublicMovie() {
         return movieService.getAllPublicMovie();
     }
-    
+
     @RequestMapping("/getFile")
     public ResponseEntity<byte[]> getFile(String url) {
         url = path + url;
