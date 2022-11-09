@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {Avatar, Button, Divider, List, Skeleton} from "antd";
 import '../styles/HomePage.css'
 import axios from "axios";
-import {convertTypeObjToAntDList, errorMSG} from "../Utils/CommonFuncs.js";
+import {convertTypeObjToAntDList, errorMSG, getFormData, infoMSG} from "../Utils/CommonFuncs.js";
 import {ReloadOutlined} from "@ant-design/icons";
 
 // import '../Utils/IndexHeader.js'
@@ -33,6 +33,37 @@ function IndexPage(props) {
 
     const onTypeBtnClicked = (item) => {
         console.log('点击的分类ID为：', item.id)
+        //发送请求获取该ID下的所有影片并加载到影片列表中
+        //构建请求体
+        let req_body=getFormData({
+            typeId: item.id
+        })
+        //开启电影列表的加载状态
+        setInitLoading2(true)
+        axios.post('/api/movie/getByType',req_body)
+            .then((res) => {
+                console.log('返回结果', res.data)
+                if (!res.data.success) {//检查是否成功
+                    //如果失败，则做出提示，然后直接返回
+                    errorMSG('获取分类列表失败：' + res.data.errorMsg)
+                    setVideoListData([])
+                    return
+                }
+                let data_recv = res.data.data
+                if (data_recv.length===0){
+                    infoMSG('该分类下暂无影片')
+                }
+                //设置数据
+                setVideoListData(data_recv)
+            })
+            .catch((err) => {
+                console.log('错误信息', err)
+                errorMSG(err.message + '请检查网络连接')
+            })
+            .finally(() => {
+                //关闭加载状态
+                setInitLoading2(false)
+            })
     }
 
     //网页HeaderJS加载Hooks
