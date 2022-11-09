@@ -7,7 +7,7 @@ function BlogDetail(props) {
 
     return (
         <div>
-            这里是影片观看界面{params.id}
+            这里是文章阅读界面{params.id}
         </div>
     );
 }

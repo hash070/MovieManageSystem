@@ -17,6 +17,8 @@ import MovieUpload from "../Componments/Admin/MovieUpload.jsx";
 import AllMovies from "../Componments/Admin/AllMovies.jsx";
 import BlogIndex from "../Componments/Front/BlogIndex.jsx";
 import BlogDetail from "../Componments/Front/BlogDetail.jsx";
+import MovieIndex from "../Componments/Front/MovieIndex.jsx";
+import MovieDetail from "../Componments/Front/MovieDetail.jsx";
 
 
 class MyRouter extends Component {
@@ -32,8 +34,8 @@ class MyRouter extends Component {
                         <Route path='blog' element={<BlogIndex/>}>
                             <Route path={':id'} element={<BlogDetail/>}/>
                         </Route>
-                        <Route path='movie' element={<BlogIndex/>}>
-                            <Route path={':id'} element={<BlogDetail/>}/>
+                        <Route path='movie' element={<MovieIndex/>}>
+                            <Route path={':id'} element={<MovieDetail/>}/>
                         </Route>
                     </Route>
 

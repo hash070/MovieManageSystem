@@ -18,9 +18,9 @@ function IndexPage(props) {
     }])
 
     //文章列表数据
-    const [blog_list_data,setBlogListData] = useState([])
+    const [blog_list_data, setBlogListData] = useState([])
     //视频列表数据
-    const [video_list_data,setVideoListData] = useState([])
+    const [video_list_data, setVideoListData] = useState([])
 
     //列表加载动画状态，分别是类型列表、视频列表和文章列表
     const [initLoading1, setInitLoading1] = useState(true);
@@ -35,12 +35,12 @@ function IndexPage(props) {
         console.log('点击的分类ID为：', item.id)
         //发送请求获取该ID下的所有影片并加载到影片列表中
         //构建请求体
-        let req_body=getFormData({
+        let req_body = getFormData({
             typeId: item.id
         })
         //开启电影列表的加载状态
         setInitLoading2(true)
-        axios.post('/api/movie/getByType',req_body)
+        axios.post('/api/movie/getByType', req_body)
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
@@ -50,7 +50,7 @@ function IndexPage(props) {
                     return
                 }
                 let data_recv = res.data.data
-                if (data_recv.length===0){
+                if (data_recv.length === 0) {
                     infoMSG('该分类下暂无影片')
                 }
                 //设置数据
@@ -143,11 +143,11 @@ function IndexPage(props) {
                 //设置数据
                 setTypeListData(data_recv)
             })
-            .catch((e)=>{
+            .catch((e) => {
                 //捕获异常
-                errorMSG('网络错误，请检查网络连接',e.message)
+                errorMSG('网络错误，请检查网络连接', e.message)
             })
-            .finally(()=>{
+            .finally(() => {
                 //最终关闭加载状态
                 setInitLoading1(false)
             })
@@ -218,7 +218,7 @@ function IndexPage(props) {
                         setLoading(!loading)
                     }}
                     shape='circle'
-                    icon={<ReloadOutlined />}
+                    icon={<ReloadOutlined/>}
                     type={'primary'}
                 />
                 <Button
@@ -278,8 +278,13 @@ function IndexPage(props) {
                                                     shape='square'
                                                     size={80}
                                     />}
-                                    title={<a style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.name}</a>}
-                                    description={<div style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.des}</div>}
+                                    title={<a onClick={() => {
+                                        console.log('视频列表点击事件',item.id)
+                                        navigate('/movie/'+item.id)
+                                    }} style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.name}</a>}
+                                    description={<div
+                                        style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.des}</div>}
+
                                 />
                                 <div style={{
                                     position: "absolute",
@@ -301,8 +306,14 @@ function IndexPage(props) {
                             <Skeleton avatar title={false} loading={item.loading} active>
                                 <List.Item.Meta
                                     avatar={<Avatar src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
-                                    title={<a style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.title}</a>}
-                                    description={<div style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.des}</div>}
+                                    title={<a
+                                        onClick={() => {
+                                            console.log('文章列表点击事件',item.id)
+                                            navigate('/blog/'+item.id)
+                                        }}
+                                        style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.title}</a>}
+                                    description={<div
+                                        style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.des}</div>}
                                 />
                                 <div style={{
                                     position: "absolute",
