@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {NavLink, useNavigate} from "react-router-dom";
 import {Button} from "antd";
 
-function HelloWorld1(props) {
+function IndexPage(props) {
     //获取路由跳转方法
     const navigate = useNavigate()
     return (
@@ -18,4 +18,4 @@ function HelloWorld1(props) {
     );
 }
 
-export default HelloWorld1;
+export default IndexPage;

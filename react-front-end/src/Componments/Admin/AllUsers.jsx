@@ -1,23 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Dropdown, Form, Input, List, Modal, Radio, Row, Skeleton, Space} from "antd";
-import {
-    errorMSG,
-    getEmailCheckReg,
-    getItem,
-    getUserLevel,
-    simulateMouseClick,
-    successMSG
-} from "../../Utils/CommonFuncs.js";
+import {Button, Col, Input, List, Modal, Radio, Row} from "antd";
+import {errorMSG, getEmailCheckReg, getUserLevel, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
-import {
-    DesktopOutlined,
-    DownOutlined,
-    LockOutlined, LogoutOutlined,
-    MailOutlined,
-    PlusOutlined,
-    UserOutlined,
-    VideoCameraOutlined
-} from "@ant-design/icons";
+import {LockOutlined, MailOutlined, PlusOutlined, UserOutlined,} from "@ant-design/icons";
 
 
 let item_temp
