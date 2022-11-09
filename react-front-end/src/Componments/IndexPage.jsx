@@ -1,108 +1,31 @@
-import React, {Component, useEffect} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {NavLink, useNavigate} from "react-router-dom";
 import {Button, List} from "antd";
 import '../styles/HomePage.css'
+import axios from "axios";
+import {convertTypeObjToAntDList, errorMSG} from "../Utils/CommonFuncs.js";
+
 // import '../Utils/IndexHeader.js'
-
-const data = [
-    {
-        title: "分类1"
-    },
-    {
-        title: "Title 2"
-    },
-    {
-        title: "Title 3"
-    },
-    {
-        title: "Title 4"
-    },
-    {
-        title: "Title 5"
-    },
-    {
-        title: "Title 6"
-    },
-    {
-        title: "Title 1"
-    },
-    {
-        title: "Title 2"
-    },
-    {
-        title: "Title 3"
-    },
-    {
-        title: "Title 4"
-    },
-    {
-        title: "Title 5"
-    },
-    {
-        title: "Title 6"
-    },
-    {
-        title: "Title 1"
-    },
-    {
-        title: "Title 2"
-    },
-    {
-        title: "Title 3"
-    },
-    {
-        title: "Title 4"
-    },
-    {
-        title: "Title 5"
-    },
-    {
-        title: "Title 6"
-    },
-    {
-        title: "Title 1"
-    },
-    {
-        title: "Title 2"
-    },
-    {
-        title: "Title 3"
-    },
-    {
-        title: "Title 4"
-    },
-    {
-        title: "Title 5"
-    },
-    {
-        title: "Title 6"
-    },
-    {
-        title: "Title 1"
-    },
-    {
-        title: "Title 2"
-    },
-    {
-        title: "Title 3"
-    },
-    {
-        title: "Title 4"
-    },
-    {
-        title: "Title 5"
-    },
-    {
-        title: "Title 6"
-    }
-];
-
 function IndexPage(props) {
     //获取路由跳转方法
     const navigate = useNavigate()
 
+    //列表数据
+    const [list_data, setListData] = useState([{
+        title:
+            '暂无分类'
+    }])
+
+    const [loading, setLoading] = useState(false)
+
+    //分类按钮点击事件处理
+
+    const onTypeBtnClicked = (item) => {
+        console.log('点击的分类ID为：',item.id)
+    }
+
     //网页HeaderJS加载Hooks
-    useEffect(()=>{
+    useEffect(() => {
         var startX = 0;
         let blurValue;
         const images = document.querySelectorAll("header>div>img");
@@ -155,21 +78,40 @@ function IndexPage(props) {
         });
     })
 
+    //获取分裂列表Hooks
+    useEffect(() => {
+        console.log('开始获取所有分类')
+        //发送请求
+        axios.post('/api/type/getAll')
+            .then((res) => {
+                console.log('返回结果', res.data)
+                if (!res.data.success) {//检查是否成功
+                    //如果失败，则做出提示，然后直接返回
+                    errorMSG('获取分类列表失败：' + res.data.errorMsg)
+                    return
+                }
+                //转换数据，适配AntD List
+                let data_recv = convertTypeObjToAntDList(res.data.data)
+                //设置数据
+                setListData(data_recv)
+            })
+    }, [loading])
+
     return (
         <div>
 
             <header>
-                <div><img src="/imgs/1.png" /></div>
-                <div><img src="/imgs/2.png" /></div>
-                <div><img src="/imgs/3.png" /></div>
-                <div><img src="/imgs/4.png" /></div>
-                <div><img src="/imgs/5.png" /></div>
-                <div><img src="/imgs/6.png" /></div>
+                <div><img src="/imgs/1.png"/></div>
+                <div><img src="/imgs/2.png"/></div>
+                <div><img src="/imgs/3.png"/></div>
+                <div><img src="/imgs/4.png"/></div>
+                <div><img src="/imgs/5.png"/></div>
+                <div><img src="/imgs/6.png"/></div>
                 <Button
                     style={{
-                        position:"absolute",
-                        right:'0px',
-                        borderRadius:'10px',
+                        position: "absolute",
+                        right: '0px',
+                        borderRadius: '10px',
                         margin: '20px'
                     }}
                     onClick={() => navigate('/admin')}
@@ -183,22 +125,25 @@ function IndexPage(props) {
                     grid={{
                         gutter: 0,
                         xs: 3,
-                        sm: 6,
-                        md: 8,
-                        lg: 10,
-                        xl: 12,
-                        xxl: 14
+                        sm: 5,
+                        md: 7,
+                        lg: 9,
+                        xl: 11,
+                        xxl: 13
                     }}
-                    style={{marginLeft:'40px'}}
-                    dataSource={data}
+                    style={{marginLeft: '40px'}}
+                    dataSource={list_data}
                     renderItem={(item) => (
                         <List.Item>
                             <Button
-                                style={{backgroundColor: "#f4f5f6",
-                                borderRadius: "10px",
+                                style={{
+                                    backgroundColor: "#f4f5f6",
+                                    borderRadius: "10px",
                                 }}
                                 type="default"
-                                shape="default">
+                                shape="default"
+                                onClick={()=>onTypeBtnClicked(item)}
+                            >
                                 {item.title}
                             </Button>
                         </List.Item>

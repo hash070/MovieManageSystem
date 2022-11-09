@@ -76,7 +76,6 @@ function getValueAndLabel(obj) {
 // 转换[{id:'',name:''}...]列表为[{value:'',label:''}...]，用于适配antd的Select组件
 export function convertTypeObjToSelectList(list) {
     let select = []
-    //打印出list中的键和值
     for (let i = 0; i < list.length; i++) {
         select.push(getValueAndLabel(list[i]))
     }
@@ -86,4 +85,20 @@ export function convertTypeObjToSelectList(list) {
 //将以逗号分割的字符串转换为字符数组
 export function convertTagsStrToArray(str) {
     return str.split(',')
+}
+
+function getListDataObject(obj) {
+    return {
+        id: obj.id,
+        title: obj.name,
+    };
+}
+
+// 转换[{id:'',name:''}...]列表为[{id:'',title:''}...]，用于适配antd的List组件
+export function convertTypeObjToAntDList(list) {
+    let antdList = []
+    for (let i = 0; i < list.length; i++) {
+        antdList.push(getListDataObject(list[i]))
+    }
+    return antdList
 }
