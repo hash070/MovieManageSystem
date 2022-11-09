@@ -131,7 +131,11 @@ function UserProfile(props) {
                 </Form.Item>
                 <br/>
                 <Form.Item className='regButton'>
-                    <Button type="primary" htmlType="submit" style={{width: '100px', margin: 'auto'}}>
+                    <Button
+                        className='radius-btn'
+                        type="primary"
+                        htmlType="submit"
+                        style={{width: '100px', margin: 'auto'}}>
                         更新信息
                     </Button>
                 </Form.Item>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Outlet, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 
 function BlogDetail(props) {
     // 获取路由参数

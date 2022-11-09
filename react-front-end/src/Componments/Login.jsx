@@ -3,7 +3,7 @@ import axios from 'axios';
 import {React, useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import {ArrowLeftOutlined, LockOutlined, UserOutlined} from '@ant-design/icons';
 import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 import Cookies from "universal-cookie/es6";
 
@@ -123,6 +123,20 @@ const LoginForm = () => {
     return (
         <div className='login-wrap'>
             <div>
+                <Button
+                    className='radius-btn'
+                    style={{
+                        position: "absolute",
+                        left: '0px',
+                        top: '0px',
+                        margin: '20px',
+                    }}
+                    icon={<ArrowLeftOutlined/>}
+                    type={'primary'}
+                    onClick={() => {
+                        navigate('/')
+                    }}
+                >返回首页</Button>
                 <div className='form-header'>
                     <h4 className='column'>登录</h4>
                     {/*使用Link来实现简单跳转*/}
@@ -164,16 +178,19 @@ const LoginForm = () => {
 
                         <Row>
                             <Col span={6}>
-                                <Button type="primary"
-                                        htmlType="submit"
-                                        className="login-form-button">
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    className="radius-btn login-form-button">
                                     登录
                                 </Button>
                             </Col>
                             <Col span={6}></Col>
                             <Col span={6}></Col>
                             <Col span={6}>
-                                <Button type="primary"
+                                <Button
+                                    className='radius-btn'
+                                    type="primary"
                                         onClick={onRegisterClick}>注册
                                 </Button>
                             </Col>
