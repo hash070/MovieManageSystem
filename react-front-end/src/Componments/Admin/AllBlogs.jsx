@@ -116,6 +116,7 @@ function AllBlogs(props) {
                     <List.Item
                         actions={[
                             <Button
+                                className='radius-btn'
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
@@ -123,6 +124,7 @@ function AllBlogs(props) {
                                 }}
                             >编辑</Button>,
                             <Button
+                                className='radius-btn'
                                 key="list-loadmore-delete"
                                 type={"primary"} danger
                                 onClick={(msg) => {
