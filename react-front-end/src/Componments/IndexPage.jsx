@@ -122,7 +122,7 @@ function IndexPage(props) {
             })
         console.log('开始获取文章列表')
         //获取所有公开影片列表
-        axios.post('/api/movie/getAll')
+        axios.post('/api/movie/getAllPublic')
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
@@ -144,7 +144,7 @@ function IndexPage(props) {
                 setInitLoading2(false)
             })
         //获取所有公开文章列表
-        axios.post('/api/blog/getAll')
+        axios.post('/api/blog/getAllPublicBlogs')
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
