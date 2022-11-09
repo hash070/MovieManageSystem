@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
 import IndexPage from "../Componments/IndexPage.jsx";
-import HelloWorld2 from "../Componments/HelloWorld2.jsx";
+import AdminIndexPage from "../Componments/AdminIndexPage.jsx";
 import Login from "../Componments/Login.jsx";
 import Register from "../Componments/Register.jsx";
 import ResetPWD from "../Componments/ResetPWD.jsx";
@@ -15,6 +15,8 @@ import UserProfile from "../Componments/Admin/UserProfile.jsx";
 import AllUsers from "../Componments/Admin/AllUsers.jsx";
 import MovieUpload from "../Componments/Admin/MovieUpload.jsx";
 import AllMovies from "../Componments/Admin/AllMovies.jsx";
+import BlogIndex from "../Componments/Front/BlogIndex.jsx";
+import BlogDetail from "../Componments/Front/BlogDetail.jsx";
 
 
 class MyRouter extends Component {
@@ -27,9 +29,16 @@ class MyRouter extends Component {
                         <Route path='login' element={<Login/>}/>
                         <Route path='register' element={<Register/>}/>
                         <Route path='reset' element={<ResetPWD/>}/>
+                        <Route path='blog' element={<BlogIndex/>}>
+                            <Route path={':id'} element={<BlogDetail/>}/>
+                        </Route>
+                        <Route path='movie' element={<BlogIndex/>}>
+                            <Route path={':id'} element={<BlogDetail/>}/>
+                        </Route>
                     </Route>
+
                     <Route path={'/admin'} element={<AdminPanel/>}>
-                        <Route index element={<HelloWorld2/>}/>
+                        <Route index element={<AdminIndexPage/>}/>
                         <Route path='movie'>
                             <Route index element={<IndexNav name={'影片上传'} path={'/admin/movie/upload'}/>}/>
                             <Route path={'upload'} element={<MovieUpload/>}/>

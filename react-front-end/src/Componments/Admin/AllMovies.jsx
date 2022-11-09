@@ -183,6 +183,8 @@ function AllMovies(props) {
                 successMSG('电影信息更新成功')
                 //关闭模态框
                 setIsModalOpen(false)
+                //刷新Loading变量，使列表更新
+                setLoading(!loading)
 
             })
             .catch((err) => {
@@ -199,7 +201,6 @@ function AllMovies(props) {
                 if (!res.data.success) {//检查是否成功
                     //如果失败，则做出提示，然后直接返回
                     errorMSG('获取分类列表失败：' + res.data.errorMsg)
-                    setInitLoading(false)
                     setList([])
                     return
                 }
