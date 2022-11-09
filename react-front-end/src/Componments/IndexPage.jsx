@@ -4,6 +4,7 @@ import {Avatar, Button, Divider, List, Skeleton} from "antd";
 import '../styles/HomePage.css'
 import axios from "axios";
 import {convertTypeObjToAntDList, errorMSG} from "../Utils/CommonFuncs.js";
+import {ReloadOutlined} from "@ant-design/icons";
 
 // import '../Utils/IndexHeader.js'
 function IndexPage(props) {
@@ -21,8 +22,10 @@ function IndexPage(props) {
     //视频列表数据
     const [video_list_data,setVideoListData] = useState([])
 
-    //列表加载动画状态
-    const [initLoading, setInitLoading] = useState(true);
+    //列表加载动画状态，分别是类型列表、视频列表和文章列表
+    const [initLoading1, setInitLoading1] = useState(true);
+    const [initLoading2, setInitLoading2] = useState(true);
+    const [initLoading3, setInitLoading3] = useState(true);
     //绑定Hooks函数，控制列表是否重新加载
     const [loading, setLoading] = useState(false)
 
@@ -88,13 +91,20 @@ function IndexPage(props) {
 
     //获取分类、视频与文章数据列表Hooks函数
     useEffect(() => {
+        //启动列表加载动画
+        setInitLoading1(true)
+        setInitLoading2(true)
+        setInitLoading3(true)
+        //获取所有分类列表
         console.log('开始获取分类列表')
         axios.post('/api/type/getAll')
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
-                    //如果失败，则做出提示，然后直接返回
+                    //如果失败，则做出提示
                     errorMSG('获取分类列表失败：' + res.data.errorMsg)
+                    //设置分类列表为空
+                    setTypeListData([])
                     return
                 }
                 //转换数据，适配AntD List
@@ -102,15 +112,44 @@ function IndexPage(props) {
                 //设置数据
                 setTypeListData(data_recv)
             })
+            .catch((e)=>{
+                //捕获异常
+                errorMSG('网络错误，请检查网络连接',e.message)
+            })
+            .finally(()=>{
+                //最终关闭加载状态
+                setInitLoading1(false)
+            })
         console.log('开始获取文章列表')
-        //发送请求
+        //获取所有公开影片列表
+        axios.post('/api/movie/getAll')
+            .then((res) => {
+                console.log('返回结果', res.data)
+                if (!res.data.success) {//检查是否成功
+                    //如果失败，则做出提示，然后直接返回
+                    errorMSG('获取分类列表失败：' + res.data.errorMsg)
+                    setVideoListData([])
+                    return
+                }
+                let data_recv = res.data.data
+                //设置数据
+                setVideoListData(data_recv)
+            })
+            .catch((err) => {
+                console.log('错误信息', err)
+                errorMSG(err.message + '请检查网络连接')
+            })
+            .finally(() => {
+                //关闭加载状态
+                setInitLoading2(false)
+            })
+        //获取所有公开文章列表
         axios.post('/api/blog/getAll')
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
                     //如果失败，则做出提示，然后直接返回
                     errorMSG('获取分类列表失败：' + res.data.errorMsg)
-                    setInitLoading(false)
                     setBlogListData([])
                     return
                 }
@@ -124,9 +163,10 @@ function IndexPage(props) {
             })
             .finally(() => {
                 //关闭加载状态
-                setInitLoading(false)
+                setInitLoading3(false)
             })
     }, [loading])
+
 
     return (
         <div>
@@ -137,6 +177,19 @@ function IndexPage(props) {
                 <div><img src="/imgs/4.png"/></div>
                 <div><img src="/imgs/5.png"/></div>
                 <div><img src="/imgs/6.png"/></div>
+                <Button
+                    style={{
+                        position: "absolute",
+                        left: '0px',
+                        margin: '20px',
+                    }}
+                    onClick={() => {
+                        setLoading(!loading)
+                    }}
+                    shape='circle'
+                    icon={<ReloadOutlined />}
+                    type={'primary'}
+                />
                 <Button
                     style={{
                         position: "absolute",
@@ -152,6 +205,7 @@ function IndexPage(props) {
                 <Divider>影片分类</Divider>
                 {/*电影分裂列表*/}
                 <List
+                    loading={initLoading1}
                     grid={{
                         gutter: 0,
                         xs: 3,
@@ -182,18 +236,25 @@ function IndexPage(props) {
                 />
                 <Divider>网站视频</Divider>
                 <List
-                    loading={initLoading}
+                    loading={initLoading2}
                     itemLayout="horizontal"
                     dataSource={video_list_data}
                     renderItem={(item) => (
                         <List.Item>
                             <Skeleton avatar title={false} loading={item.loading} active>
                                 <List.Item.Meta
-                                    avatar={<Avatar src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
-                                    title={<a style={{maxWidth: '90%', wordBreak: 'break-all'}}>{item.title}</a>}
-                                    description={<div style={{maxWidth: '90%', wordBreak: 'break-all'}}>{item.des}</div>}
+                                    avatar={<Avatar src={'/api/movie/getFile?url=' + item.pic}
+                                                    shape='square'
+                                                    size={80}
+                                    />}
+                                    title={<a style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.name}</a>}
+                                    description={<div style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.des}</div>}
                                 />
-                                <div>作者：{item.author}</div>
+                                <div style={{
+                                    position: "absolute",
+                                    right: '0px',
+                                    marginRight: '50px'
+                                }}>作者：{item.uploader}</div>
                             </Skeleton>
                         </List.Item>
                     )}
@@ -201,7 +262,7 @@ function IndexPage(props) {
                 <Divider>网站文章</Divider>
                 {/*文章列表*/}
                 <List
-                    loading={initLoading}
+                    loading={initLoading3}
                     itemLayout="horizontal"
                     dataSource={blog_list_data}
                     renderItem={(item) => (
