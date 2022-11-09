@@ -293,7 +293,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Override
     public Result getAllPublicMovie() {
-        //        先从redis中获取所有电影
+//        先从redis中获取所有电影
         List<Movie> movieList = RedisUtil.getAllMovies(stringRedisTemplate);
 //        如果redis中没有电影,则从数据库中获取
         if(movieList.size() == 0){
