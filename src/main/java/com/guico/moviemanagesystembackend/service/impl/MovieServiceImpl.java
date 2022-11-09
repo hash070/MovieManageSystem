@@ -206,7 +206,9 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         movieMap.put("type", typeId.toString());
         movieMap.put("tags", tags);
         movieMap.put("visibility", visibility.toString());
-        movieMap.put("pic", pic);
+        if(pic != null){
+            movieMap.put("pic", pic);
+        }
         stringRedisTemplate.opsForHash().putAll("movie:"+id, movieMap);
         updateById(new Movie(movieMap));
         return Result.ok();
