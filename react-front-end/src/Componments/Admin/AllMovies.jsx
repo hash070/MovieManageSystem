@@ -194,7 +194,7 @@ function AllMovies(props) {
     };
 
     useEffect(() => {//数据加载函数
-        //发送请求
+        //发送获取所有影片的请求
         axios.post('/api/movie/getAll')
             .then((res) => {
                 console.log('返回结果', res.data)
