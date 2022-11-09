@@ -86,6 +86,11 @@ public class MovieController {
         return Result.ok(movieService.uploadMoviePic(pic));
     }
 
+
+    @PostMapping("/gerAllPublic")
+    public Result getAllPublicMovie() {
+        return movieService.getAllPublicMovie();
+    }
     @RequestMapping("/getFile")
     public ResponseEntity<byte[]> getFile(String url) {
         url = path + url;

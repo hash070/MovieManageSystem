@@ -275,6 +275,20 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         return "/pics/"+fileName;
     }
 
+    @Override
+    public Result getAllPublicMovie() {
+        //        先从redis中获取所有电影
+        List<Movie> movieList = RedisUtil.getAllMovies(stringRedisTemplate);
+//        如果redis中没有电影,则从数据库中获取
+        if(movieList.size() == 0){
+            movieList = query().list();
+            for(Movie movie : movieList){
+                stringRedisTemplate.opsForHash().putAll("movie:"+movie.getId(), movie.toMap());
+            }
+        }
+        return Result.ok(movieList, movieList.size());
+    }
+
     private Movie getMovie(Integer id){
 //        先从redis中获取
         Map<Object, Object> movieMap = stringRedisTemplate.opsForHash().entries("movie:"+id);
