@@ -3,6 +3,7 @@ import {Outlet, useNavigate} from "react-router-dom";
 import {Button} from "antd";
 import {ArrowLeftOutlined, ReloadOutlined} from "@ant-design/icons";
 import '../../styles/HomePage.css'
+import {headerJSMovement} from "../../Utils/CommonFuncs.js";
 
 
 function BlogIndex(props) {
@@ -10,57 +11,8 @@ function BlogIndex(props) {
 
     //网页头部JS动态效果加载Hooks
     useEffect(() => {
-        var startX = 0;
-        let blurValue;
-        const images = document.querySelectorAll("header>div>img");
-
-        document.querySelector("header").addEventListener("mousemove", (e) => {
-            let offsetX = e.clientX - startX + 482;
-            let percentage = offsetX / window.outerWidth;
-            let offset = 15 * percentage;
-            let blur = 20;
-
-            for (let [index, image] of images.entries()) {
-                offset *= 1.3;
-                blurValue =
-                    Math.pow(index / images.length - percentage, 2) * blur;
-                image.style.setProperty("--offset", `${offset}px`);
-                image.style.setProperty("--blur", `${blurValue}px`);
-            }
-        });
-        document.querySelector("header").addEventListener("mouseover", (e) => {
-            startX = e.clientX;
-            for (let [index, image] of images.entries()) {
-                image.style.transition = "none";
-            }
-        });
-
-        document.querySelector("header").addEventListener("mouseout", () => {
-            let offsetX = 482;
-            let blur = 20;
-            let percentage = offsetX / window.outerWidth;
-            let offset = 15 * percentage;
-            for (let [index, image] of images.entries()) {
-                offset *= 1.3;
-                blurValue = Math.pow(index / images.length - percentage, 2) * blur;
-                image.style.setProperty("--offset", `${offset}px`);
-                image.style.setProperty("--blur", `${blurValue}px`);
-                image.style.transition = "all .3s ease";
-            }
-        });
-        window.addEventListener("load", () => {
-            let offsetX = 482;
-            let blur = 20;
-            let percentage = offsetX / window.outerWidth;
-            let offset = 15 * percentage;
-            for (let [index, image] of images.entries()) {
-                offset *= 1.3;
-                blurValue = Math.pow(index / images.length - percentage, 2) * blur;
-                image.style.setProperty("--offset", `${offset}px`);
-                image.style.setProperty("--blur", `${blurValue}px`);
-            }
-        });
-    })
+        headerJSMovement()
+    },[])
     return (
         <div>
             {/*<div*/}
