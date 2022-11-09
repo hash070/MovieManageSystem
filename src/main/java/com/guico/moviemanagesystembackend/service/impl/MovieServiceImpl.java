@@ -259,15 +259,16 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        获取文件后缀
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
 //        如果文件后缀在允许后缀的范围内，则上传
-        boolean flag = false;
+//        默认flag为true
+        boolean flag = true;
         for(String type:picType){
             if(fileName.endsWith(type)){
-                flag = true;
+                flag = false;
                 break;
             }
         }
-        if(!flag){
-            log.info("上传电影图片类型错误,文件类型为"+suffixName);
+        if(flag){
+            log.info("上传电影类型错误,文件类型为"+suffixName);
             return "fail:上传失败，电影图片类型不匹配";
         }
 //        创建文件对象
