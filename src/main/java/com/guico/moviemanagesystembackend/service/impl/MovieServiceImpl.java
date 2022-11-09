@@ -203,9 +203,9 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        更新电影信息
         movieMap.put("name", name);
         movieMap.put("des", des);
-        movieMap.put("type", typeId);
+        movieMap.put("type", typeId.toString());
         movieMap.put("tags", tags);
-        movieMap.put("visibility", visibility);
+        movieMap.put("visibility", visibility.toString());
         movieMap.put("pic", pic);
         stringRedisTemplate.opsForHash().putAll("movie:"+id, movieMap);
         updateById(new Movie(movieMap));

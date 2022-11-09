@@ -1,5 +1,6 @@
 package com.guico.moviemanagesystembackend.entry;
 
+import cn.hutool.core.util.BooleanUtil;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -94,7 +95,7 @@ public class Movie {
         this.banner = (String) map.get("banner");
         this.uploader = (String) map.get("uploader");
         this.file = (String) map.get("file");
-        this.visibility = Boolean.parseBoolean( (String)map.get("visibility"));
+        this.visibility = BooleanUtil.toBoolean( (String)map.get("visibility"));
         this.uploadTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse((String) map.get("uploadTime"), new java.text.ParsePosition(0));
         this.views = Long.parseLong((String) map.get("views")) ;
         this.likes = Long.parseLong((String) map.get("likes"));
