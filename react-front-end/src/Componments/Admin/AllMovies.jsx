@@ -160,21 +160,33 @@ function AllMovies(props) {
 
         console.log("表单信息: ", values)
         //检查图片是否上传
+        let isPicUploaded = true //默认为已上传
         if (values["picture-upload"] === undefined || values["picture-upload"].length === 0) {
-            errorMSG('请上传电影图片')
-            return
+            isPicUploaded = false //如果没有上传，则设置为未上传
         }
 
         //构建请求体
-        let req_body = getFormData({
-            id: movie_edit_id,
-            name: values["movie-name"],
-            des: values["movie-desc"],
-            typeId: values["movie-type"],
-            tags: values["movie-tags"],
-            visibility: values['movie-visibility'],
-            pic: values["picture-upload"][0].response.data,
-        })
+        let req_body
+        if (isPicUploaded) { //如果图片已上传
+            req_body = getFormData({
+                id: movie_edit_id,
+                name: values["movie-name"],
+                des: values["movie-desc"],
+                typeId: values["movie-type"],
+                tags: values["movie-tags"],
+                visibility: values['movie-visibility'],
+                pic: values["picture-upload"][0].response.data,
+            })
+        } else { // 如果图片未上传，则pic的值传null
+            req_body = getFormData({
+                id: movie_edit_id,
+                name: values["movie-name"],
+                des: values["movie-desc"],
+                typeId: values["movie-type"],
+                tags: values["movie-tags"],
+                visibility: values['movie-visibility'],
+            })
+        }
 
         console.log('开始发送电影更新请求')
         //循环遍历请求体中的键和值
