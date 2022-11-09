@@ -1,9 +1,9 @@
-import {Button, Checkbox, Form, Input, Col, Row} from 'antd';
+import {Button, Col, Form, Input, Row} from 'antd';
 import axios from 'axios';
-import {React, Fragment, useState} from 'react';
+import {React, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
-import {LockOutlined, UserOutlined, CheckCircleOutlined, MailOutlined} from '@ant-design/icons';
+import {CheckCircleOutlined, LockOutlined, MailOutlined, UserOutlined} from '@ant-design/icons';
 import {errorMSG, getEmailCheckReg, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 
 //注册表单
