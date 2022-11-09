@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {NavLink, useNavigate} from "react-router-dom";
+import React from 'react';
+import {useNavigate} from "react-router-dom";
 import {Button} from "antd";
 
 function IndexPage(props) {
