@@ -7,6 +7,7 @@ import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
 import com.guico.moviemanagesystembackend.mapper.MovieMapper;
 import com.guico.moviemanagesystembackend.service.IMovieService;
+import com.guico.moviemanagesystembackend.service.IUserService;
 import com.guico.moviemanagesystembackend.utils.RedisUtil;
 import com.guico.moviemanagesystembackend.utils.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,9 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    IUserService userService;
 
     @Autowired
     HttpServletRequest request;
@@ -299,6 +303,10 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
             }
         }
         movieList.removeIf(movie ->!movie.getVisibility() );
+        for(Movie movie : movieList){
+            User user =(User) userService.getUserByEmail(movie.getUploader()).getData();
+            movie.setUploader(user.getNickname());
+        }
         return Result.ok(movieList, movieList.size());
     }
 
