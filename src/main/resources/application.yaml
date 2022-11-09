@@ -1,8 +1,8 @@
 file:
   upload:
-    movie-type: mp4
+    movie-type: .mp4
     # 设置pic的类型：所有的图片类型
-    pic-type: jpg|jpeg|png|bmp|gif|ico|tiff|tif|svg|webp
+    pic-type: .jpg|.jpeg|.png|.bmp|.gif|.ico|.tiff|.tif|.svg|.webp
 
 spring:
   servlet:

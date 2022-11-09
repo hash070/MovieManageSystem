@@ -68,6 +68,9 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     @Override
     public Result uploadMovie(MultipartFile movie) throws IOException {
         String url = uploadMovieFile(movie);
+        if(url.startsWith("fail")){
+            return Result.fail(url);
+        }
         return Result.ok(url);
     }
 
@@ -225,7 +228,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
 //        获取文件后缀
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        if(!suffixName.contains(movieType)){
+        if(!fileName.endsWith(".mp4")){
             log.info("上传电影文件类型错误,文件类型为"+suffixName);
             return "fail:上传失败，电影文件类型不匹配";
         }
@@ -255,11 +258,17 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 
 //        获取文件后缀
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
-//        如果文件后缀不在允许的范围内，返回失败
+//        如果文件后缀在允许后缀的范围内，则上传
+        boolean flag = false;
         for(String type:picType){
-            if(suffixName.equals(type)){
-                return "fail:上传失败，文件类型不匹配";
+            if(fileName.endsWith(type)){
+                flag = true;
+                break;
             }
+        }
+        if(!flag){
+            log.info("上传电影图片类型错误,文件类型为"+suffixName);
+            return "fail:上传失败，电影图片类型不匹配";
         }
 //        创建文件对象
 //        文件名为时间戳+hashcode+后缀
