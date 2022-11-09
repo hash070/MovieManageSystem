@@ -249,6 +249,7 @@ function AllMovies(props) {
                         style={{height: '400px'}}
                         actions={[
                             <Button
+                                className='radius-btn'
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
@@ -256,6 +257,7 @@ function AllMovies(props) {
                                 }}
                             >编辑</Button>,
                             <Button
+                                className='radius-btn'
                                 key="list-loadmore-delete"
                                 type={"primary"} danger
                                 onClick={(msg) => {
@@ -412,7 +414,7 @@ function AllMovies(props) {
                                 listType="picture"
                                 onChange={(info) => onPictureFileUpload(info)}
                         >
-                            <Button icon={<UploadOutlined/>}>点击上传</Button>
+                            <Button className='radius-btn' icon={<UploadOutlined/>}>点击上传</Button>
                         </Upload>
                     </Form.Item>
 

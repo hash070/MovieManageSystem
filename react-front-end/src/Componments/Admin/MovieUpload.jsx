@@ -270,7 +270,7 @@ const MovieUpload = () => {
                         listType="picture"
                         onChange={(info) => onPictureFileUpload(info)}
                 >
-                    <Button icon={<UploadOutlined/>}>点击上传</Button>
+                    <Button className='radius-btn' icon={<UploadOutlined/>}>点击上传</Button>
                 </Upload>
                 {/*<Input*/}
                 {/*    type="file"*/}
@@ -317,7 +317,7 @@ const MovieUpload = () => {
                     offset: 6
                 }}
             >
-                <Button type="primary" htmlType="submit">
+                <Button className='radius-btn' type="primary" htmlType="submit">
                     上传影片
                 </Button>
             </Form.Item>

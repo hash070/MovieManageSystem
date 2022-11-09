@@ -12,6 +12,11 @@ export function successMSG(msg) {
     message.success(msg);
 };
 
+//普通提示信息
+export function infoMSG(msg) {
+    message.info(msg);
+};
+
 //将对象转换成FormData
 export function getFormData(object) {
     const formData = new FormData();
