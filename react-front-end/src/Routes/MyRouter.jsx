@@ -65,10 +65,10 @@ class MyRouter extends Component {
                             status="404"
                             title="404"
                             subTitle="抱歉，你访问的页面不存在。"
-                            extra={<NavLink to="/admin"
+                            extra={<NavLink to="/"
                                             style={{
                                                 color: '#3d82ff',
-                                                background: '#f0f0f0',
+                                                background: '#ffffff',
                                             }
                                             }>返回首页</NavLink>}
                         />
