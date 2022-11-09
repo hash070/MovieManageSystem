@@ -1,5 +1,5 @@
-import React, {Component, useEffect, useState} from 'react';
-import {NavLink, useNavigate} from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from "react-router-dom";
 import {Avatar, Button, Divider, List, Skeleton} from "antd";
 import '../styles/HomePage.css'
 import axios from "axios";
@@ -191,10 +191,10 @@ function IndexPage(props) {
                     type={'primary'}
                 />
                 <Button
+                    className='radius-btn'
                     style={{
                         position: "absolute",
                         right: '0px',
-                        borderRadius: '10px',
                         margin: '20px'
                     }}
                     onClick={() => navigate('/admin')}

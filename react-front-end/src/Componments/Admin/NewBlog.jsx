@@ -26,7 +26,16 @@ function NewBlog(props) {
 
     // 获得State中的所有变量
     // Check if state is null
-    let {id, des, title, article, author, uploadTime, views, isNews} = location.state===null?{id:null, des:null, title:null, article:null, author:null, uploadTime:null, views:null, isNews:null}:location.state
+    let {id, des, title, article, author, uploadTime, views, isNews} = location.state === null ? {
+        id: null,
+        des: null,
+        title: null,
+        article: null,
+        author: null,
+        uploadTime: null,
+        views: null,
+        isNews: null
+    } : location.state
 
     // MarkDown编辑器，数据绑定
     let [html_text, upDataHtml] = useState('')
@@ -83,7 +92,7 @@ function NewBlog(props) {
             //如果是外部请求，则需要添加文章ID
             req_body.append('id', id)
             success_msg = '文章更新成功'
-        }else {
+        } else {
             blog_api = blog_add_api // 否则是添加请求
             success_msg = '文章发布成功'
         }

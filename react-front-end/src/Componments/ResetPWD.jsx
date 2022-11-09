@@ -52,10 +52,10 @@ const ResetPWDForm = () => {
                 errorMSG('邮件发送失败')
             }
         })
-        .catch((err) => {
-            console.log('错误信息',err)
-            errorMSG(err.message+'\n请检查网络连接')
-        })
+            .catch((err) => {
+                console.log('错误信息', err)
+                errorMSG(err.message + '\n请检查网络连接')
+            })
     }
 
     //表单提交时发送的数据
@@ -92,8 +92,8 @@ const ResetPWDForm = () => {
 
             })
             .catch((err) => {
-                console.log('错误信息',err)
-                errorMSG(err.message+'\n请检查网络连接')
+                console.log('错误信息', err)
+                errorMSG(err.message + '\n请检查网络连接')
             })
     };
 
@@ -170,11 +170,12 @@ const ResetPWDForm = () => {
                     </div>
                     <br/>
                     <Form.Item className='regButton'>
-                        <Button type="primary" onClick={backToLogin} style={{marginRight: '50px'}}>
+                        <Button className='radius-btn' type="primary" onClick={backToLogin}
+                                style={{marginRight: '50px'}}>
                             返回登录
                         </Button>
 
-                        <Button type="primary" htmlType="submit" className="login-form-button">
+                        <Button className='radius-btn login-form-button' type="primary" htmlType="submit">
                             重置密码
                         </Button>
                     </Form.Item>

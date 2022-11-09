@@ -215,6 +215,7 @@ function AllUsers(props) {
     return (
         <div>
             <Button
+                className='radius-btn'
                 type={"primary"}
                 icon={<PlusOutlined/>}
                 onClick={e => {
@@ -247,6 +248,7 @@ function AllUsers(props) {
                     <List.Item
                         actions={[
                             <Button
+                                className='radius-btn'
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
@@ -254,6 +256,7 @@ function AllUsers(props) {
                                 }}
                             >编辑</Button>,
                             <Button
+                                className='radius-btn'
                                 key="list-loadmore-delete"
                                 type={"primary"} danger
                                 onClick={(msg) => {
