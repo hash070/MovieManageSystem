@@ -8,13 +8,13 @@ import java.util.Properties;
 
 public class MailSend {
     //    static String to  ="1305487489@qq.com";
-    static String to = "klyyds@qq.com";
-    //    static String from = "a1305487489@163.com";
-    static String from = "hash070@zzuli.top";
-    //    static String host = "smtp.163.com";
-    static String host = "mail.zzuli.top";
-    //    static String password = "RRSZFYXHBIZEWYJG";
-    static String password = "hHdUYkS7BAyeSmCJspjf";
+//    static String to = "klyyds@qq.com";
+        static String from = "a1305487489@163.com";
+//    static String from = "hash070@zzuli.top";
+        static String host = "smtp.163.com";
+//    static String host = "mail.zzuli.top";
+        static String password = "RRSZFYXHBIZEWYJG";
+//    static String password = "hHdUYkS7BAyeSmCJspjf";
 
     static final int port = 465;
 
@@ -52,7 +52,7 @@ public class MailSend {
             msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toMail, false));
             //设置邮件消息
             msg.setSubject("电影管理系统");
-            msg.setText("您的验证码为:" + code + ",1分钟内有效");
+            msg.setText("您的验证码为:" + code + ",2分钟内有效");
             //设置发送的日期
 //            msg.setSentDate(new Date());
 

@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import "antd/dist/antd.css";
 import {InboxOutlined, UploadOutlined} from "@ant-design/icons";
-import {Button, Form, Select, Switch, Upload, Input} from "antd";
+import {Button, Form, Input, Select, Switch, Upload} from "antd";
 import axios from "axios";
 import {convertTypeObjToSelectList, errorMSG, getFormData, successMSG} from "../../Utils/CommonFuncs.js";
 import TextArea from "antd/es/input/TextArea.js";

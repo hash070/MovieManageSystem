@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
-import {BrowserRouter, HashRouter, NavLink, Route, Routes} from "react-router-dom";
+import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
 import IndexPage from "../Componments/IndexPage.jsx";
 import AdminIndexPage from "../Componments/AdminIndexPage.jsx";
 import Login from "../Componments/Login.jsx";
 import Register from "../Componments/Register.jsx";
 import ResetPWD from "../Componments/ResetPWD.jsx";
 import AdminPanel from "../Componments/Admin/AdminPanel.jsx";
-import TempCom from "../Componments/Admin/TempCom.jsx";
 import IndexNav from "../Componments/Admin/IndexNav.jsx";
-import {Button, Result} from "antd";
+import {Result} from "antd";
 import Category from "../Componments/Admin/Category.jsx";
 import NewBlog from "../Componments/Admin/NewBlog.jsx";
 import AllBlogs from "../Componments/Admin/AllBlogs.jsx";

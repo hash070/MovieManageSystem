@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Button} from "antd";
-import {redirect, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 
 function AdminTest(props) {

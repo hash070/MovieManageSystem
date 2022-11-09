@@ -1,9 +1,9 @@
-import {Button, Checkbox, Form, Input, Col, Row} from 'antd';
+import {Button, Col, Form, Input, Row} from 'antd';
 import axios from 'axios';
-import {React, Fragment, useState} from 'react';
+import {React, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
-import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
+import {CheckCircleOutlined, LockOutlined, UserOutlined} from '@ant-design/icons';
 import {errorMSG, getEmailCheckReg, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 
 //密码重置表单，和注册表单类似

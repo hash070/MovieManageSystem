@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import {Avatar, Button, Col, Form, Input, Row} from "antd";
-import {CheckCircleOutlined, LockOutlined, UserOutlined} from "@ant-design/icons";
+import {Avatar, Button, Form, Input} from "antd";
+import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import axios from "axios";
 import {errorMSG, getUserLevel, successMSG} from "../../Utils/CommonFuncs.js";
 
