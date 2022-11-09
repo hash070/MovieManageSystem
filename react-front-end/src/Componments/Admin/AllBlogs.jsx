@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Avatar, Button, List, Skeleton} from "antd";
+import {Avatar, Button, Input, List, Skeleton} from "antd";
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
@@ -11,6 +11,10 @@ let item_temp
 function AllBlogs(props) {
     // 获取Navigate
     const navigate = useNavigate()
+    //输入框数据双向数据流绑定
+    let [input_val, setInputVal] = useState('')
+
+
     /*
     原search传参方式
             navigate({
@@ -26,6 +30,7 @@ function AllBlogs(props) {
                 isNews: item.isNews,
             }).toString()
         })
+
      */
     // 跳转到编辑页面，并传递文章参数
     const goToEdit = (item) => {
