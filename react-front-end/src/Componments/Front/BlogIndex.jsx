@@ -15,36 +15,6 @@ function BlogIndex(props) {
     },[])
     return (
         <div>
-            {/*<div*/}
-            {/*    style={{*/}
-            {/*        position: 'absolute',*/}
-            {/*        top: '0',*/}
-            {/*        zIndex: '1002',*/}
-            {/*        display: 'flex',*/}
-            {/*        alignItems: 'center',*/}
-            {/*        justifyContent: 'space-between',*/}
-            {/*        padding: '0 24px',*/}
-            {/*        maxWidth: '2560px',*/}
-            {/*        width: '100%',*/}
-            {/*        height: '64px',*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    <Button*/}
-            {/*        className='radius-btn'*/}
-            {/*        style={{*/}
-            {/*            position: "absolute",*/}
-            {/*            left: '0px',*/}
-            {/*            top: '0px',*/}
-            {/*            margin: '20px',*/}
-            {/*        }}*/}
-            {/*        icon={<ArrowLeftOutlined/>}*/}
-            {/*        type={'primary'}*/}
-            {/*        onClick={() => {*/}
-            {/*            navigate('/')*/}
-            {/*        }}*/}
-            {/*    >返回首页</Button>*/}
-            {/*</div>*/}
-
             <header>
                 <div><img src="/imgs/1.png"/></div>
                 <div><img src="/imgs/2.png"/></div>
