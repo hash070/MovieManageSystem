@@ -231,6 +231,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return Result.ok(users, users.size());
     }
 
+    public String getNickNameByEmail(String email){
+//        先从redis中获取用户信息
+//        "user:info:"目录下存储的是hash类型的数据
+        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(USER_INFO + email);
+        if (map.isEmpty()) {
+//            如果redis中没有用户信息，从数据库中获取
+            User user = query().eq("email", email).one();
+            if (user == null) {
+//                如果数据库中也没有用户信息，返回null
+                return null;
+            }
+            return user.getNickname();
+        }
+        return (String) map.get("nickname");
+    }
+
 
     private boolean isRoot(){
         User user = InterceptorUtil.getUser(request, stringRedisTemplate);

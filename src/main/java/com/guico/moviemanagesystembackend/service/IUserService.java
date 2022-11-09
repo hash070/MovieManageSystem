@@ -29,4 +29,6 @@ public interface IUserService extends IService<User> {
     Result getUserByEmail(String email);
 
     Result getAllUsers();
+
+    String getNickNameByEmail(String email);
 }

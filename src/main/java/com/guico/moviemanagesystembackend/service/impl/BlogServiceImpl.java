@@ -200,8 +200,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
         }
 //        将所有的Blog
         for (Blog blog : blogList) {
-            User user = (User)userService.getUserByEmail(blog.getAuthor()).getData();
-            blog.setAuthor(user.getNickname());
+            blog.setAuthor(userService.getNickNameByEmail(blog.getAuthor()));
         }
 //        如果Redis中有Blog对象，则从Redis中获取
         return Result.ok(blogList, blogList.size());

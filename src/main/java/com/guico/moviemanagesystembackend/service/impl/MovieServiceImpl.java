@@ -304,8 +304,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
         movieList.removeIf(movie ->!movie.getVisibility() );
         for(Movie movie : movieList){
-            User user =(User) userService.getUserByEmail(movie.getUploader()).getData();
-            movie.setUploader(user.getNickname());
+            movie.setUploader(userService.getNickNameByEmail(movie.getUploader()));
         }
         return Result.ok(movieList, movieList.size());
     }
