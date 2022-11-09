@@ -1,9 +1,9 @@
-import {Button, Checkbox, Form, Input, Col, Row, message} from 'antd';
+import {Button, Checkbox, Col, Form, Input, Row} from 'antd';
 import axios from 'axios';
-import {React, Fragment, useState, useEffect} from 'react';
-import {Link, Navigate, NavLink, useNavigate} from 'react-router-dom';
+import {React, useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Login.css';
-import {LockOutlined, UserOutlined, CheckCircleOutlined} from '@ant-design/icons';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {errorMSG, getFormData, successMSG} from "../Utils/CommonFuncs.js";
 import Cookies from "universal-cookie/es6";
 
