@@ -16,6 +16,8 @@ import UserProfile from "../Componments/Admin/UserProfile.jsx";
 import AllUsers from "../Componments/Admin/AllUsers.jsx";
 import MovieUpload from "../Componments/Admin/MovieUpload.jsx";
 import AllMovies from "../Componments/Admin/AllMovies.jsx";
+import BlogIndex from "../Componments/Front/BlogIndex.jsx";
+import BlogDetail from "../Componments/Front/BlogDetail.jsx";
 
 
 class MyRouter extends Component {
@@ -28,7 +30,14 @@ class MyRouter extends Component {
                         <Route path='login' element={<Login/>}/>
                         <Route path='register' element={<Register/>}/>
                         <Route path='reset' element={<ResetPWD/>}/>
+                        <Route path='blog' element={<BlogIndex/>}>
+                            <Route path={':id'} element={<BlogDetail/>}/>
+                        </Route>
+                        <Route path='movie' element={<BlogIndex/>}>
+                            <Route path={':id'} element={<BlogDetail/>}/>
+                        </Route>
                     </Route>
+
                     <Route path={'/admin'} element={<AdminPanel/>}>
                         <Route index element={<AdminIndexPage/>}/>
                         <Route path='movie'>

@@ -183,6 +183,8 @@ function AllMovies(props) {
                 successMSG('电影信息更新成功')
                 //关闭模态框
                 setIsModalOpen(false)
+                //刷新Loading变量，使列表更新
+                setLoading(!loading)
 
             })
             .catch((err) => {
