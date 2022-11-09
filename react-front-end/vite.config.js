@@ -8,8 +8,8 @@ export default defineConfig({
     proxy: {
       "/api": {
         // target: "http://127.0.0.1:28545",
-        // target: "https://movie.hash070.top",
-        target: "https://movie.hhhwww.top",
+        target: "https://movie.hash070.top",
+        // target: "https://movie.hhhwww.top",
         changeOrigin: true,
 //                rewrite: (path) => path.replace(/^\/api/, '')
       }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {BrowserRouter, HashRouter, NavLink, Route, Routes} from "react-router-dom";
-import HelloWorld1 from "../Componments/HelloWorld1.jsx";
+import IndexPage from "../Componments/IndexPage.jsx";
 import HelloWorld2 from "../Componments/HelloWorld2.jsx";
 import Login from "../Componments/Login.jsx";
 import Register from "../Componments/Register.jsx";
@@ -24,7 +24,7 @@ class MyRouter extends Component {
             <BrowserRouter>
                 <Routes>
                     <Route path='/'>
-                        <Route index element={<HelloWorld1/>}/>
+                        <Route index element={<IndexPage/>}/>
                         <Route path='login' element={<Login/>}/>
                         <Route path='register' element={<Register/>}/>
                         <Route path='reset' element={<ResetPWD/>}/>

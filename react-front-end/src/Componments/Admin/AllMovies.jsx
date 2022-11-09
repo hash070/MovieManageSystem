@@ -269,7 +269,7 @@ function AllMovies(props) {
                 dataSource={list}
                 renderItem={(item) => (
                     <List.Item
-                        style={{height: '300px'}}
+                        style={{height: '400px'}}
                         actions={[
                             <Button
                                 key="list-loadmore-edit"
@@ -303,7 +303,7 @@ function AllMovies(props) {
                             />
                             <video
                                 src={'/api/movie/getFile?url=' + item.file}
-                                style={{width: '50%'}}
+                                style={{width: '50%',maxHeight:'350px'}}
                                 controls={true}
                             />
                             <div>作者：{item.uploader}</div>
