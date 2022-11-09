@@ -37,7 +37,7 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     private String movieType;
 
     @Value("${file.upload.pic-type}")
-    private String[] picType;
+    private String picType;
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
@@ -266,17 +266,8 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
 //        如果文件后缀在允许后缀的范围内，则上传
 //        默认flag为true
-        boolean flag = true;
-        for(String type:picType){
-            if(fileName.endsWith(type)){
-                flag = false;
-                break;
-            }
-        }
-        if(flag){
-            log.info("上传电影类型错误,文件类型为"+suffixName);
-            return "fail:上传失败，电影图片类型不匹配";
-        }
+        if(!picType.contains(suffixName))
+            return "fail:上传失败，图片类型不匹配";
 //        创建文件对象
 //        文件名为时间戳+hashcode+后缀
         fileName = System.currentTimeMillis()+"-"+fileName.hashCode()+suffixName;

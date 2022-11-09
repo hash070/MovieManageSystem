@@ -83,7 +83,11 @@ public class MovieController {
 
     @PostMapping("/uploadPic")
     public Result uploadMoviePic(MultipartFile pic) throws IOException {
-        return Result.ok(movieService.uploadMoviePic(pic));
+        String feedback = movieService.uploadMoviePic(pic);
+        if(feedback.startsWith("fail")){
+            return Result.fail(feedback);
+        }
+        return Result.ok(feedback);
     }
 
 
