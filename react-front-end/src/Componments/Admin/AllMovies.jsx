@@ -5,7 +5,7 @@ import {
     convertTagsStrToArray,
     convertTypeObjToSelectList,
     errorMSG,
-    getFormData,
+    getFormData, simulateMouseClick,
     successMSG
 } from "../../Utils/CommonFuncs.js";
 import {Avatar, Button, Form, Input, List, Modal, Select, Skeleton, Switch, Upload} from "antd";
@@ -32,7 +32,6 @@ const normFile = (e) => {
 
 let pic_upload_info
 let movie_upload_info
-let movie_edit_id = -1
 
 function AllMovies(props) {
     // 获取Form操作对象
@@ -49,46 +48,24 @@ function AllMovies(props) {
     const [is_public, setIsPublic] = React.useState(true);
 
     const handleOk = () => {
-        //启动加载状态
-        setInitLoading(true)
-        //构造请求体
-        let req_body = new FormData()
-        req_body.append('id', item_temp.id)
-        req_body.append('typeName', update_val)
-        //发送请求
-        axios.post('/api/type/update', req_body)
-            .then((res) => {
-                console.log('返回结果', res.data)
-                if (!res.data.success) {//检查是否成功
-                    //如果失败，则做出提示，然后直接返回
-                    errorMSG('更新失败：' + res.data.errorMsg)
-                    return
-                }
-                //如果成功，则做出提示，然后清空输入框
-                successMSG('更新成功')
-            })
-            .catch((err) => {
-                console.log('错误信息', err)
-                errorMSG(err.message + '请检查网络连接')
-            })
-            .finally(() => {
-                //关闭加载状态
-                setInitLoading(false)
-                //变更Loading，要求重新加载列表数据
-                setLoading(!loading)
-            })
-        setIsModalOpen(false);
+        console.log("点击了确认按钮");
+        //获取表单提交按钮
+        let submit_btn = document.getElementById("movie-info-update-btn");
+        //模拟点击提交按钮
+        simulateMouseClick(submit_btn);
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
     };
 
+    //存放要更新的影片的ID
+    let [movie_edit_id,setMovieEditID] = useState(-1)
 
     // 跳转到编辑页面，并传递视频参数
     const goToEdit = (item) => {
         // 保存当前编辑的视频id到变量中
-        movie_edit_id = item.id
+        setMovieEditID(item.id)
         //TODO: 跳转到编辑页面并传递数值
         form.setFieldsValue({
             'movie-name': item.name,
@@ -160,21 +137,33 @@ function AllMovies(props) {
 
         console.log("表单信息: ", values)
         //检查图片是否上传
+        let isPicUploaded = true //默认为已上传
         if (values["picture-upload"] === undefined || values["picture-upload"].length === 0) {
-            errorMSG('请上传电影图片')
-            return
+            isPicUploaded = false //如果没有上传，则设置为未上传
         }
 
         //构建请求体
-        let req_body = getFormData({
-            id: movie_edit_id,
-            name: values["movie-name"],
-            des: values["movie-desc"],
-            typeId: values["movie-type"],
-            tags: values["movie-tags"],
-            visibility: values['movie-visibility'],
-            pic: values["picture-upload"][0].response.data,
-        })
+        let req_body
+        if (isPicUploaded) { //如果图片已上传
+            req_body = getFormData({
+                id: movie_edit_id,
+                name: values["movie-name"],
+                des: values["movie-desc"],
+                typeId: values["movie-type"],
+                tags: values["movie-tags"],
+                visibility: values['movie-visibility'],
+                pic: values["picture-upload"][0].response.data,
+            })
+        } else { // 如果图片未上传，则pic的值传null
+            req_body = getFormData({
+                id: movie_edit_id,
+                name: values["movie-name"],
+                des: values["movie-desc"],
+                typeId: values["movie-type"],
+                tags: values["movie-tags"],
+                visibility: values['movie-visibility'],
+            })
+        }
 
         console.log('开始发送电影更新请求')
         //循环遍历请求体中的键和值
@@ -308,7 +297,7 @@ function AllMovies(props) {
                    onOk={handleOk}
                    onCancel={handleCancel}
                    cancelText={'取消'}
-                   okText={'确认'}
+                   okText={'更新影片'}
                    maskClosable={false}//点击遮罩层后是否关闭
                    destroyOnClose={true}//关闭时销毁数据
             >
@@ -432,9 +421,7 @@ function AllMovies(props) {
                             offset: 6
                         }}
                     >
-                        <Button type="primary" htmlType="submit">
-                            上传影片
-                        </Button>
+                        <Button id={'movie-info-update-btn'} htmlType="submit"/>
                     </Form.Item>
                 </Form>
             </Modal>
