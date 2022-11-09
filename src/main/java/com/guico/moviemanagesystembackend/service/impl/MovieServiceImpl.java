@@ -203,9 +203,9 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        更新电影信息
         movieMap.put("name", name);
         movieMap.put("des", des);
-        movieMap.put("type", typeId);
+        movieMap.put("type", typeId.toString());
         movieMap.put("tags", tags);
-        movieMap.put("visibility", visibility);
+        movieMap.put("visibility", visibility.toString());
         movieMap.put("pic", pic);
         stringRedisTemplate.opsForHash().putAll("movie:"+id, movieMap);
         updateById(new Movie(movieMap));
@@ -273,6 +273,21 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
 //        保存文件
         pic.transferTo(file);
         return "/pics/"+fileName;
+    }
+
+    @Override
+    public Result getAllPublicMovie() {
+        //        先从redis中获取所有电影
+        List<Movie> movieList = RedisUtil.getAllMovies(stringRedisTemplate);
+//        如果redis中没有电影,则从数据库中获取
+        if(movieList.size() == 0){
+            movieList = query().list();
+            for(Movie movie : movieList){
+                stringRedisTemplate.opsForHash().putAll("movie:"+movie.getId(), movie.toMap());
+            }
+        }
+        movieList.removeIf(movie ->!movie.getVisibility() );
+        return Result.ok(movieList, movieList.size());
     }
 
     private Movie getMovie(Integer id){

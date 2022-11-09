@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {
     convertTagsStrToArray,
     convertTypeObjToSelectList,
     errorMSG,
-    getFormData, simulateMouseClick,
+    getFormData,
+    simulateMouseClick,
     successMSG
 } from "../../Utils/CommonFuncs.js";
 import {Avatar, Button, Form, Input, List, Modal, Select, Skeleton, Switch, Upload} from "antd";
 import TextArea from "antd/es/input/TextArea.js";
-import {InboxOutlined, UploadOutlined} from "@ant-design/icons";
+import {UploadOutlined} from "@ant-design/icons";
 
 // 表单布局
 const formItemLayout = {

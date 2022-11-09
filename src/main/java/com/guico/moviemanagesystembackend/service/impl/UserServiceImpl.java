@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.guico.moviemanagesystembackend.interceptor.InterceptorUtil;
+import com.guico.moviemanagesystembackend.utils.MailSend;
 import com.guico.moviemanagesystembackend.utils.Result;
 import com.guico.moviemanagesystembackend.entry.User;
 import com.guico.moviemanagesystembackend.mapper.UserMapper;
@@ -37,10 +38,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             return Result.fail("验证码已发送，请勿重复发送");
         }
         //生成并发送验证码
-//        code = MailSend.doSend(email);
-        code = String.valueOf(new Random().nextInt(899999) + 100000);
+        code = MailSend.doSend(email);
         //将验证码存入redis
-        stringRedisTemplate.opsForValue().set(USER_CODE + email, code, 1, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(USER_CODE + email, code, 2, TimeUnit.MINUTES);
         log.info("验证码为：" + code);
         return Result.ok();
     }
