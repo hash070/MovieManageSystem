@@ -116,6 +116,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
             stringRedisTemplate.opsForHash().putAll("blog:" + blog.getId(), blog.toMap());
             return Result.ok(blog);
         }
+        blogMap.put("author", userService.getNickNameByEmail((String) blogMap.get("author")));
 //        如果Redis中有Blog对象，则直接返回w
         return Result.ok(new Blog(blogMap));
     }
