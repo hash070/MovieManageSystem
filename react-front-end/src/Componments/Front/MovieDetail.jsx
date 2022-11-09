@@ -9,7 +9,8 @@ function MovieDetail(props) {
     const params = useParams()
 
     // 变量存放
-    let [video_url, setVideoURL] = useState('')
+    // 放置一个默认的链接是为了防止获取并拼接出文件url前出现404错误，从而导致视频有时无法播放的BUG
+    let [video_url, setVideoURL] = useState('https://ts.hash070.top/109/x264webmpack_agadrquaagpbyvu_AgADRQUAAgPBYVU.mp4?hash=AgADIg')
     let [title_text, setTitle] = useState('')
     let [author_text, setAuthor] = useState('')
     let [desc_text, setDesc] = useState('')
@@ -30,7 +31,7 @@ function MovieDetail(props) {
                 }
                 //设置视频数据
                 let data_recv = res.data.data
-                setVideoURL(data_recv.file)
+                setVideoURL('/api/movie/getFile?url=' + data_recv.file)
                 setTitle(data_recv.name)
                 setAuthor(data_recv.uploader)
                 setDesc(data_recv.des)
@@ -48,7 +49,7 @@ function MovieDetail(props) {
             <br/>
             <ReactPlayer
                 controls={true}
-                url={'/api/movie/getFile?url=' + video_url}
+                url={video_url}
                 playing={true}
                 loop={true}
                 style={{
