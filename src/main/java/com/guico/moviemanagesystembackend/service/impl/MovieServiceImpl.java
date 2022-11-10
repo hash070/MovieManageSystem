@@ -31,7 +31,7 @@ import java.util.Map;
 public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements IMovieService {
 
 //    项目路径
-    private final String path = System.getProperty("user.dir")+"/upload";
+    private final String path = System.getProperty("user.dir")+"/upload".replace("\\", "/");
 
     @Value("${file.upload.movie-type}")
     private String movieType;
@@ -169,12 +169,15 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         if(movie == null){
             return Result.fail("该电影不存在");
         }
-        File file = new File(movie.getFile());
+        File file = new File(path+movie.getFile());
+        log.info("删除文件");
         if(file.exists()){
+            log.info("文件存在:"+file.getAbsolutePath());
             file.delete();
         }
-        File pic = new File(movie.getPic());
+        File pic = new File(path+movie.getPic());
         if(pic.exists()){
+            log.info("文件存在:"+pic.getAbsolutePath());
             pic.delete();
         }
         removeById(movieId);
@@ -203,8 +206,10 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
         }
 //        对比pic是否变化，变化则删除之前的文件
         if(pic != null && !pic.equals(movieMap.get("pic"))){
-            File file = new File((String) movieMap.get("pic"));
+            File file = new File(path+movieMap.get("pic"));
+            log.info("删除文件:{}", file.getAbsolutePath());
             if(file.exists()){
+                log.info("图片存在，删除");
                 file.delete();
 
             }

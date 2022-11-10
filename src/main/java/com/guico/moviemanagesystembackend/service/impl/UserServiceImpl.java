@@ -208,6 +208,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Result getAllUsers() {
 //                先从redis中获取用户信息
 //        "user:info:"目录下存储的是hash类型的数据
+        User user2 = InterceptorUtil.getUser(request,stringRedisTemplate);
         List<User> users = new ArrayList<>();
         Set<String> keys = stringRedisTemplate.keys(USER_INFO + "*");
         if (keys==null||keys.isEmpty()) {
@@ -221,6 +222,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             for (User user : users) {
                 stringRedisTemplate.opsForHash().putAll(USER_INFO + user.getEmail(), user.toMap());
             }
+//            移除当前User
+            users.removeIf(user -> user.getEmail().equals(user2.getEmail()));
             return Result.ok(users);
         }
 //        如果redis中有用户信息，从redis中获取
@@ -228,6 +231,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(key);
             users.add(new User(map));
         }
+        users.removeIf(user -> user.getEmail().equals(user2.getEmail()));
         return Result.ok(users, users.size());
     }
 
