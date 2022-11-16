@@ -39,6 +39,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         //生成并发送验证码
         code = MailSend.doSend(email);
+        if(code.equals("error"))
+            return Result.fail("验证码发送失败");
         //将验证码存入redis
         stringRedisTemplate.opsForValue().set(USER_CODE + email, code, 2, TimeUnit.MINUTES);
         log.info("验证码为：" + code);
@@ -85,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User user = query().eq("email", email).one();
         if (user == null) {
             return Result.fail("用户不存在");
-        } else if (!stringRedisTemplate.opsForValue().get(USER_CODE + email).equals(code)) {
+        } else if (!Objects.equals(stringRedisTemplate.opsForValue().get(USER_CODE + email), code)) {
             return Result.fail("验证码错误");
         }
         stringRedisTemplate.delete(USER_CODE + email);

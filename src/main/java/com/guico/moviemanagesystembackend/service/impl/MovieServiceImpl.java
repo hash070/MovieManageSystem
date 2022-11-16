@@ -81,7 +81,6 @@ public class MovieServiceImpl extends ServiceImpl<MovieMapper, Movie> implements
     @Override
     public Result getMovieById(Integer id) {
         Movie movie = getById(id);
-
         if(movie == null){
             return Result.fail("该电影不存在");
         }
