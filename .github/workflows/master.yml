@@ -10,7 +10,7 @@ on:
 
 jobs:
   compile:
-    runs-on: [ self-hosted, mg3 ]
+    runs-on: [ ubuntu-latest ]
     name: Build and Deploy
     steps:
       - name: Clean after # 清理构建目录
