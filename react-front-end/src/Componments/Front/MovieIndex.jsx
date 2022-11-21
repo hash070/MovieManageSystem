@@ -49,7 +49,6 @@ function MovieIndex(props) {
             {/*文章容器*/}
             <div
                 style={{
-                    padding: 24,
                     minHeight: 360,
                     paddingTop: '64px',
                     maxWidth: '800px',
@@ -59,7 +58,11 @@ function MovieIndex(props) {
                     margin: 'auto'
                 }}
             >
-                <Outlet/>
+                <div
+                    style={{padding: '24px'}}
+                >
+                    <Outlet/>
+                </div>
             </div>
         </div>
     );

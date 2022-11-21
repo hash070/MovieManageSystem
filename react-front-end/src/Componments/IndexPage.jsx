@@ -185,7 +185,7 @@ function IndexPage(props) {
             </header>
             <div>
                 <Divider>影片分类</Divider>
-                {/*电影分裂列表*/}
+                {/*电影分类列表*/}
                 <List
                     loading={initLoading1}
                     grid={{
@@ -256,7 +256,8 @@ function IndexPage(props) {
                         <List.Item>
                             <Skeleton avatar title={false} loading={item.loading} active>
                                 <List.Item.Meta
-                                    avatar={<Avatar src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
+                                    avatar={<Avatar
+                                        src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
                                     title={<a
                                         onClick={() => {
                                             console.log('文章列表点击事件', item.id)

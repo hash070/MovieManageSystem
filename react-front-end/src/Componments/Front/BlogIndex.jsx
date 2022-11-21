@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Outlet, useNavigate} from "react-router-dom";
-import {Button} from "antd";
+import {Button, FloatButton} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 import '../../styles/HomePage.css'
 import {headerJSMovement} from "../../Utils/CommonFuncs.js";
@@ -51,17 +51,20 @@ function BlogIndex(props) {
             {/*文章容器*/}
             <div
                 style={{
-                    padding: 24,
                     minHeight: 360,
                     paddingTop: '64px',
                     maxWidth: '800px',
                     width: '100%',
-                    left: 0,
-                    right: 0,
                     margin: 'auto'
                 }}
             >
-                <Outlet/>
+                <FloatButton.BackTop/>
+                <div
+                    style={{padding: '24px'}}
+                >
+                    <Outlet/>
+                </div>
+
             </div>
         </div>
     );
