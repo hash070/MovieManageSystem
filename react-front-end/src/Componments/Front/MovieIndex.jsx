@@ -11,7 +11,7 @@ function MovieIndex(props) {
     //网页头部JS动态效果加载Hooks
     useEffect(() => {
         headerJSMovement()
-    },[])
+    }, [])
     return (
         <div>
             <header>
@@ -22,7 +22,7 @@ function MovieIndex(props) {
                 <div><img src="/imgs/5.png"/></div>
                 <div><img src="/imgs/6.png"/></div>
                 <Button
-                    className='radius-btn'
+
                     style={{
                         position: "absolute",
                         left: '0px',
@@ -36,7 +36,7 @@ function MovieIndex(props) {
                     }}
                 >返回首页</Button>
                 <Button
-                    className='radius-btn'
+
                     style={{
                         position: "absolute",
                         right: '0px',

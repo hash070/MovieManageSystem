@@ -132,7 +132,7 @@ function UserProfile(props) {
                 <br/>
                 <Form.Item className='regButton'>
                     <Button
-                        className='radius-btn'
+
                         type="primary"
                         htmlType="submit"
                         style={{width: '100px', margin: 'auto'}}>

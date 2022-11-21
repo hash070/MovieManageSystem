@@ -16,12 +16,12 @@ function BlogDetail(props) {
     let [author_text, setAuthor] = useState('')
 
     //获取文章内容的Hooks函数
-    useEffect(()=>{
+    useEffect(() => {
         //构建请求体
-        let req_body=getFormData({
-            id:params.id
+        let req_body = getFormData({
+            id: params.id
         })
-        axios.post('/api/blog/getById',req_body)
+        axios.post('/api/blog/getById', req_body)
             .then((res) => {
                 console.log('返回结果', res.data)
                 if (!res.data.success) {//检查是否成功
@@ -39,16 +39,15 @@ function BlogDetail(props) {
                 console.log('错误信息', err)
                 errorMSG(err.message + '请检查网络连接')
             })
-    },[])
-
+    }, [])
 
 
     return (
         <div>
-            <b style={{fontSize:'40px'}}>{title_text}</b>
+            <b style={{fontSize: '40px'}}>{title_text}</b>
             <br/>
             <br/>
-            <b style={{fontSize:'20px'}}>作者：{author_text}</b>
+            <b style={{fontSize: '20px'}}>作者：{author_text}</b>
             <ReactMarkdown
                 className={'custom-html-style'} //设置CSS类名，让react-markdown-editor-lite的样式生效
                 children={markdown_text} //设置要显示的内容

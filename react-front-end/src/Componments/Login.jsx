@@ -124,7 +124,7 @@ const LoginForm = () => {
         <div className='login-wrap'>
             <div>
                 <Button
-                    className='radius-btn'
+
                     style={{
                         position: "absolute",
                         left: '0px',
@@ -138,10 +138,13 @@ const LoginForm = () => {
                     }}
                 >返回首页</Button>
                 <div className='form-header'>
-                    <h4 className='column'>登录</h4>
+                    <h4 className='column'
+
+                    >登录</h4>
                     {/*使用Link来实现简单跳转*/}
                     <Link to='/reset'>密码重置</Link>
                 </div>
+                <br/>
                 <br/>
                 <br/>
                 <Form
@@ -181,7 +184,7 @@ const LoginForm = () => {
                                 <Button
                                     type="primary"
                                     htmlType="submit"
-                                    className="radius-btn login-form-button">
+                                    className=" login-form-button">
                                     登录
                                 </Button>
                             </Col>
@@ -189,9 +192,8 @@ const LoginForm = () => {
                             <Col span={6}></Col>
                             <Col span={6}>
                                 <Button
-                                    className='radius-btn'
                                     type="primary"
-                                        onClick={onRegisterClick}>注册
+                                    onClick={onRegisterClick}>注册
                                 </Button>
                             </Col>
                         </Row>

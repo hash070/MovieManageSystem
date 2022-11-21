@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Outlet, useNavigate} from "react-router-dom";
 import {Button} from "antd";
-import {ArrowLeftOutlined, ReloadOutlined} from "@ant-design/icons";
+import {ArrowLeftOutlined} from "@ant-design/icons";
 import '../../styles/HomePage.css'
 import {headerJSMovement} from "../../Utils/CommonFuncs.js";
 
@@ -12,7 +12,7 @@ function BlogIndex(props) {
     //网页头部JS动态效果加载Hooks
     useEffect(() => {
         headerJSMovement()
-    },[])
+    }, [])
     return (
         <div>
             <header>
@@ -23,7 +23,7 @@ function BlogIndex(props) {
                 <div><img src="/imgs/5.png"/></div>
                 <div><img src="/imgs/6.png"/></div>
                 <Button
-                    className='radius-btn'
+
                     style={{
                         position: "absolute",
                         left: '0px',
@@ -37,7 +37,7 @@ function BlogIndex(props) {
                     }}
                 >返回首页</Button>
                 <Button
-                    className='radius-btn'
+
                     style={{
                         position: "absolute",
                         right: '0px',

@@ -170,12 +170,12 @@ const ResetPWDForm = () => {
                     </div>
                     <br/>
                     <Form.Item className='regButton'>
-                        <Button className='radius-btn' type="primary" onClick={backToLogin}
+                        <Button type="primary" onClick={backToLogin}
                                 style={{marginRight: '50px'}}>
                             返回登录
                         </Button>
 
-                        <Button className='radius-btn login-form-button' type="primary" htmlType="submit">
+                        <Button className=' login-form-button' type="primary" htmlType="submit">
                             重置密码
                         </Button>
                     </Form.Item>

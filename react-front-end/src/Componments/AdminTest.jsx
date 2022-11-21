@@ -8,7 +8,7 @@ function AdminTest(props) {
     return (
         <div>
             管理员测试界面1，当前正在访问/adminTest路径
-            <Button type={"primary"} onClick={()=>{
+            <Button type={"primary"} onClick={() => {
                 console.log('按钮点击事件')
                 navigate('/admin')
                 // return redirect('/') //redirect NOT Working, I don't know why
