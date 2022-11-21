@@ -197,7 +197,7 @@ function IndexPage(props) {
                         xl: 11,
                         xxl: 13
                     }}
-                    style={{marginLeft: '40px'}}
+                    style={{marginLeft: '10px'}}
                     dataSource={type_list_data}
                     renderItem={(item) => (
                         <List.Item>
