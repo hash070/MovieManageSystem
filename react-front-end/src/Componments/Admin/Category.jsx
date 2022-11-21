@@ -183,7 +183,7 @@ function Category(props) {
                     <List.Item
                         actions={[
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
@@ -191,7 +191,7 @@ function Category(props) {
                                 }}
                             >编辑</Button>,
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-delete"
                                 type={"primary"} danger
                                 onClick={(msg) => {
@@ -202,7 +202,7 @@ function Category(props) {
                     >
                         <Skeleton title={false} loading={item.loading} active>
                             <List.Item.Meta
-                                title={<a style={{maxWidth:'90%',wordBreak:'break-all'}}>{item.name}</a>}
+                                title={<a style={{maxWidth: '90%', wordBreak: 'break-all'}}>{item.name}</a>}
                                 //description="分类描述"
                             />
                         </Skeleton>

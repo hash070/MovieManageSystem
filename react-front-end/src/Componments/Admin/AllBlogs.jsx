@@ -3,10 +3,7 @@ import {Avatar, Button, List, Skeleton} from "antd";
 import {errorMSG, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
-import 'antd/dist/antd.css';
 
-
-let item_temp
 
 function AllBlogs(props) {
     // 获取Navigate
@@ -116,7 +113,7 @@ function AllBlogs(props) {
                     <List.Item
                         actions={[
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
@@ -124,7 +121,7 @@ function AllBlogs(props) {
                                 }}
                             >编辑</Button>,
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-delete"
                                 type={"primary"} danger
                                 onClick={(msg) => {

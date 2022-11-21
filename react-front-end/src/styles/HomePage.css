@@ -1,11 +1,13 @@
 body {
     margin: 0;
 }
+
 header {
     height: 155px;
     position: relative;
     overflow: hidden;
 }
+
 header > div {
     position: absolute;
     top: 0;
@@ -18,6 +20,7 @@ header > div {
     --offset: 0px;
     --blur: 2px;
 }
+
 header > div > img {
     display: block;
     width: 110%;

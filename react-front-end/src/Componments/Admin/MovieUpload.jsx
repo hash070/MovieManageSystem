@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import "antd/dist/antd.css";
 import {InboxOutlined, UploadOutlined} from "@ant-design/icons";
 import {Button, Form, Input, Select, Switch, Upload} from "antd";
 import axios from "axios";
@@ -71,12 +70,12 @@ const MovieUpload = () => {
         console.log("表单信息: ", values)
         console.log()
         //检查文件是否上传
-        if (values.dragger===undefined||values.dragger.length === 0) {
+        if (values.dragger === undefined || values.dragger.length === 0) {
             errorMSG('请上传电影文件')
             return
         }
         //检查图片是否上传
-        if (values["picture-upload"]===undefined||values["picture-upload"].length === 0) {
+        if (values["picture-upload"] === undefined || values["picture-upload"].length === 0) {
             errorMSG('请上传电影图片')
             return
         }
@@ -270,7 +269,7 @@ const MovieUpload = () => {
                         listType="picture"
                         onChange={(info) => onPictureFileUpload(info)}
                 >
-                    <Button className='radius-btn' icon={<UploadOutlined/>}>点击上传</Button>
+                    <Button icon={<UploadOutlined/>}>点击上传</Button>
                 </Upload>
                 {/*<Input*/}
                 {/*    type="file"*/}
@@ -317,7 +316,7 @@ const MovieUpload = () => {
                     offset: 6
                 }}
             >
-                <Button className='radius-btn' type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit">
                     上传影片
                 </Button>
             </Form.Item>

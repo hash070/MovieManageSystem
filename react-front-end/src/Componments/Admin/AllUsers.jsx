@@ -134,10 +134,10 @@ function AllUsers(props) {
         //通过标题判断对话框类型
         if (modalTitle === modalAddUserTitleStr) {//添加新用户对话框
             console.log('添加新用户')
-            if(getEmailCheckReg().test(user_email)){//检查邮箱格式
+            if (getEmailCheckReg().test(user_email)) {//检查邮箱格式
                 console.log('邮箱格式正确')
                 req_body.append('email', user_email)
-            }else {
+            } else {
                 console.log('邮箱格式错误')
                 errorMSG('邮箱格式错误')
                 return
@@ -215,7 +215,7 @@ function AllUsers(props) {
     return (
         <div>
             <Button
-                className='radius-btn'
+
                 type={"primary"}
                 icon={<PlusOutlined/>}
                 onClick={e => {
@@ -248,7 +248,7 @@ function AllUsers(props) {
                     <List.Item
                         actions={[
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
@@ -256,7 +256,7 @@ function AllUsers(props) {
                                 }}
                             >编辑</Button>,
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-delete"
                                 type={"primary"} danger
                                 onClick={(msg) => {

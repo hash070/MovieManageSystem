@@ -57,7 +57,7 @@ export function getItem(label, key, icon, children) {
 }
 
 // 模拟React点击按钮
-export function simulateMouseClick(element){
+export function simulateMouseClick(element) {
     let mouseClickEvents = ['mousedown', 'click', 'mouseup'];
     mouseClickEvents.forEach(mouseEventType =>
         element.dispatchEvent(
@@ -109,7 +109,7 @@ export function convertTypeObjToAntDList(list) {
 }
 
 // 前台头部JS动态效果
-export function headerJSMovement(){
+export function headerJSMovement() {
     var startX = 0;
     let blurValue;
     const images = document.querySelectorAll("header>div>img");

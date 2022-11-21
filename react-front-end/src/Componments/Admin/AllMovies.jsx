@@ -60,7 +60,7 @@ function AllMovies(props) {
     };
 
     //存放要更新的影片的ID
-    let [movie_edit_id,setMovieEditID] = useState(-1)
+    let [movie_edit_id, setMovieEditID] = useState(-1)
 
     // 跳转到编辑页面，并传递视频参数
     const goToEdit = (item) => {
@@ -249,7 +249,7 @@ function AllMovies(props) {
                         style={{height: '400px'}}
                         actions={[
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-edit"
                                 type={"primary"}
                                 onClick={() => {
@@ -257,7 +257,7 @@ function AllMovies(props) {
                                 }}
                             >编辑</Button>,
                             <Button
-                                className='radius-btn'
+
                                 key="list-loadmore-delete"
                                 type={"primary"} danger
                                 onClick={(msg) => {
@@ -414,7 +414,7 @@ function AllMovies(props) {
                                 listType="picture"
                                 onChange={(info) => onPictureFileUpload(info)}
                         >
-                            <Button className='radius-btn' icon={<UploadOutlined/>}>点击上传</Button>
+                            <Button icon={<UploadOutlined/>}>点击上传</Button>
                         </Upload>
                     </Form.Item>
 

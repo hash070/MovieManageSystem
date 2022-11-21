@@ -69,7 +69,7 @@ function IndexPage(props) {
     //网页头部JS动态效果加载Hooks
     useEffect(() => {
         headerJSMovement()
-    },[])
+    }, [])
 
     //获取分类、视频与文章数据列表Hooks函数
     useEffect(() => {
@@ -173,7 +173,7 @@ function IndexPage(props) {
                     type={'primary'}
                 />
                 <Button
-                    className='radius-btn'
+
                     style={{
                         position: "absolute",
                         right: '0px',
@@ -230,8 +230,8 @@ function IndexPage(props) {
                                                     size={80}
                                     />}
                                     title={<a onClick={() => {
-                                        console.log('视频列表点击事件',item.id)
-                                        navigate('/movie/'+item.id)
+                                        console.log('视频列表点击事件', item.id)
+                                        navigate('/movie/' + item.id)
                                     }} style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.name}</a>}
                                     description={<div
                                         style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.des}</div>}
@@ -259,8 +259,8 @@ function IndexPage(props) {
                                     avatar={<Avatar src={'https://img.hash070.top/i/63677e3963348.webp'}/>}
                                     title={<a
                                         onClick={() => {
-                                            console.log('文章列表点击事件',item.id)
-                                            navigate('/blog/'+item.id)
+                                            console.log('文章列表点击事件', item.id)
+                                            navigate('/blog/' + item.id)
                                         }}
                                         style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.title}</a>}
                                     description={<div
