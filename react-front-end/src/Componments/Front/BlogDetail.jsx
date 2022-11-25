@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm'
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import {errorMSG, getFormData} from "../../Utils/CommonFuncs.js";
+import rehypeRaw from 'rehype-raw'
 
 
 function BlogDetail(props) {
@@ -52,6 +53,7 @@ function BlogDetail(props) {
                 className={'custom-html-style'} //设置CSS类名，让react-markdown-editor-lite的样式生效
                 children={markdown_text} //设置要显示的内容
                 remarkPlugins={[remarkGfm]} //添加表格支持
+                rehypePlugins={[rehypeRaw]} //允许渲染HTML
             />
         </div>
     );
