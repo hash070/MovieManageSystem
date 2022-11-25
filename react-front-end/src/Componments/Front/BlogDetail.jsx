@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import 'react-markdown-editor-lite/lib/index.css'
-import remarkGfm from 'remark-gfm'
-import ReactMarkdown from "react-markdown";
 import axios from "axios";
-import {errorMSG, getFormData} from "../../Utils/CommonFuncs.js";
-import rehypeRaw from 'rehype-raw'
+import {errorMSG, getFormData, getMarkdownIterator} from "../../Utils/CommonFuncs.js";
 
 
 function BlogDetail(props) {
@@ -15,6 +12,9 @@ function BlogDetail(props) {
     let [markdown_text, setMarkDownText] = useState('')
     let [title_text, setTitle] = useState('')
     let [author_text, setAuthor] = useState('')
+
+    // 初始化MarkDown解析器
+    const mdParser = getMarkdownIterator()
 
     //获取文章内容的Hooks函数
     useEffect(() => {
@@ -49,12 +49,15 @@ function BlogDetail(props) {
             <br/>
             <br/>
             <b style={{fontSize: '20px'}}>作者：{author_text}</b>
-            <ReactMarkdown
-                className={'custom-html-style'} //设置CSS类名，让react-markdown-editor-lite的样式生效
-                children={markdown_text} //设置要显示的内容
-                remarkPlugins={[remarkGfm]} //添加表格支持
-                rehypePlugins={[rehypeRaw]} //允许渲染HTML
-            />
+            {/*<ReactMarkdown*/}
+            {/*    className={'custom-html-style'} //设置CSS类名，让react-markdown-editor-lite的样式生效*/}
+            {/*    children={markdown_text} //设置要显示的内容*/}
+            {/*    remarkPlugins={[remarkGfm]} //添加表格支持*/}
+            {/*    rehypePlugins={[rehypeRaw]} //允许渲染HTML*/}
+            {/*/>*/}
+            <div
+                className={'custom-html-style'}
+                dangerouslySetInnerHTML={{__html: mdParser.render(markdown_text)}}/>
         </div>
     );
 }

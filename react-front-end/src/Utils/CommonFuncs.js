@@ -1,4 +1,5 @@
 import {message} from "antd";
+import MarkdownIt from "markdown-it";
 
 //工具类
 
@@ -159,5 +160,21 @@ export function headerJSMovement() {
             image.style.setProperty("--offset", `${offset}px`);
             image.style.setProperty("--blur", `${blurValue}px`);
         }
+    });
+}
+
+export function getMarkdownIterator(){
+    return new MarkdownIt({
+        html:         true,        // Enable HTML tags in source
+        xhtmlOut:     false,        // Use '/' to close single tags (<br />).
+                                    // This is only for full CommonMark compatibility.
+        breaks:       false,        // Convert '\n' in paragraphs into <br>
+        langPrefix:   'language-',  // CSS language prefix for fenced blocks. Can be
+                                    // useful for external highlighters.
+        linkify:      true,        // Autoconvert URL-like text to links
+
+        // Enable some language-neutral replacement + quotes beautification
+        // For the full list of replacements, see https://github.com/markdown-it/markdown-it/blob/master/lib/rules_core/replacements.js
+        typographer:  false,
     });
 }
