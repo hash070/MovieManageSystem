@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
-import 'react-markdown-editor-lite/lib/index.css'
+import 'github-markdown-css'
 import axios from "axios";
 import {errorMSG, getFormData, getMarkdownIterator} from "../../Utils/CommonFuncs.js";
 
@@ -56,7 +56,7 @@ function BlogDetail(props) {
             {/*    rehypePlugins={[rehypeRaw]} //允许渲染HTML*/}
             {/*/>*/}
             <div
-                className={'custom-html-style'}
+                className={'markdown-body'}
                 dangerouslySetInnerHTML={{__html: mdParser.render(markdown_text)}}/>
         </div>
     );

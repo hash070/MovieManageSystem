@@ -1,13 +1,8 @@
 import React, {useState} from 'react';
-import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite'
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css'
 
-// import ReactMarkdown from 'react-markdown'
-// import 'github-markdown-css'
-//添加表格支持
-// import remarkGfm from 'remark-gfm'
 import {Button, Input} from "antd";
 import {errorMSG, getMarkdownIterator, successMSG} from "../../Utils/CommonFuncs.js";
 import axios from "axios";
@@ -166,6 +161,7 @@ function NewBlog(props) {
             />
             <br/>
             <MdEditor style={{height: '600px'}}
+                      // htmlClass={'markdown-body'} // 预览框中的默认Class名称
                       renderHTML={text => mdParser.render(text)} //实时渲染方法
                       value={markdown_text} //绑定数据
                       onChange={handleEditorChange} //编辑器内容改变时的触发器
