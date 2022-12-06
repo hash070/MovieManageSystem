@@ -79,11 +79,11 @@ const AdminPanel = () => {
     // 不同权限时的菜单
     // root菜单 权限等级:0
     let root_user_menu = [
-        getItem('影片管理', 'sub1', <VideoCameraOutlined/>, [
-            getItem('影片上传', '11'),
-            getItem('所有影片', '12'),//站内所有影片
-            getItem('分类管理', '13'),
-        ]),
+        // getItem('影片管理', 'sub1', <VideoCameraOutlined/>, [
+        //     getItem('影片上传', '11'),
+        //     getItem('所有影片', '12'),//站内所有影片
+        //     getItem('分类管理', '13'),
+        // ]),
         getItem('文章管理', 'sub2', <DesktopOutlined/>, [
             getItem('写文章', '21'),
             getItem('所有文章', '22'),//站内所有文章
@@ -98,11 +98,11 @@ const AdminPanel = () => {
     ]
     // 管理员菜单 权限等级:1 不能管理用户
     let admin_user_menu = [
-        getItem('影片管理', 'sub1', <VideoCameraOutlined/>, [
-            getItem('影片上传', '11'),
-            getItem('所有影片', '12'),//站内所有影片
-            getItem('分类管理', '13'),
-        ]),
+        // getItem('影片管理', 'sub1', <VideoCameraOutlined/>, [
+        //     getItem('影片上传', '11'),
+        //     getItem('所有影片', '12'),//站内所有影片
+        //     getItem('分类管理', '13'),
+        // ]),
         getItem('文章管理', 'sub2', <DesktopOutlined/>, [
             getItem('写文章', '21'),
             getItem('所有文章', '22'),//站内所有文章
@@ -116,10 +116,10 @@ const AdminPanel = () => {
     ]
     // 普通用户菜单 权限等级:2
     let user_menu = [
-        getItem('影片管理', 'sub1', <VideoCameraOutlined/>, [
-            getItem('影片上传', '11'),
-            getItem('所有影片', '12'),//自己的影片
-        ]),
+        // getItem('影片管理', 'sub1', <VideoCameraOutlined/>, [
+        //     getItem('影片上传', '11'),
+        //     getItem('所有影片', '12'),//自己的影片
+        // ]),
         getItem('文章管理', 'sub2', <DesktopOutlined/>, [
             getItem('写文章', '21'),
             getItem('所有文章', '22'),//自己的文章

@@ -74,57 +74,7 @@ function IndexPage(props) {
     //获取分类、视频与文章数据列表Hooks函数
     useEffect(() => {
         //启动列表加载动画
-        setInitLoading1(true)
-        setInitLoading2(true)
         setInitLoading3(true)
-        //获取所有分类列表
-        console.log('开始获取分类列表')
-        axios.post('/api/type/getAll')
-            .then((res) => {
-                console.log('返回结果', res.data)
-                if (!res.data.success) {//检查是否成功
-                    //如果失败，则做出提示
-                    errorMSG('获取分类列表失败：' + res.data.errorMsg)
-                    //设置分类列表为空
-                    setTypeListData([])
-                    return
-                }
-                //转换数据，适配AntD List
-                let data_recv = convertTypeObjToAntDList(res.data.data)
-                //设置数据
-                setTypeListData(data_recv)
-            })
-            .catch((e) => {
-                //捕获异常
-                errorMSG('网络错误，请检查网络连接', e.message)
-            })
-            .finally(() => {
-                //最终关闭加载状态
-                setInitLoading1(false)
-            })
-        console.log('开始获取文章列表')
-        //获取所有公开影片列表
-        axios.post('/api/movie/getAllPublic')
-            .then((res) => {
-                console.log('返回结果', res.data)
-                if (!res.data.success) {//检查是否成功
-                    //如果失败，则做出提示，然后直接返回
-                    errorMSG('获取分类列表失败：' + res.data.errorMsg)
-                    setVideoListData([])
-                    return
-                }
-                let data_recv = res.data.data
-                //设置数据
-                setVideoListData(data_recv)
-            })
-            .catch((err) => {
-                console.log('错误信息', err)
-                errorMSG(err.message + '请检查网络连接')
-            })
-            .finally(() => {
-                //关闭加载状态
-                setInitLoading2(false)
-            })
         //获取所有公开文章列表
         axios.post('/api/blog/getAllPublicBlogs')
             .then((res) => {
@@ -184,68 +134,6 @@ function IndexPage(props) {
                 >管理后台</Button>
             </header>
             <div>
-                <Divider>影片分类</Divider>
-                {/*电影分类列表*/}
-                <List
-                    loading={initLoading1}
-                    grid={{
-                        gutter: 0,
-                        xs: 3,
-                        sm: 5,
-                        md: 7,
-                        lg: 9,
-                        xl: 11,
-                        xxl: 13
-                    }}
-                    style={{marginLeft: '10px'}}
-                    dataSource={type_list_data}
-                    renderItem={(item) => (
-                        <List.Item>
-                            <Button
-                                style={{
-                                    backgroundColor: "#f4f5f6",
-                                    borderRadius: "10px",
-                                    borderColor: '#fff'
-                                }}
-                                type="default"
-                                shape="default"
-                                onClick={() => onTypeBtnClicked(item)}
-                            >
-                                {item.title}
-                            </Button>
-                        </List.Item>
-                    )}
-                />
-                <Divider>网站视频</Divider>
-                <List
-                    loading={initLoading2}
-                    itemLayout="horizontal"
-                    dataSource={video_list_data}
-                    renderItem={(item) => (
-                        <List.Item>
-                            <Skeleton avatar title={false} loading={item.loading} active>
-                                <List.Item.Meta
-                                    avatar={<Avatar src={'/api/movie/getFile?url=' + item.pic}
-                                                    shape='square'
-                                                    size={80}
-                                    />}
-                                    title={<a onClick={() => {
-                                        console.log('视频列表点击事件', item.id)
-                                        navigate('/movie/' + item.id)
-                                    }} style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.name}</a>}
-                                    description={<div
-                                        style={{maxWidth: '70%', wordBreak: 'break-all'}}>{item.des}</div>}
-
-                                />
-                                <div style={{
-                                    position: "absolute",
-                                    right: '0px',
-                                    marginRight: '50px'
-                                }}>作者：{item.uploader}</div>
-                            </Skeleton>
-                        </List.Item>
-                    )}
-                />
                 <Divider>网站文章</Divider>
                 {/*文章列表*/}
                 <List
