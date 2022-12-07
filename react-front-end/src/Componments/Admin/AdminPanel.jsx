@@ -247,7 +247,7 @@ const AdminPanel = () => {
                    onCollapse={(value) => setCollapsed(value)}
                    theme='light'
             >
-                <div className="logo">电影管理后台</div>
+                <div className="logo">博客管理后台</div>
                 <Menu
                     theme="light"
                     defaultSelectedKeys={['1']}
