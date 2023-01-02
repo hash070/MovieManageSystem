@@ -84,8 +84,8 @@ const LoginForm = () => {
                     //将cookie保存在本地
                     cookies.set('token', token, {
                         path: '/',//在所有的路径中都把Cookie发送出去
-                        // sameSite: 'lax',//允许跨站发送
-                        secure: false,//允许非https时发送cookie/方便调试
+                        sameSite: 'none',//允许跨站发送
+                        secure: true,//允许非https时发送cookie/方便调试
                         maxAge: 259200,//三天过期时间
                     });
                     console.log('存放在cookie中的Token', cookies.get('token')); // Pacman
